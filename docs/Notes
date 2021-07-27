@@ -1,0 +1,22 @@
+# Notes
+
+## features for app
+- send money to other players
+- bank player to approve or oversee transactionsa
+- player profiles
+- can buy ads for assets
+    - purchase requests come in afterwards
+    - allows players more options to sell assets. original game required waiting for offers to sell
+
+
+# single player setup screen layout
+- player count select (for device hand off playing)
+- insurance option
+- (color option)
+- assets list
+- options list
+- starting cash
+
+# game layout
+- the game can go in roller coaster tycoon time, 
+    - the dice amount can be days 2x
