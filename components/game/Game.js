@@ -1,4 +1,3 @@
-import { BorderColor } from '@material-ui/icons'
 import React, { useState } from 'react'
 import { View, Text, Button, StyleSheet, Pressable } from 'react-native'
 import CurrentPlayer from './CurrentPlayer'
@@ -24,7 +23,7 @@ const DreamPhaseContainer = ({ phase, setPhase, playerObj }) => {
         }
         return(text);
     }
-    
+
     if (phase === 'dream selection'){
         return (
             <View style={styles.dreamSelectionContainer}>
@@ -72,10 +71,10 @@ const DreamPhaseContainer = ({ phase, setPhase, playerObj }) => {
                     <Text style={styles.dreamSetText}>Select Dream</Text>
                 </Pressable>
                 <View style={styles.startingStats}>
-                    <Text>{getJobText(playerObj.jobTitle)}</Text>
-                    <Text>Your starting salary is ${playerObj.startingSalary}.</Text>
-                    <Text>You have ${playerObj.startingSavings} in your savings.</Text>
-                    <Text>That means your starting cash is ${playerObj.startingSavings}.</Text>
+                    <Text style={styles.startingStatsText}>{getJobText(playerObj.jobTitle)}</Text>
+                    <Text style={styles.startingStatsText}>Your starting salary is ${playerObj.startingSalary}.</Text>
+                    <Text style={styles.startingStatsText}>You have ${playerObj.startingSavings} in your savings.</Text>
+                    <Text style={styles.startingStatsText}>That means your starting cash is ${playerObj.startingSavings}.</Text>
                 </View>
             </View>
         )
@@ -85,21 +84,14 @@ const DreamPhaseContainer = ({ phase, setPhase, playerObj }) => {
 }
 
 
-const RatRacePhaseContainer = ({ phase, setPhase }) => {
-    const [move, setMove] = useState({
-        turnCount: null,
-        player: null,
-        prev: null,
-        next: null,
-    });
-
+const RatRacePhaseContainer = ({ playerObj, phase }) => {
     if (phase !== "rat race") {
         return (<View></View>)
     } else {
         return (
             <View>
                 <Board moves={GameState.moves} gs={GameState}/>
-                <Statement />
+                <Statement playerObj={playerObj}/>
             </View>
         )
     }
@@ -153,7 +145,7 @@ export default function Game({ navigation }) {
         <View style={styles.container}>
             <DreamPhaseContainer phase={phase} setPhase={setPhase} playerObj={GameState.players[0]}/>
 
-            <RatRacePhaseContainer phase={phase} setPhase={setPhase}/>
+            <RatRacePhaseContainer phase={phase} setPhase={setPhase} playerObj={GameState.players[0]}/>
             
         </View>
     )
@@ -169,7 +161,7 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'center',
-        fontSize: '25px',
+        fontSize: 25,
         color: 'white',
     },
 
@@ -177,7 +169,7 @@ const styles = StyleSheet.create({
     dreamSelectionContainer: {
         backgroundColor: 'white',
         width: '90%',
-        height: 590,
+        height: 615,
         borderRadius: 5,
         padding: 25,
         
@@ -186,22 +178,24 @@ const styles = StyleSheet.create({
         height: 275,
     },
     dreamSelTitle: {
-        fontSize: 24,
+        fontSize: 26,
         textAlign: 'center',
         height: 40,
         color: 'gold',
-        fontWeight: 500,
-        marginTop: 15,
+        fontWeight: "500",
+        marginVertical: 15,
     },
     dreamSelTitle2: {
         textAlign: 'center',
         fontSize: 24,
         height: 60,
+        fontWeight: 500,
     },
     dreamSelDes: {
-        fontColor: 'black',
+        color: 'black',
         fontSize: 20,
-        marginTop: 5,
+        marginTop: 7,
+        height: 150,
     },
     dreamSelBtnsContainer: {
         flexDirection:'row', 
@@ -247,9 +241,12 @@ const styles = StyleSheet.create({
     },
     startingStats: {
         justifyContent: 'center',
-        fontSize: 24,
+        marginTop: 20,
         
-        
+    },
+    startingStatsText: {
+        fontSize: 22,
+
     },
 
     // Rat Race

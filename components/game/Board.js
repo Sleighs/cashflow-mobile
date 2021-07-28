@@ -203,34 +203,80 @@ const Board = ({ gs }) => {
             <View style={styles.board1row1}>
                 <TouchableOpacity key={1} style={[styles.opportunitySpace, styles.boardSpace]}
                     onPress={() => {
-                        //updateSelection("Opportunity")
-                        // show player names on space
-                }}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={2} style={[styles.liabilitySpace, styles.boardSpace]}>LIABILITY</TouchableOpacity>
-                <TouchableOpacity key={3} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={4} style={[styles.charitySpace, styles.boardSpace]}>CHARITY</TouchableOpacity>
-                <TouchableOpacity key={5} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={6} style={[styles.paycheckSpace, styles.boardSpace]}>PAYCHECK</TouchableOpacity>
-                <TouchableOpacity key={7} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={8} style={[styles.offerSpace, styles.boardSpace]}>OFFER</TouchableOpacity>
-                <TouchableOpacity key={9} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={10} style={[styles.liabilitySpace, styles.boardSpace]}>LIABILITY</TouchableOpacity>
-                <TouchableOpacity key={11} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={12} style={[styles.childSpace, styles.boardSpace]}>CHILD</TouchableOpacity>
+                }}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={2} style={[styles.liabilitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>LIABILITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={3} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={4} style={[styles.charitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>CHARITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={5} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={6} style={[styles.paycheckSpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>PAYCHECK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={7} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={8} style={[styles.offerSpace, styles.boardSpace]}>
+                <Text style={styles.boardSpaceText}>OFFER</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={9} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={10} style={[styles.liabilitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>LIABILITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={11} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={12} style={[styles.childSpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>CHILD</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.board1row2}>
-                <TouchableOpacity key={13} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={14} style={[styles.paycheckSpace, styles.boardSpace]}>PAYCHECK</TouchableOpacity>
-                <TouchableOpacity key={15} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={16} style={[styles.offerSpace, styles.boardSpace]}>OFFER</TouchableOpacity>
-                <TouchableOpacity key={17} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={18} style={[styles.liabilitySpace, styles.boardSpace]}>LIABILITY</TouchableOpacity>
-                <TouchableOpacity key={19} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={20} style={[styles.downsizeSpace, styles.boardSpace]}>DOWNSIZE</TouchableOpacity>
-                <TouchableOpacity key={21} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={22} style={[styles.paycheckSpace, styles.boardSpace]}>PAYCHECK</TouchableOpacity>
-                <TouchableOpacity key={23} style={[styles.opportunitySpace, styles.boardSpace]}>OPPORTUNITY</TouchableOpacity>
-                <TouchableOpacity key={24} style={[styles.offerSpace, styles.boardSpace]}>OFFER</TouchableOpacity>
+                <TouchableOpacity key={13} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={14} style={[styles.paycheckSpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>PAYCHECK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={15} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={16} style={[styles.offerSpace, styles.boardSpace]}>    
+                    <Text style={styles.boardSpaceText}>OFFER</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={17} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={18} style={[styles.liabilitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>LIABILITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={19} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={20} style={[styles.downsizeSpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>DOWNIZE</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={21} style={[styles.opportunitySpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={22} style={[styles.paycheckSpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>PAYCHECK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={23} style={[styles.opportunitySpace, styles.boardSpace]}>
+                <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
+                </TouchableOpacity>
+                <TouchableOpacity key={24} style={[styles.offerSpace, styles.boardSpace]}>
+                    <Text style={styles.boardSpaceText}>OFFER</Text>
+                </TouchableOpacity>
             </View>
        </View>
     )
@@ -241,22 +287,23 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         flexWrap:'wrap',
         height: 40,
-        fontSize: 8,
     },
     board1row2:{
         flexDirection:'row-reverse', 
         flexWrap:'wrap',
         height: 40,
-        fontSize: 8,
     },
     boardSpace: {
         borderColor: 'white',
-        borderStyle: 'ridge',
+        borderStyle: 'solid',
         borderWidth: 2,
         borderRadius: 4,
-        color: 'white',
         textAlign: 'center',
         justifyContent: 'center',
+    },
+    boardSpaceText: {
+        color: "#ffffff",
+        fontSize: 8,
     },
     opportunitySpace:{
         backgroundColor: "green", 

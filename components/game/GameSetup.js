@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'center',
-        fontSize: '25px',
+        fontSize: 25,
         color: 'white',
     },
     startGameBtn: {
