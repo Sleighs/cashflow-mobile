@@ -4,14 +4,12 @@ import { useStore } from 'react-redux'
 import GameState from '../game/GameState';
 
 const getGameState = (state) => {
-
     return(
-        <View style={{ fontSize: 18, justifyContent: 'center' }}>
+        <View style={{ fontSize: 18, justifyContent: 'center', width: '85%' }}>
             {JSON.stringify(state)}
         </View>
     )
 }
-
 
 
 export default function Debug() {

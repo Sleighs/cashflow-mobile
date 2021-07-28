@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { View, Text, Button, StyleSheet, Pressable } from 'react-native'
+
+import { useSelector } from 'react-redux';
 
 import KeyGen from '../../functions/KeyGen';
-import Setup from '../../functions/setup';
+import Setup from './Setup';
 import GameState from './GameState';
 
 import firebase from 'firebase'
-import { useSelector } from 'react-redux';
-
 
 export default function GameSetup({ navigation }) {
     const [setupData, setSetupData] = useState(null);
@@ -78,7 +78,7 @@ export default function GameSetup({ navigation }) {
         <View style={styles.container}>
             <Text style={styles.title}>Game Setup</Text>
             <View>
-                <Button 
+                <Pressable 
                     onPress={() =>{
                         if (!playerObj){
                             createPlayer();
@@ -86,34 +86,47 @@ export default function GameSetup({ navigation }) {
 
                         console.log('start game', gameId)
 
-                        navigation.navigate("Game")
+                        if (playerObj){
+                            GameState.moves = [
+                                {
+                                    player: playerObj.name,
+                                    turn: 1,
+                                    prev: null,
+                                    next: 0,
+                                }
+                            ]  
+                             
+                            navigation.navigate("Game")
+                        }
                     }}
-                    style={styles.startGameButton}
-                    title="Start Game"
-                />
-                <Button 
+                    style={styles.startGameBtn}
+                >
+                    <Text style={styles.startGameText}>Start Game</Text>
+                </Pressable>
+                <Pressable 
                     onPress={() =>{
                         console.log('continue game')
                         //navigation.navigate("Game")
                     }}
-                    style={styles.continueGameButton}
-                    title="Continue Game"
+                    style={styles.continueGameBtn}
                     color="#435324"
-                />
+                >
+                    <Text style={styles.continueGameText}>Continue Game</Text>
+                </Pressable>
             </View>
             <View>
                 {!playerObj ? (
                     <View></View>
                 ) : (
                     <View>
-                        <Text>Name: {playerObj.name}</Text>
+                        <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
                         <Text>JobTitle: {playerObj.jobTitle}</Text>
                         <Text>Salary: {playerObj.startingSalary}</Text>
                         <Text>Savings: {playerObj.startingSavings}</Text>
                         <Text>Insurance:{!insurance ? ' None' : ' Insured'}</Text>
                     </View>
                 )}
-                <Button 
+                <Pressable 
                     onPress={() => {
                         if (!insurance) {
                             setInsurance(true)
@@ -121,20 +134,22 @@ export default function GameSetup({ navigation }) {
                             setInsurance(false)
                         }
                     }}
-                    style={styles.button}
-                    title="Insurance"
+                    style={styles.insuranceBtn}
                     color={!insurance ? "red" : "gold"}
-                />
-                <Button 
+                >
+                    <Text>Insurance</Text>
+                </Pressable>
+                <Pressable 
                     onPress={() => {
                         createPlayer();
                         
                         console.log('player created', playerObj);
                     }}
-                    style={styles.button}
-                    title="Create Player"
+                    style={styles.createPlayerBtn}
                     color="#111213"
-                />
+                >
+                    <Text>Create Player</Text>
+                </Pressable>
 
             </View>
             
@@ -142,7 +157,7 @@ export default function GameSetup({ navigation }) {
                 <Text style={styles.optionsTitle}>Options</Text>
                 <View accessibilityRole='checkbox'></View>
             </View>
-            <Button 
+            <Pressable 
                 onPress={() => navigation.goBack()}
                 title="Back"
                 color="#212212"
@@ -163,21 +178,29 @@ const styles = StyleSheet.create({
         fontSize: '25px',
         color: 'white',
     },
-    startGameButton: {
-        color: 'white',
-        marginTop: '25%',
+    startGameBtn: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        backgroundColor: 'white',
+        elevation: 3,
+        marginTop: 10,
     },
-    continueGameButton: {
-        width: 200,
-        height: 100,
-        color: 'white',
+    startGameText: {
+        textAlign: 'center',
+        color: 'black',
+        
     },
-    optionsTitle:{
-
+    continueGameBtn: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        backgroundColor: '#f8f5dc', //lightyellow
+        elevation: 3,
+        marginTop: 10,
     },
-    button: {
-
-    }
+    continueGameText: {
+        textAlign: 'center',
+        color: 'black'
+    },
 })
 
 

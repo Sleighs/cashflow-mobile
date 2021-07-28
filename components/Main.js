@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useLayoutEffect } from 'react'
 import { View, Text } from 'react-native'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -14,10 +14,22 @@ import ProfileScreen from './main/Profile'
 import DebugScreen from './main/Debug'
 
 import { createStackNavigator } from '@react-navigation/stack'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 
 const HomeStack = createStackNavigator();
 
-function HomeStackScreen({ navigation }) {
+function HomeStackScreen({ navigation, route }) {
+    /*
+    useLayoutEffect(() => {
+        const routeName = getFocusedRouteNameFromRoute(route);
+        if (routeName === 'Game') {
+            navigation.setOptions({tabBarVisible: false});
+        }else {
+            navigation.setOptions({tabBarVisible: true});
+        }
+    }, [navigation, route])
+    */
+
   return (
     <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen 
@@ -48,46 +60,27 @@ const EmptyScreen = () =>{
 export class Main extends Component {
     componentDidMount(){
         this.props.fetchUser()
-        this.props.fetchData()
+        //this.props.fetchData()
     }
     render() {
         const { currentUser, currentData } = this.props;
         
-        console.log({
-            currentUser: currentUser,
-            currentData: currentData
-        })
+        /*console.log({
+            //currentUser: currentUser,
+            //currentData: currentData
+        })*/
 
         return (
             <Tab.Navigator initialRouteName="Home" labeled={false}>
                 <Tab.Screen 
                     name="Home"
+                    component={HomeStackScreen}
                     options={{
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="home" color={color} size={26}/>
                         )
-                    }}>
-                    {() =>(
-                        <HomeStack.Navigator>
-                            <HomeStack.Screen 
-                                name="Home" 
-                                component={HomeScreen} 
-                                options={{ headerShown: false }}
-                            />
-                            <HomeStack.Screen 
-                                name="Game" 
-                                component={GameScreen} 
-                                options={{ headerShown: false }}
-                            />
-                            <HomeStack.Screen 
-                                name="GameSetup" 
-                                component={GameSetupScreen} 
-                                options={{ headerShown: false }}
-                            />
-                        </HomeStack.Navigator>
-                    )}
-                </Tab.Screen>
-                
+                    }}
+                />
                 <Tab.Screen 
                     name="Profile" 
                     component={ProfileScreen}
@@ -95,7 +88,8 @@ export class Main extends Component {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="account-circle" color={color} size={26}/>
                         )
-                    }}/>
+                    }}
+                />
                 <Tab.Screen 
                     name="Debug" 
                     component={DebugScreen}
@@ -111,10 +105,8 @@ export class Main extends Component {
 }
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
-    currentData: store.dataState.currentData,
-    props: 555
+    currentUser: store.userState.currentUser
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({fetchUser, fetchData}, dispatch)
+const mapDispatchProps = (dispatch) => bindActionCreators({fetchUser}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchProps)(Main)
