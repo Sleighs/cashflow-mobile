@@ -22,6 +22,10 @@
 - the game can go in roller coaster tycoon time, 
     - the dice amount can be days 2x
     
+
+# todo
+- local storage
+    https://reactnative.dev/docs/asyncstorage
     
     
     

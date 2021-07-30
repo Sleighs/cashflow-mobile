@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { useStore } from 'react-redux'
-import GameState from '../game/GameState';
+import GameState from '../../js/GameState';
 
 const getGameState = (state) => {
     return(
-        <View style={{ fontSize: 18, justifyContent: 'center', width: '85%' }}>
-            {JSON.stringify(state)}
+        <View 
+            style={styles.debug1}>
+            <Text>{JSON.stringify(state)}</Text>
         </View>
     )
 }
@@ -34,12 +35,17 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'center',
-        fontSize: '25px',
+        fontSize: 25,
         color: 'white',
     },
     text: {
         textAlign: 'center',
-        fontSize: '15px',
+        fontSize: 15,
         color: 'black',
+    },
+    debug1: { 
+        fontSize: 18, 
+        justifyContent: 'center', 
+        width: '85%',
     },
 })

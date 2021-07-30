@@ -4,8 +4,9 @@ import { View, Text, Button, StyleSheet, Pressable } from 'react-native'
 import { useSelector } from 'react-redux';
 
 import KeyGen from '../../functions/KeyGen';
-import Setup from './Setup';
-import GameState from './GameState';
+
+import Setup from '../../js/Setup';
+import GameState from '../../js/GameState';
 
 import firebase from 'firebase'
 
@@ -15,6 +16,13 @@ export default function GameSetup({ navigation }) {
     const [playerObj, setPlayerObj] = useState(null);
     const [gameId, setGameId] = useState(null);
     const [insurance, setInsurance] = useState(false);
+    const getInsuranceBtnColor = (ins) => {
+        var bgColor = 'red';
+        if (ins === true) {
+            bgColor = 'gold'
+        }
+        return bgColor;
+    }
     
     const store = useSelector(state => state)
 
@@ -48,7 +56,17 @@ export default function GameSetup({ navigation }) {
         GameState.gameId = newGameId;
 
         // Turn on dream phase 
-        GameState.phase = 'dream selection';
+        GameState.gamePhase = 'dream selection';
+
+        // Create first move
+        GameState.moves = [
+            {
+                player: newPlayer.name,
+                turn: 1,
+                prev: null,
+                next: 0,
+            }
+        ] 
 
         // Cloud save
         /*if (firebase){
@@ -82,22 +100,16 @@ export default function GameSetup({ navigation }) {
                     onPress={() =>{
                         if (!playerObj){
                             createPlayer();
+
                         }
 
                         console.log('start game', gameId)
 
                         if (playerObj){
-                            GameState.moves = [
-                                {
-                                    player: playerObj.name,
-                                    turn: 1,
-                                    prev: null,
-                                    next: 0,
-                                }
-                            ]  
-                             
-                            navigation.navigate("Game")
+                            
                         }
+
+                        navigation.navigate("Game")
                     }}
                     style={styles.startGameBtn}
                 >
@@ -115,17 +127,6 @@ export default function GameSetup({ navigation }) {
                 </Pressable>
             </View>
             <View>
-                {!playerObj ? (
-                    <View></View>
-                ) : (
-                    <View>
-                        <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
-                        <Text>JobTitle: {playerObj.jobTitle}</Text>
-                        <Text>Salary: {playerObj.startingSalary}</Text>
-                        <Text>Savings: {playerObj.startingSavings}</Text>
-                        <Text>Insurance:{!insurance ? ' None' : ' Insured'}</Text>
-                    </View>
-                )}
                 <Pressable 
                     onPress={() => {
                         if (!insurance) {
@@ -134,8 +135,8 @@ export default function GameSetup({ navigation }) {
                             setInsurance(false)
                         }
                     }}
-                    style={styles.insuranceBtn}
-                    color={!insurance ? "red" : "gold"}
+                    style={[styles.insuranceBtn, {backgroundColor: getInsuranceBtnColor(insurance)}]}
+                    
                 >
                     <Text>Insurance</Text>
                 </Pressable>
@@ -146,7 +147,6 @@ export default function GameSetup({ navigation }) {
                         console.log('player created', playerObj);
                     }}
                     style={styles.createPlayerBtn}
-                    color="#111213"
                 >
                     <Text>Create Player</Text>
                 </Pressable>
@@ -155,13 +155,26 @@ export default function GameSetup({ navigation }) {
             
             <View>
                 <Text style={styles.optionsTitle}>Options</Text>
-                <View accessibilityRole='checkbox'></View>
             </View>
+
             <Pressable 
                 onPress={() => navigation.goBack()}
-                title="Back"
-                color="#212212"
-            />
+                style={styles.goBackBtn}
+            >
+                <Text style={{color: 'black'}}>Go Back</Text>
+            </Pressable>
+
+            {!playerObj ? (
+                    <View></View>
+                ) : (
+                    <View>
+                        <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
+                        <Text>JobTitle: {playerObj.jobTitle}</Text>
+                        <Text>Salary: {playerObj.startingSalary}</Text>
+                        <Text>Savings: {playerObj.startingSavings}</Text>
+                        <Text>Insurance:{!insurance ? ' None' : ' Insured'}</Text>
+                    </View>
+                )}
         </View>
     )
 }
@@ -178,12 +191,14 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: 'white',
     },
+
     startGameBtn: {
         paddingVertical: 10,
-        paddingHorizontal: 20,
-        backgroundColor: 'white',
+        paddingHorizontal: 15,
+        backgroundColor: '#ffffff',
         elevation: 3,
         marginTop: 10,
+        borderRadius: 10,
     },
     startGameText: {
         textAlign: 'center',
@@ -191,16 +206,42 @@ const styles = StyleSheet.create({
         
     },
     continueGameBtn: {
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        backgroundColor: '#f8f5dc', //lightyellow
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        backgroundColor: '#ffffff',
         elevation: 3,
         marginTop: 10,
+        borderRadius: 10,
     },
     continueGameText: {
         textAlign: 'center',
-        color: 'black'
+        color: 'black',
     },
+
+    insuranceBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        elevation: 3,
+        marginTop: 10,
+        borderRadius: 10,
+        textAlign: 'center',
+    }, 
+    createPlayerBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        backgroundColor: '#ffffff',
+        elevation: 3,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    goBackBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        backgroundColor: '#ffffff',
+        elevation: 3,
+        marginTop: 10,
+        borderRadius: 10,
+    }
 })
 
 

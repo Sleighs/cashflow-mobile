@@ -36,6 +36,7 @@ import MainScreen from './components/Main'
 import AddScreen from './components/main/Add'
 import GameSetupScreen from './components/game/GameSetup'
 import GameScreen from './components/game/Game'
+import GameSetup from './components/game/GameSetup'
 
 const Stack = createStackNavigator();
 const HomeStack = createStackNavigator();

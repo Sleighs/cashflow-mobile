@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
 import { View, Text, Pressable, StyleSheet } from 'react-native'
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-
 export default function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>CashFlowJs</Text>
+            <Text style={styles.title}>CashFlow</Text>
             <Pressable 
                 onPress={() => navigation.navigate("GameSetup")}
                 style={styles.singlePlayerBtn}

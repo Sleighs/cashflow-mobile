@@ -1,9 +1,12 @@
-import GameState from "./GameState";
+import GameState from "../js/GameState";
 
 // Set for single player
 var CurrentPlayer = GameState.players[0];
 
-function getCurrentPlayer(){
+export const getCurrentPlayer = () => {
+  
+  console.log('currentPlayer: ', CurrentPlayer);
+
     if (GameState.players.length > 0){
       return GameState.players[0];
     }
@@ -11,5 +14,5 @@ function getCurrentPlayer(){
 
 CurrentPlayer = getCurrentPlayer();
 
-console.log(CurrentPlayer)
+
 export default CurrentPlayer

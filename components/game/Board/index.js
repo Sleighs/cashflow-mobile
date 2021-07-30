@@ -1,159 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native'
-import GameState from './GameState';
+import BoardSpaces from '../../../js/BoardSpaces';
+import GameState from '../../../js/GameState'
+import styles from "./style";
 
-
-const Board = ({ gs }) => {
+const Board = ({ gs, positions }) => {
     const [playerObj, setPlayerObj] = useState(null);
     const [selectedSpace, setSelectedSpace] = useState(null);
     const [spaces, setSpaces] = useState(null)
-    var spacesArr= {
-        space1: {
-            key: 1,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space2: {
-            key: 2,
-            field: 'LIABILITY',
-            style: styles.liabilitySpace,
-            players: [],
-        },
-        space3: {
-            key: 3,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space4: {
-            key: 4,
-            field: 'CHARITY',
-            style: styles.charitySpace,
-            players: [],
-        },
-        space5: {
-            key: 5,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space6: {
-            key: 6,
-            type: 'TouchableOpacity',
-            field: 'PAYCHECK',
-            style: styles.paycheckSpace,
-            players: [],
-        },
-        space7: {
-            key: 7,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space8: {
-            key: 8,
-            field: 'OFFER',
-            style: styles.offerSpace,
-            players: [],
-        },
-        space9: {
-            key: 9,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space10: {
-            key: 10,
-            field: 'LIABILITY',
-            style: styles.liabilitySpace,
-            players: [],
-        },
-        space11: {
-            key: 11,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space12: {
-            key: 12,
-            field: 'CHILD',
-            style: styles.childSpace,
-            players: [],
-        },
-        space13: {
-            key: 13,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space14: {
-            key: 14,
-            field: 'PAYCHECK',
-            style: styles.paycheckSpace,
-            players: [],
-        },
-        space15: {
-            key: 15,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space16: {
-            key: 16,
-            field: 'OFFER',
-            style: styles.offerSpace,
-            players: [],
-        },
-        space17: {
-            key: 17,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space18: {
-            key: 18,
-            field: 'LIABILITY',
-            style: styles.liabilitySpace,
-            players: [],
-        },
-        space19: {
-            key: 19,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space20: {
-            key: 20,
-            field: 'DOWNSIZE',
-            style: styles.downsizeSpace,
-            players: [],
-        },
-        space21: {
-            key: 21,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space22: {
-            key: 22,
-            field: 'PAYCHECK',
-            style: styles.paycheckSpace,
-            players: [],
-        },
-        space23: {
-            key: 23,
-            field: 'OPPORTUNITY',
-            style: styles.opportunitySpace,
-            players: [],
-        },
-        space24: {
-            key: 24,
-            field: 'OFFER',
-            style: styles.offerSpace,
-            players: [],
-        },
-    }
+    
+
+    console.log('positions:', positions)
 
     // Get player object (single player)
     const getPlayer = () => {
@@ -168,27 +25,23 @@ const Board = ({ gs }) => {
 
     //console.log(spacesArr)
 
+    /*
     // Add players to board
     if (GameState.turnCount === 1 && spaces === null) {
         if (GameState.players.length > 0){
             for (var a = 0; a < GameState.players.length; a++) {
-                /*console.log({
-                    gs: gs,
-                    gamestate: GameState,
-                    spaces: spaces,
-                    spacesArr: spacesArr,
-                })*/
-                spacesArr.space1.players.push(GameState.players[a])
+                BoardSpaces.space1.players.push(GameState.players[a])
             }
             
             // for single player
             //spacesArr.space1.players.push(gs.players[0].name)
         }
         
-        setSpaces(spacesArr)
+        setSpaces(BoardSpaces)
 
-        console.log('spacesArr: ', spacesArr)
+        console.log('BoardSpaces after players turn 1: ', BoardSpaces)
     }
+    */
 
     
     // Update event viewer when spaces are pressed
@@ -199,9 +52,9 @@ const Board = ({ gs }) => {
     
     // Render board
     return(
-        <View>
+        <View style={styles.boardContainer}>
             <View style={styles.board1row1}>
-                <TouchableOpacity key={1} style={[styles.opportunitySpace, styles.boardSpace]}
+                <TouchableOpacity key={1} style={[styles.opportunitySpace, (!BoardSpaces.checkOccupied(BoardSpaces.space1) ? styles.boardSpace : styles.boardSpaceHighlight)]}
                     onPress={() => {
                 }}>
                     <Text style={styles.boardSpaceText}>OPPORTUNITY</Text>
@@ -281,59 +134,5 @@ const Board = ({ gs }) => {
        </View>
     )
 }
-
-const styles = StyleSheet.create({
-    board1row1:{
-        flexDirection:'row',
-        flexWrap:'wrap',
-        height: 40,
-    },
-    board1row2:{
-        flexDirection:'row-reverse', 
-        flexWrap:'wrap',
-        height: 40,
-    },
-    boardSpace: {
-        borderColor: 'white',
-        borderStyle: 'solid',
-        borderWidth: 2,
-        borderRadius: 4,
-        textAlign: 'center',
-        justifyContent: 'center',
-    },
-    boardSpaceText: {
-        color: "#ffffff",
-        fontSize: 8,
-    },
-    opportunitySpace:{
-        backgroundColor: "green", 
-        flex: 0.2,
-        
-    },
-    liabilitySpace: {
-        backgroundColor: "darkslategray", 
-        flex: 0.2,
-    },
-    charitySpace: {
-        backgroundColor: "aqua", 
-        flex: 0.2,
-    },
-    paycheckSpace: {
-        backgroundColor: "gold", 
-        flex: 0.2,
-    },
-    offerSpace: {
-        backgroundColor: "blue", 
-        flex: 0.2,
-    },
-    childSpace: {
-        backgroundColor: "orange", 
-        flex: 0.2,
-    },
-    downsizeSpace: {
-        backgroundColor: "red", 
-        flex: 0.2,
-    },
-})
 
 export default Board
