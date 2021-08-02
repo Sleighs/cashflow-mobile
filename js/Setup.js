@@ -55,6 +55,25 @@ Setup.newPlayer = function(playerScenario) {
 
     this.loanApproval = true;
     this.mortgagePrepay = false;
+
+    this.liabilities = [
+        {
+            type: 'mortgage',
+            cost: playerScenario[9]
+        },
+        {
+            type: 'car loan',
+            cost: playerScenario[10]
+        },
+        {
+            type: 'credit debt',
+            cost: playerScenario[11]
+        },
+        {
+            type: 'retail debt',
+            cost: playerScenario[12]
+        }
+    ]
 };
 
 Setup.scenarioChoices = [

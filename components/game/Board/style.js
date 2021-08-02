@@ -5,18 +5,19 @@ const styles = StyleSheet.create({
     boardContainer: {
         width: '100%',
         justifyContent: 'center',
+        marginVertical: 5,
 
     },
     board1row1:{
         flexDirection:'row',
         flexWrap:'wrap',
-        height: 40,
+        height: 30,
         flex: 1,
     },
     board1row2:{
         flexDirection:'row-reverse', 
         flexWrap:'wrap',
-        height: 40,
+        height: 30,
         flex: 1,
     },
     boardSpace: {
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     opportunitySpace:{
         backgroundColor: "green", 
     },
-    liabilitySpace: {
+    doodadSpace: {
         backgroundColor: "darkslategray", 
     },
     charitySpace: {

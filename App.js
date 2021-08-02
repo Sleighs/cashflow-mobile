@@ -5,11 +5,14 @@ import firebaseKey from './firebaseKey'
 import firebase from 'firebase'
 
 import { Provider } from 'react-redux'
+import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as StoreProvider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import rootReducer from './redux/reducers'
 import thunk from 'redux-thunk'
+import store from './redux/store'
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+//const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const firebaseConfig = {
   apiKey: firebaseKey.key,
@@ -86,16 +89,18 @@ export default function App() {
   }
 
   return(
-    <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Main">
-          <Stack.Screen 
-            name="Main" 
-            component={MainScreen} 
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+    <StoreProvider store={store}>
+      <PaperProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Main">
+            <Stack.Screen 
+              name="Main" 
+              component={MainScreen} 
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </StoreProvider>
   )
 }

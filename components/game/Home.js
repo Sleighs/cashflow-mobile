@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { View, Text, Pressable, StyleSheet } from 'react-native'
 
 export default function Home({ navigation }) {
-
     return (
         <View style={styles.container}>
             <Text style={styles.title}>CashFlow</Text>
@@ -24,15 +23,15 @@ export default function Home({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'darkgreen',
+        backgroundColor: '#ebe9e3',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     title: {
         textAlign: 'center',
-        fontSize: 25,
-        color: 'white',
+        fontSize: 28,
+        color: '#707070',
     },
     singlePlayerBtn: {
         alignItems: 'center',
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     singlePlayerText: {
-        fontSize: 16,
+        fontSize: 18,
         lineHeight: 21,
         fontWeight: 'bold',
         letterSpacing: 0.25,
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     optionsText: {
-        fontSize: 16,
+        fontSize: 18,
         lineHeight: 21,
         fontWeight: 'bold',
         letterSpacing: 0.25,

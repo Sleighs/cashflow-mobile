@@ -1,4 +1,4 @@
-Cards = {
+const Cards = {
     smallDeal: {
         mutual01: {
             type: "Mutual Fund",
@@ -1872,4 +1872,4 @@ Cards = {
 	}	
 };
 
-export default cards
+export default Cards

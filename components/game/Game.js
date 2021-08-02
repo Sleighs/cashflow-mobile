@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, Text, Button, StyleSheet, Pressable } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, Button, StyleSheet, Pressable, Dimensions } from 'react-native'
 
 import Card from './Card'
 import Board from './Board'
@@ -10,54 +10,131 @@ import DreamPhase from '../../js/DreamPhase'
 import BoardSpaces from '../../js/BoardSpaces'
 import DreamPhaseContainer from './DreamPhaseContainer'
 
-const EventViewer = () => {
+import store from '../../redux/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { getGameData, getUser } from '../../redux/reducers/rootReducer'
+
+const EventViewer = (props) => {
+
+    const dispatch = useDispatch()
+
     return ( 
         <View style={styles.eventViewer}>
-            <Text style={styles.eventViewerText}>{GameState.event[GameState.event.length - 1]}</Text>
+            <Text style={styles.eventViewerText}>{GameState.events[GameState.events.length - 1]}</Text>
+            <View style={{flexDirection: 'row'}}>
+                <Pressable
+                    style={{
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        alignContent: 'center',
+                        height: 30,
+                        width: 90,
+                        borderRadius: 15,
+                        backgroundColor: '#ffffff',
+                    }}
+                    onPress={()=>{
+                        dispatch(getGameData(GameState))
+                    }}>
+                    <Text>Save State</Text>
+                </Pressable>
+                <Pressable
+                    style={{
+                        justifyContent: 'center',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        height: 30,
+                        width: 90,
+                        borderRadius: 15,
+                        backgroundColor: '#ffffff',
+                    }}
+                    onPress={()=>{
+                        console.log(store.getState())
+                    }}>
+                    <Text>Print State</Text>
+                </Pressable>
+            </View>
+        </View>
+    )
+}
+
+const RatRacePhaseContainer = (props) => {
+    const { data, setData } = props;
+    const [selectedSpace, setSelectedSpace] = useState(null);
+
+    return (
+        <View style={styles.ratRacePhaseContainer}>
+            <EventViewer {...props}/>
+            <Board {...props}/>
+            <Card {...props}/>
+            <Statement {...props}/>
         </View>
     )
 }
 
 
-const RatRacePhaseContainer = ({ playerObj, gamePhase }) => {
-    if (gamePhase !== "rat race") {
-        return (<View></View>)
-    } else {
-        return (
-            <View style={styles.ratRacePhaseContainer}>
-                <EventViewer />
-                <Card />
-                <Board moves={GameState.moves} gs={GameState}/>
-                <Statement playerObj={playerObj}/>
-            </View>
-        )
-    }
-}
-
-
-export default function Game({ navigation }) {
+export default function Game(props) {
+    const player = GameState.players[GameState.currentPlayer];
     const [gamePhase, setPhase] = useState(null)
+    const [data, setData] = useState(null)
+    const [paymentCalc, openPaymentCalc] = useState(false)
+    const [selectedSpace, setSelectedSpace] = useState(null)
+    const [paymentCalcState, setPaymentCalcState] = useState(null)
+    const [currentSpace, setCurrentSpace ] = useState(null)
+    const [rolled, setRolled] = useState(false)
+    const [cardInfo, setCardInfo] = useState(null)
+
+    const dispatch = useDispatch()
 
     if (gamePhase === null){
         setPhase(GameState.gamePhase)
+        
+        //dispatch(getGameData(GameState))
+    } else {
+        //dispatch(getGameData(GameState))
     }
     
-    return (
-        <View style={styles.container}>
-            <DreamPhaseContainer 
-                gamePhase={gamePhase} 
-                setPhase={setPhase} 
-                playerObj={GameState.players[0]}
-            />
-
-            <RatRacePhaseContainer 
-                gamePhase={gamePhase} 
-                setPhase={setPhase} 
-                playerObj={GameState.players[0]}
-            />
-
-        </View>
-    )
+    if (GameState.gamePhase === "rat race") {    
+        return (
+            <View style={styles.container}>
+                <RatRacePhaseContainer 
+                    playerObj={GameState.players[GameState.currentPlayer]}
+                    data={data}
+                    setData={setData}
+                    gamePhase={gamePhase} 
+                    setPhase={setPhase} 
+                    paymentCalc={paymentCalc}
+                    openPaymentCalc={openPaymentCalc}
+                    paymentCalcState={paymentCalcState} 
+                    setPaymentCalcState={setPaymentCalcState}
+                    selectedSpace={selectedSpace} 
+                    setSelectedSpace={setSelectedSpace}
+                    cardType={BoardSpaces[player.currentSpace - 1].field} 
+                    cardInfo={cardInfo} 
+                    setCardInfo={setCardInfo}
+                    currentSpace={currentSpace} 
+                    setCurrentSpace={setCurrentSpace}
+                    
+                    rolled={rolled}
+                    setRolled={setRolled}
+                />
+            </View>
+        )
+    } else if (GameState.gamePhase === "fast track") {
+        return (
+            <View style={styles.container}>
+                <Text>Fast Track</Text>
+            </View>
+        )
+    } else if (GameState.gamePhase === 'dream selection') {
+        return (     
+            <View style={styles.container}>
+                <DreamPhaseContainer 
+                    setPhase={setPhase} 
+                    playerObj={GameState.players[GameState.currentPlayer]}
+                />
+            </View>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -65,11 +142,11 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'gray',
         flexDirection: "column",
-        //flex: 1,
-        justifyContent: 'center',
+        flex: 1,
+        justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%',
-        height: '100%'
+        //width: '100%',
+        //height: '100%'
     },
     title: {
         textAlign: 'center',
@@ -83,22 +160,22 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderRadius: 12,
         backgroundColor: 'navy',
-        margin: '25%',
         borderColor: 'silver',
         borderRadius: 12,
-        height: 28,
+        height: 70,
         
     },
     eventViewerText: {
         color: '#ffffff',
-        width: 200,
+        maxWidth: (Dimensions.get('window').width) * .9,
         height: 20,
     },
 
     
     // Rat Race
     ratRacePhaseContainer:{
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+
     },
 
     

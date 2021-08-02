@@ -9,6 +9,8 @@ import Setup from '../../js/Setup';
 import GameState from '../../js/GameState';
 
 import firebase from 'firebase'
+import BoardSpaces from '../../js/BoardSpaces';
+import store from '../../redux/store';
 
 export default function GameSetup({ navigation }) {
     const [setupData, setSetupData] = useState(null);
@@ -24,8 +26,6 @@ export default function GameSetup({ navigation }) {
         return bgColor;
     }
     
-    const store = useSelector(state => state)
-
     const createPlayer = () => {
         var randScenario = Math.floor(Math.random() * (Setup.scenarioChoices.length - 1));
         
@@ -36,7 +36,8 @@ export default function GameSetup({ navigation }) {
         
         // Create player
         var newPlayer = new Setup.newPlayer(Setup.scenarioChoices[randScenario]);
-        newPlayer.name = store.userState.currentUser.name;
+        newPlayer.name = 'player name';//store.userState.currentUser.name;
+        console.log(store.getState())
         if (!insurance) {
             newPlayer.hasInsurance = false;
         } else {
@@ -46,8 +47,15 @@ export default function GameSetup({ navigation }) {
         // Save player object to state
         setPlayerObj(newPlayer);
 
+        // Clear players array
         GameState.players = [];
 
+        // Clear players from board
+        for (var i = 0; i < BoardSpaces.length; i++){
+           BoardSpaces[i].players = []
+        }
+
+        // Add player to players array
         GameState.players.push(newPlayer);
 
         // Set game id
@@ -100,13 +108,6 @@ export default function GameSetup({ navigation }) {
                     onPress={() =>{
                         if (!playerObj){
                             createPlayer();
-
-                        }
-
-                        console.log('start game', gameId)
-
-                        if (playerObj){
-                            
                         }
 
                         navigation.navigate("Game")
@@ -167,7 +168,10 @@ export default function GameSetup({ navigation }) {
             {!playerObj ? (
                     <View></View>
                 ) : (
-                    <View>
+                    <View style={{
+                        backgroundColor: "white",
+                        padding: 10,
+                    }}>
                         <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
                         <Text>JobTitle: {playerObj.jobTitle}</Text>
                         <Text>Salary: {playerObj.startingSalary}</Text>
@@ -181,24 +185,27 @@ export default function GameSetup({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'teal',
+        backgroundColor: '#e5eee3',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        fontSize: 18,
     },
     title: {
         textAlign: 'center',
         fontSize: 25,
-        color: 'white',
+        color: 'gray',
     },
 
     startGameBtn: {
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 22,
         elevation: 3,
-        marginTop: 10,
-        borderRadius: 10,
+        backgroundColor: 'white',
+        marginTop: 15,
     },
     startGameText: {
         textAlign: 'center',
@@ -206,12 +213,14 @@ const styles = StyleSheet.create({
         
     },
     continueGameBtn: {
-        paddingVertical: 8,
-        paddingHorizontal: 15,
-        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 22,
         elevation: 3,
-        marginTop: 10,
-        borderRadius: 10,
+        backgroundColor: 'white',
+        marginTop: 15,
     },
     continueGameText: {
         textAlign: 'center',
@@ -219,28 +228,34 @@ const styles = StyleSheet.create({
     },
 
     insuranceBtn: {
-        paddingVertical: 8,
-        paddingHorizontal: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 22,
         elevation: 3,
-        marginTop: 10,
-        borderRadius: 10,
-        textAlign: 'center',
+        backgroundColor: 'white',
+        marginTop: 15,
     }, 
     createPlayerBtn: {
-        paddingVertical: 8,
-        paddingHorizontal: 15,
-        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 22,
         elevation: 3,
-        marginTop: 10,
-        borderRadius: 10,
+        backgroundColor: 'white',
+        marginTop: 15,
     },
     goBackBtn: {
-        paddingVertical: 8,
-        paddingHorizontal: 15,
-        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 22,
         elevation: 3,
-        marginTop: 10,
-        borderRadius: 10,
+        backgroundColor: 'white',
+        marginTop: 15,
     }
 })
 

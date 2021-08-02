@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { View, Text, Button, StyleSheet, Pressable } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 
 import GameState from '../../js/GameState'
 import DreamPhase from '../../js/DreamPhase'
 import BoardSpaces from '../../js/BoardSpaces'
 
 
-const DreamPhaseContainer = ({ gamePhase, setPhase, playerObj }) => {
+const DreamPhaseContainer = ({ setPhase, playerObj }) => {
     const [dream, setDream] = useState(DreamPhase.currentDream);
     
     const getJobText = (jobTitle) =>{
@@ -23,101 +23,107 @@ const DreamPhaseContainer = ({ gamePhase, setPhase, playerObj }) => {
         }
         return(text);
     }
+    useEffect(()=>{
+        if (GameState.turnCount === 1){
+            GameState.events.push('Dream Selection');
+        }
+    })
+    
 
-    if (gamePhase === 'dream selection'){
-        GameState.event.push('Dream Selection');
-
-        return (
-            <View style={styles.dreamSelectionContainer}>
-                <View style={styles.dreamSelectionTop}>
-                    <Text style={styles.dreamSelTitle}>Choose Dream</Text>
-                    <Text style={styles.dreamSelTitle2}>{DreamPhase.dreams[DreamPhase.currentDream]}</Text>
-                    <Text style={styles.dreamSelDes}>{DreamPhase.dreamDescriptions[DreamPhase.currentDream]}</Text>
-                </View>
-                <View style={styles.dreamSelBtnsContainer}>
-                    <Pressable 
-                        style={[styles.dreamSelBtns, styles.dreamSelBtnLeft]}
-                        onPress={() => {
-                            if (DreamPhase.currentDream === 0) {
-                                DreamPhase.currentDream = DreamPhase.dreams.length - 1;
-                            } else {
-                                DreamPhase.currentDream--;
-                            }    
-                            setDream(DreamPhase.currentDream)                
-                        }}>
-                        <Text style={styles.dreamSelText}>Prev</Text>
-                    </Pressable>
-                    <Pressable
-                        style={[styles.dreamSelBtns, styles.dreamSelBtnRight]}
-                        onPress={() => {
-                            if (DreamPhase.currentDream === DreamPhase.dreams.length - 1) {
-                                DreamPhase.currentDream = 0;
-                            } else {
-                                DreamPhase.currentDream++;
-                            } 
-                            setDream(DreamPhase.currentDream)  
-                        }}>
-                        <Text style={styles.dreamSelText}>Next</Text>
-                    </Pressable>
-                </View>
-                <Pressable
-                    style={styles.dreamSetBtn}
-                    onPress={() => {
-                        // Enable button to only work on player's turn
-
-                        GameState.players[0].dream = DreamPhase.dreams[DreamPhase.currentDream];
-
-                        GameState.event.push("Dream selected");
-                        
-                        // Add player to board
-                        BoardSpaces.space1.players.push(GameState.players[0].name);
-
-                        // Save move
-                        GameState.players[GameState.currentPlayer].moved = true;
-                        
-                        // Check if all players have moved
-                        for (var a = 0; a < GameState.players.length; a++){
-                            var phaseCheck = 0;
-
-                            if (GameState.players[a].moved) {
-                                phaseCheck += 1;
-                            }
-                            
-                            if (phaseCheck === GameState.playerCount) {
-                                GameState.gamePhase = "rat race";
-                                setPhase(GameState.gamePhase);
-                                GameState.event.push("Welcome to the Rat Race!");
-                            }
-                        }
-
-                        // End turn
-                        GameState.endTurn();
-                
-                    }}
-                >
-                    <Text style={styles.dreamSetText}>Select Dream</Text>
-                </Pressable>
-                <View style={styles.startingStats}>
-                    <Text style={styles.startingStatsText}>{getJobText(playerObj.jobTitle)}</Text>
-                    <Text style={styles.startingStatsText}>Your starting salary is ${playerObj.startingSalary}.</Text>
-                    <Text style={styles.startingStatsText}>You have ${playerObj.startingSavings} in your savings.</Text>
-                    <Text style={styles.startingStatsText}>That means your starting cash is ${playerObj.startingSavings}.</Text>
-                </View>
+    return (
+        <View style={styles.dreamSelectionContainer}>
+            <View style={styles.dreamSelectionTop}>
+                <Text style={styles.dreamSelTitle}>Choose Dream</Text>
+                <Text style={styles.dreamSelTitle2}>{DreamPhase.dreams[DreamPhase.currentDream]}</Text>
+                <Text style={styles.dreamSelDes}>{DreamPhase.dreamDescriptions[DreamPhase.currentDream]}</Text>
             </View>
-        )
-    } else {
-        return(<View></View>)
-    }
+            <View style={styles.dreamSelBtnsContainer}>
+                <Pressable 
+                    style={[styles.dreamSelBtns, styles.dreamSelBtnLeft]}
+                    onPress={() => {
+                        if (DreamPhase.currentDream === 0) {
+                            DreamPhase.currentDream = DreamPhase.dreams.length - 1;
+                        } else {
+                            DreamPhase.currentDream--;
+                        }    
+                        setDream(DreamPhase.currentDream)                
+                    }}>
+                    <Text style={styles.dreamSelText}>Prev</Text>
+                </Pressable>
+                <Pressable
+                    style={[styles.dreamSelBtns, styles.dreamSelBtnRight]}
+                    onPress={() => {
+                        if (DreamPhase.currentDream === DreamPhase.dreams.length - 1) {
+                            DreamPhase.currentDream = 0;
+                        } else {
+                            DreamPhase.currentDream++;
+                        } 
+                        setDream(DreamPhase.currentDream)  
+                    }}>
+                    <Text style={styles.dreamSelText}>Next</Text>
+                </Pressable>
+            </View>
+            <Pressable
+                style={styles.dreamSetBtn}
+                onPress={() => {
+                    var player = GameState.players[GameState.currentPlayer];
+                    
+                    // Enable button to only work on player's turn
+
+                    // Save dream
+                    player.dream = DreamPhase.dreams[DreamPhase.currentDream];
+
+                    GameState.events.push("Dream selected");
+                    
+                    // Add player to board
+                    BoardSpaces[0].players.push(player.name);
+
+                    // Save move
+                    player.moved = true;
+
+                    // Set player's current space 
+                    player.currentSpace = 1;
+
+                    // Check if all players have moved
+                    for (var a = 0; a < GameState.players.length; a++){
+                        var phaseCheck = 0;
+
+                        if (GameState.players[a].moved) {
+                            phaseCheck += 1;
+                        }
+                        
+                        if (phaseCheck === GameState.playerCount) {
+                            GameState.gamePhase = "rat race";
+                            setPhase(GameState.gamePhase);
+                            GameState.events.push("Welcome to the Rat Race!");
+                        }
+                    }
+
+                    // End turn
+                    GameState.endTurn();
+            
+                }}
+            >
+                <Text style={styles.dreamSetText}>Select Dream</Text>
+            </Pressable>
+            <View style={styles.startingStats}>
+                <Text style={styles.startingStatsText}>{getJobText(playerObj.jobTitle)}</Text>
+                <Text style={styles.startingStatsText}>Your starting salary is ${playerObj.startingSalary}.</Text>
+                <Text style={styles.startingStatsText}>You have ${playerObj.startingSavings} in your savings.</Text>
+                <Text style={styles.startingStatsText}>That means your starting cash is ${playerObj.startingSavings}.</Text>
+            </View>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
     // Dream Phase
     dreamSelectionContainer: {
         backgroundColor: 'white',
-        width: '90%',
-        height: 615,
-        borderRadius: 5,
-        padding: 25,
+        width: '100%',
+        height: '100%',
+        paddingHorizontal: 30,
+        paddingVertical: 75,
         
     },
     dreamSelectionTop:{
@@ -147,14 +153,15 @@ const styles = StyleSheet.create({
         flexDirection:'row', 
         flexWrap:'wrap',
         justifyContent: 'space-between',
+        
     },
     dreamSelBtns: {
         paddingVertical: 12,
-        paddingHorizontal: 12,
-        borderRadius: 5,
+        paddingHorizontal: 20,
+        borderRadius: 15,
         elevation: 3,
         backgroundColor: 'gold',
-        width: '25%',
+        width: '35%',
     },
     dreamSelText: {
         textAlign: 'center',
@@ -175,10 +182,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingVertical: 12,
         paddingHorizontal: 12,
-        borderRadius: 5,
+        borderRadius: 15,
         elevation: 3,
-        backgroundColor: 'blue',
-        marginTop: 8,
+        backgroundColor: '#a997a9',
+        marginTop: 25,
     },
     dreamSetText: {
         color: 'white',
