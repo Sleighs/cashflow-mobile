@@ -140,13 +140,12 @@ export default function Game(props) {
 const styles = StyleSheet.create({
     // Container
     container: {
-        backgroundColor: 'gray',
+        backgroundColor: '#ebe9e3',
         flexDirection: "column",
         flex: 1,
         justifyContent: 'space-between',
         alignItems: 'center',
-        //width: '100%',
-        //height: '100%'
+        alignContent: 'center',
     },
     title: {
         textAlign: 'center',
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'navy',
         borderColor: 'silver',
         borderRadius: 12,
-        height: 70,
+        flex: 2,
         
     },
     eventViewerText: {

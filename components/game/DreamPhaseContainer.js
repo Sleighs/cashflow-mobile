@@ -120,10 +120,14 @@ const styles = StyleSheet.create({
     // Dream Phase
     dreamSelectionContainer: {
         backgroundColor: 'white',
-        width: '100%',
-        height: '100%',
+        alignContent: 'center',
+        width: '95%',
+        height: '95%',
         paddingHorizontal: 30,
         paddingVertical: 75,
+        borderRadius: 15,
+        marginTop: 20,
+
         
     },
     dreamSelectionTop:{

@@ -34,15 +34,21 @@ export default function GameSetup({ navigation }) {
             randomNum: randScenario
         })*/
         
+        var state = store.getState()
+        
         // Create player
         var newPlayer = new Setup.newPlayer(Setup.scenarioChoices[randScenario]);
-        newPlayer.name = 'player name';//store.userState.currentUser.name;
-        console.log(store.getState())
+        newPlayer.name = state.currentUser.name;
+        
+        console.log('create user', state)
+        
         if (!insurance) {
             newPlayer.hasInsurance = false;
         } else {
             newPlayer.hasInsurance = true;
         }
+
+        newPlayer.cash += newPlayer.startingSalary;
 
         // Save player object to state
         setPlayerObj(newPlayer);

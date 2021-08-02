@@ -14,11 +14,36 @@ const Stats = (props) => {
     return (
         <View style={styles.tabContainer}>
             <View>
-                <Text style={{textTransform: 'capitalize'}}>Name: {player.name}</Text>
-                <Text>JobTitle: {player.jobTitle}</Text>
-                <Text>Salary: {player.startingSalary}</Text>
-                <Text>Savings: {player.startingSavings}</Text>
-                <Text>Insurance: {!player.hasInsurance ? 'None' : 'Insured'}</Text>
+                <View>
+                    <Text style={{fontSize: 20}}>Summary</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={[styles.summaryText, {color: 'darkgreen'}]}>Cash:</Text>
+                    <Text> ${GameState.numWithCommas(player.cash)}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryText}>Insurance:</Text> 
+                    <Text>{!player.hasInsurance ? 'None' : 'Insured'}</Text>
+                </View>            
+            </View>
+            <View>
+                <View>
+                    <Text style={{fontSize: 20}}>Income:</Text>
+                </View>
+                {player.income.map(item => 
+                    <TouchableOpacity
+                        key={item.type}
+                        name={item.type}
+                        onPress={() => {
+
+                        }}
+                        >
+                        <View style={styles.incomeRow}>
+                            <Text style={styles.incomeName}>{item.type}: </Text>
+                            <Text style={styles.incomeAmount}>${GameState.numWithCommas(item.amount)}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
             </View>
         </View>
     )
@@ -26,6 +51,23 @@ const Stats = (props) => {
 
 const Assets = (props) => {
     const player = GameState.players[GameState.currentPlayer];
+    /* tab navigator
+        - property
+            - developed land
+            - undeveloped land
+            - coins
+            - cd
+        - stocks
+            - mutuals
+            - preferred
+            - stock
+        - businesses
+            - company
+            - limited partnership
+            - automated business
+
+
+    */
 
     return (
         <View style={styles.tabContainer}>
@@ -57,7 +99,7 @@ const Liabilities = (props) => {
                     >
                     <View style={styles.liabilitiesRow}>
                         <Text style={styles.liabilitiesName}>{item.type}:</Text>
-                        <Text style={styles.liabilitiesCost}>${item.cost}</Text>
+                        <Text style={styles.liabilitiesCost}>${GameState.numWithCommas(item.cost)}</Text>
                     </View>
                 </TouchableOpacity>
             )}
@@ -119,12 +161,14 @@ const styles = StyleSheet.create({
     statementContainer: {
         backgroundColor: "#ffffff",
         justifyContent: 'center',
+        alignContent: 'center',
         flexDirection: 'row',
-        flex: 1,
-        height: 0,
+        flex: 3,
+        
         maxWidth: Dimensions.get('window').width,
         width: '100%',
         marginTop: 30,
+        borderRadius: 15,
     },
     statementHeader: {
         backgroundColor: '#f2f1f7',
@@ -139,6 +183,44 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         
     },
+
+    // summary table
+    summaryRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 3,
+        //borderBottomColor: '#ffffff',
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
+    },
+    summaryText: {
+        textTransform: 'capitalize',
+        fontSize: 16,
+    },
+    
+    // income table
+    incomeRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 3,
+        //borderBottomColor: '#ffffff',
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
+    },
+    incomeName: {
+        textTransform: 'capitalize',
+        fontSize: 16,
+    },
+    incomeAmount: {
+        fontSize: 16,
+    },
+    // assets
+
+    // liabilities table
     liabilitiesRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',

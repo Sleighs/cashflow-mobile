@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         marginVertical: 5,
+        flex: 2,
 
     },
     board1row1:{

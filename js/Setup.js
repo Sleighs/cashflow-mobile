@@ -56,6 +56,12 @@ Setup.newPlayer = function(playerScenario) {
     this.loanApproval = true;
     this.mortgagePrepay = false;
 
+    this.income = [
+        {
+            type: playerScenario[0] + 'Salary',
+            amount: playerScenario[1]
+        }
+    ]
     this.liabilities = [
         {
             type: 'mortgage',

@@ -194,11 +194,13 @@ const Card = (props) => {
 
 const styles = StyleSheet.create({
     cardContainer: {
-        backgroundColor: "#edf5f6",
-        height: 300,
+        alignContent: 'center',
+        backgroundColor: "#ffffff",
+        //flex: 3,
         width: '100%',
-        justifyContent: 'space-even',
         marginVertical: 5,
+        borderBottomEndRadius: 15,
+        borderBottomStartRadius: 15,
         
     },
     cardTitle: {
