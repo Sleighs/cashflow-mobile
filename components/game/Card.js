@@ -1,4 +1,3 @@
-import { QueuePlayNextRounded } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react'
 import { View, Text, Pressable, StyleSheet, Dimensions } from 'react-native'
 import BoardSpaces from '../../js/BoardSpaces';
@@ -8,9 +7,6 @@ import RollButton from './RollButton';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const endPhase = () => {
-    GameState.turnPhase = 'end';
-}
 
 const RollPhase = (props) => {
     const { turnPhase, setTurnPhase } = props;
@@ -50,10 +46,10 @@ const RollPhase = (props) => {
 }
 
 const MidPhase = (props) => {
-    const { cardType, cardInfo } = props;
+    const { cardType, cardInfo, setCardInfo, turnPhase, setTurnPhase, } = props;
 
     const player = GameState.players[GameState.currentPlayer];
-    const [ep, setEp] = useState(false);
+
     const [title, setTitle] = useState('');
     const [description1, setDescription1] = useState('');
     const [description2, setDescription2] = useState('');
@@ -61,7 +57,7 @@ const MidPhase = (props) => {
     const [cost, setCost] = useState('');
 
     useEffect(() => {
-        setEp(false);
+        setCardInfo(GameState.midPhaseInfo );
         setTitle(cardInfo.title)
         setDescription1(cardInfo.description1)
         setDescription2(cardInfo.description2)
@@ -94,10 +90,16 @@ const MidPhase = (props) => {
                 <Text style={styles.diceAmount}>Dice: {!GameState.diceAmount ? '': GameState.diceAmount}</Text>
                 {cardType === 'OPPORTUNITY' ? (
                     <View style={styles.oppBtnContainer}>
-                        <Pressable style={styles.oppBtn}>
+                        <Pressable style={styles.oppBtn}
+                            onPress={() =>{
+                                console.log('small opp clicked')
+                            }}>
                             <Text>SMALL</Text>
                         </Pressable>
-                        <Pressable style={styles.oppBtn}>
+                        <Pressable style={styles.oppBtn}
+                            onPress={() =>{
+                                console.log('big opp clicked')
+                            }}>
                             <Text>BIG</Text>
                         </Pressable>
                     </View>
@@ -107,7 +109,7 @@ const MidPhase = (props) => {
                     <View>
                         <Pressable style={styles.payBtn}
                             onPress={() =>{
-
+                                console.log('doodad clicked')
                             }}>
                             <Text>PAY</Text>
                         </Pressable>
@@ -117,17 +119,17 @@ const MidPhase = (props) => {
                     <View>
                         <Pressable style={styles.donateBtn}
                             onPress={() =>{
-
+                                console.log('donate clicked')
                             }}>
                             <Text>DONATE</Text>
                         </Pressable>
                     </View>
                 ) : (<View></View>)}
-                {cardType === ('CHILD' || 'PAYDAY') ? (
+                {(cardType === 'CHILD') || (cardType === 'PAYDAY') ? (
                     <View>
-                        <Pressable style={styles.donateBtn}
+                        <Pressable style={styles.continueBtn}
                             onPress={() =>{
-                                
+                                setTurnPhase('end');
                             }}>
                             <Text>CONTINUE</Text>
                         </Pressable>
@@ -135,7 +137,7 @@ const MidPhase = (props) => {
                 ) : (<View></View>)}
                 {cardType === 'DOWNSIZE' ? (
                     <View>
-                        <Pressable style={styles.donateBtn}
+                        <Pressable style={styles.downsizeBtn}
                             onPress={() =>{
                                 
                             }}>
@@ -144,17 +146,33 @@ const MidPhase = (props) => {
                     </View>
                 ) : (<View></View>)}
                 
+                <Pressable style={styles.continueBtn}
+                    onPress={() =>{
+                        GameState.turnPhase = 'end';
+                        setTurnPhase('end');
+                        
+                    }}>
+                    <Text>CONTINUE</Text>
+                </Pressable>
             </View>
         </View>
     )
 }
 
 const EndPhase = (props) => {
+    const { setTurnPhase } = props;
+
     return(
-        <View style={styles.container}>
-            <Text>FINISH YOUR TURN</Text>
-            <Text>Before you end your turn, review your financial statement. You may also use this time to review your deals.</Text>
-            <View>
+        <View style={styles.cardContainer}>
+            <View style={styles.textContainer}>
+                <Text style={styles.cardTitle}>FINISH YOUR TURN</Text>
+                <Text style={styles.cardDescription}>Before you end your turn, review your financial statement. You may also use this time to review your deals.</Text>
+            </View>
+            <View style={{
+                paddingHorizontal: 25,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+            }}>
                 <Pressable style={styles.repayBtn}>
                     <Text>Repay</Text>
                 </Pressable>
@@ -164,8 +182,13 @@ const EndPhase = (props) => {
                 
             </View>
             <View style={styles.btnContainer}>
+
                 <Text style={styles.diceAmount}>Dice: {!GameState.diceAmount ? '': GameState.diceAmount}</Text>
-                <Pressable style={styles.borrowBtn}>
+                <Pressable style={styles.endBtn} 
+                    onPress={()=>{
+                        GameState.nextTurn();
+                        setTurnPhase('roll')
+                    }}>
                     <Text>END TURN</Text>
                 </Pressable>
             </View>
@@ -175,18 +198,21 @@ const EndPhase = (props) => {
 
 const Card = (props) => {
     const player = GameState.players[GameState.currentPlayer];
-    const [turnPhase, setTurnPhase] = useState(GameState.turnPhase);
+    const { turnPhase, setTurnPhase, setCardInfo } = props;
 
-    if (GameState.turnPhase){
-        //setTurnPhase(GameState.turnPhase);
-    }
-
+    useEffect(()=>{
+        if (GameState.turnPhase === 'middle'){
+            //setTurnPhase(GameState.turnPhase);
+            setCardInfo(GameState.midPhaseInfo );
+        }
+    })
+    
     return(
         <View style={styles.cardContainer}>
             {GameState.paymentCalc.open ? <PaymentCalc {...props} /> :
-                GameState.turnPhase === 'roll' ? <RollPhase {...props} turnPhase={turnPhase} setTurnPhase={setTurnPhase} /> : 
-                    GameState.turnPhase === 'middle' ? <MidPhase {...props} turnPhase={turnPhase} setTurnPhase={setTurnPhase} /> :
-                        <EndPhase {...props} turnPhase={turnPhase} setTurnPhase={setTurnPhase} />
+                GameState.turnPhase === 'roll' ? <RollPhase {...props} /> : 
+                    GameState.turnPhase === 'middle' ? <MidPhase {...props} /> :
+                        <EndPhase {...props} />
             }
         </View>    
     )
@@ -196,8 +222,9 @@ const styles = StyleSheet.create({
     cardContainer: {
         alignContent: 'center',
         backgroundColor: "#ffffff",
-        //flex: 3,
+        flex: 3,
         width: '100%',
+        //height: '33%',
         marginVertical: 5,
         borderBottomEndRadius: 15,
         borderBottomStartRadius: 15,
@@ -206,12 +233,16 @@ const styles = StyleSheet.create({
     cardTitle: {
         textTransform: 'capitalize',
         fontSize: 28,
-        fontWeight: '500',
+        fontWeight: "500",
     },
     textContainer: {
         paddingHorizontal: 20,
         paddingVertical: 20,
-        height: 250,
+        margin: 10,
+        minHeight: 200,
+    },
+    cardDescription: {
+
     },
     diceAmount: {
         fontSize: 25,
@@ -264,6 +295,59 @@ const styles = StyleSheet.create({
         borderRadius: 22,
         elevation: 3,
         backgroundColor: 'white',
+    },
+    downsizeBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
+    }, 
+    continueBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
+    },
+    endBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        paddingHorizontal: 32,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
+        height: 40,
+        alignContent: 'center',
+    },
+    borrowBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        paddingHorizontal: 30,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
+        height: 40,
+        alignContent: 'center',
+    },
+    repayBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        paddingHorizontal: 30,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
+        height: 40,
+        alignContent: 'center',
     },
 })
 

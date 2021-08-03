@@ -1,5 +1,9 @@
 # Notes
 
+# palette
+- light olive - #dbddc3 (loading/splash screen)
+- light tan - #ebe9e3 (home screen)
+
 # Cashflow 2
 ## features for app
 - send money to other players
@@ -8,7 +12,8 @@
 - can buy ads for assets
     - purchase requests come in afterwards
     - allows players more options to sell assets. original game required waiting for offers to sell
-
+- new way to buy insurance on turn
+    - with doodad or offer
 
 # single player setup screen layout
 - player count select (for device hand off playing)

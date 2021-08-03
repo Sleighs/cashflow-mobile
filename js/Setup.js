@@ -55,29 +55,33 @@ Setup.newPlayer = function(playerScenario) {
 
     this.loanApproval = true;
     this.mortgagePrepay = false;
-
+    this.moved = false;
     this.income = [
         {
             type: playerScenario[0] + 'Salary',
             amount: playerScenario[1]
         }
     ]
-    this.liabilities = [
+    this.expenses = [
         {
             type: 'mortgage',
-            cost: playerScenario[9]
+            cost: playerScenario[9],
+            payment: playerScenario[4]
         },
         {
             type: 'car loan',
-            cost: playerScenario[10]
+            cost: playerScenario[10],
+            payment: playerScenario[5]
         },
         {
             type: 'credit debt',
-            cost: playerScenario[11]
+            cost: playerScenario[11],
+            payment: playerScenario[6]
         },
         {
             type: 'retail debt',
-            cost: playerScenario[12]
+            cost: playerScenario[12],
+            payment: playerScenario[7]
         }
     ]
 };

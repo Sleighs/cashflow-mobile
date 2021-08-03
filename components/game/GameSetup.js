@@ -19,9 +19,9 @@ export default function GameSetup({ navigation }) {
     const [gameId, setGameId] = useState(null);
     const [insurance, setInsurance] = useState(false);
     const getInsuranceBtnColor = (ins) => {
-        var bgColor = 'red';
+        var bgColor = '#fdd1d1'; //light red
         if (ins === true) {
-            bgColor = 'gold'
+            bgColor = '#fdf2c7' //light gold
         }
         return bgColor;
     }
@@ -49,12 +49,15 @@ export default function GameSetup({ navigation }) {
         }
 
         newPlayer.cash += newPlayer.startingSalary;
+        newPlayer.key = GameState.currentPlayer;
 
         // Save player object to state
         setPlayerObj(newPlayer);
 
-        // Clear players array
-        GameState.players = [];
+        // Clear players array 
+        if (GameState.currentPlayer === 0){
+            GameState.players = [];
+        }
 
         // Clear players from board
         for (var i = 0; i < BoardSpaces.length; i++){
@@ -66,7 +69,6 @@ export default function GameSetup({ navigation }) {
 
         // Set game id
         var newGameId = KeyGen.getRandomID(18);
-        //setGameId(newGameId);
         GameState.gameId = newGameId;
 
         // Turn on dream phase 
@@ -97,14 +99,8 @@ export default function GameSetup({ navigation }) {
             });
         })*/
 
-        
+        GameState.updateStatement(GameState.currentPlayer);
     }
-
-    useEffect(() => {
-        var newGameId = KeyGen.getRandomID(18);
-
-        //setGameId(newGameId);
-    })
 
     return (
         <View style={styles.container}>
@@ -143,7 +139,6 @@ export default function GameSetup({ navigation }) {
                         }
                     }}
                     style={[styles.insuranceBtn, {backgroundColor: getInsuranceBtnColor(insurance)}]}
-                    
                 >
                     <Text>Insurance</Text>
                 </Pressable>
@@ -177,6 +172,7 @@ export default function GameSetup({ navigation }) {
                     <View style={{
                         backgroundColor: "white",
                         padding: 10,
+                        
                     }}>
                         <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
                         <Text>JobTitle: {playerObj.jobTitle}</Text>
@@ -216,6 +212,7 @@ const styles = StyleSheet.create({
     startGameText: {
         textAlign: 'center',
         color: 'black',
+        fontSize: 18,
         
     },
     continueGameBtn: {
@@ -231,6 +228,8 @@ const styles = StyleSheet.create({
     continueGameText: {
         textAlign: 'center',
         color: 'black',
+
+        fontSize: 18,
     },
 
     insuranceBtn: {

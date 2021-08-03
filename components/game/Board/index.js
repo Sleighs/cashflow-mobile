@@ -5,8 +5,7 @@ import GameState from '../../../js/GameState'
 import styles from "./style";
 
 const Board = (props) => {
-    const { selectedSpace, setSelectedSpace } = props;
-    const { currentSpace, setCurrentSpace } = props;
+    const { selectedSpace, setSelectedSpace, setCardInfo, currentSpace, setCurrentSpace } = props;
 
     const player = GameState.players[GameState.currentPlayer];
 

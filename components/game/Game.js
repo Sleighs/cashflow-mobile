@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Button, StyleSheet, Pressable, Dimensions } from 'react-native'
+import { View, Text, Button, StyleSheet, Pressable, Dimensions, SafeAreaView, StatusBar } from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import Card from './Card'
 import Board from './Board'
@@ -13,6 +14,7 @@ import DreamPhaseContainer from './DreamPhaseContainer'
 import store from '../../redux/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { getGameData, getUser } from '../../redux/reducers/rootReducer'
+
 
 const EventViewer = (props) => {
 
@@ -58,9 +60,6 @@ const EventViewer = (props) => {
 }
 
 const RatRacePhaseContainer = (props) => {
-    const { data, setData } = props;
-    const [selectedSpace, setSelectedSpace] = useState(null);
-
     return (
         <View style={styles.ratRacePhaseContainer}>
             <EventViewer {...props}/>
@@ -75,6 +74,7 @@ const RatRacePhaseContainer = (props) => {
 export default function Game(props) {
     const player = GameState.players[GameState.currentPlayer];
     const [gamePhase, setPhase] = useState(null)
+    const [turnPhase, setTurnPhase ] = useState(null)
     const [data, setData] = useState(null)
     const [paymentCalc, openPaymentCalc] = useState(false)
     const [selectedSpace, setSelectedSpace] = useState(null)
@@ -95,44 +95,61 @@ export default function Game(props) {
     
     if (GameState.gamePhase === "rat race") {    
         return (
-            <View style={styles.container}>
-                <RatRacePhaseContainer 
-                    playerObj={GameState.players[GameState.currentPlayer]}
-                    data={data}
-                    setData={setData}
-                    gamePhase={gamePhase} 
-                    setPhase={setPhase} 
-                    paymentCalc={paymentCalc}
-                    openPaymentCalc={openPaymentCalc}
-                    paymentCalcState={paymentCalcState} 
-                    setPaymentCalcState={setPaymentCalcState}
-                    selectedSpace={selectedSpace} 
-                    setSelectedSpace={setSelectedSpace}
-                    cardType={BoardSpaces[player.currentSpace - 1].field} 
-                    cardInfo={cardInfo} 
-                    setCardInfo={setCardInfo}
-                    currentSpace={currentSpace} 
-                    setCurrentSpace={setCurrentSpace}
-                    
-                    rolled={rolled}
-                    setRolled={setRolled}
-                />
-            </View>
+            <SafeAreaView style={{
+                flex: 1,
+                paddingTop: StatusBar.currentHeight,
+                paddingBottom: 55,
+            }}>
+                <View style={styles.container}>
+                    <RatRacePhaseContainer 
+                        playerObj={GameState.players[GameState.currentPlayer]}
+                        data={data}
+                        setData={setData}
+                        gamePhase={gamePhase} 
+                        setPhase={setPhase} 
+                        paymentCalc={paymentCalc}
+                        openPaymentCalc={openPaymentCalc}
+                        paymentCalcState={paymentCalcState} 
+                        setPaymentCalcState={setPaymentCalcState}
+                        selectedSpace={selectedSpace} 
+                        setSelectedSpace={setSelectedSpace}
+                        cardType={BoardSpaces[player.currentSpace - 1].field} 
+                        cardInfo={cardInfo} 
+                        setCardInfo={setCardInfo}
+                        currentSpace={currentSpace} 
+                        setCurrentSpace={setCurrentSpace}
+                        turnPhase={turnPhase}
+                        setTurnPhase={setTurnPhase}
+                        rolled={rolled}
+                        setRolled={setRolled}
+                    />
+                </View>
+            </SafeAreaView>
         )
     } else if (GameState.gamePhase === "fast track") {
         return (
-            <View style={styles.container}>
-                <Text>Fast Track</Text>
-            </View>
+            <SafeAreaView style={{
+                flex: 1,
+                paddingTop: StatusBar.currentHeight,
+            }}>
+                <View style={styles.container}>
+                    <Text>Fast Track</Text>
+                </View>
+            </SafeAreaView>
         )
     } else if (GameState.gamePhase === 'dream selection') {
         return (     
-            <View style={styles.container}>
-                <DreamPhaseContainer 
-                    setPhase={setPhase} 
-                    playerObj={GameState.players[GameState.currentPlayer]}
-                />
-            </View>
+            <SafeAreaView style={{
+                flex: 1,
+                paddingTop: StatusBar.currentHeight,
+            }}>
+                <View style={styles.container}>
+                    <DreamPhaseContainer 
+                        setPhase={setPhase} 
+                        playerObj={GameState.players[GameState.currentPlayer]}
+                    />
+                </View>
+            </SafeAreaView>
         )
     }
 }
@@ -146,6 +163,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         alignContent: 'center',
+        paddingBottom: 55
     },
     title: {
         textAlign: 'center',

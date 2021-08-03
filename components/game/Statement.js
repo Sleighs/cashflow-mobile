@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Pressable, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, Pressable, StyleSheet, Dimensions, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import { connect, useStore, useSelector, useDispatch } from 'react-redux';
@@ -8,44 +8,53 @@ import GameState from '../../js/GameState';
 import store from '../../redux/store';
 import { getGameData, getPayCalc } from '../../redux/reducers/rootReducer';
 
-const Stats = (props) => {
+const Summary = (props) => {
     const player = GameState.players[GameState.currentPlayer];
+    
 
     return (
-        <View style={styles.tabContainer}>
-            <View>
+        <ScrollView style={{
+            //flex: 3,
+            height: 250,
+        }}>
+            <View style={styles.tabContainer}>
                 <View>
-                    <Text style={{fontSize: 20}}>Summary</Text>
+                    <View style={styles.tableTile}>
+                        <Text style={{fontSize: 20}}>Summary</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={[styles.summaryText, {color: 'darkgreen'}]}>Cash</Text>
+                        <Text> ${GameState.numWithCommas(player.cash)}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Total Income</Text> 
+                        <Text>${GameState.numWithCommas(GameState.totalIncome(player.key))}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Total Expenses</Text> 
+                        <Text>${GameState.numWithCommas(GameState.totalExpenses(player.key))}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Payday</Text> 
+                        <Text>${GameState.numWithCommas(player.payday)}</Text>
+                    </View>
+                               
                 </View>
-                <View style={styles.summaryRow}>
-                    <Text style={[styles.summaryText, {color: 'darkgreen'}]}>Cash:</Text>
-                    <Text> ${GameState.numWithCommas(player.cash)}</Text>
-                </View>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryText}>Insurance:</Text> 
-                    <Text>{!player.hasInsurance ? 'None' : 'Insured'}</Text>
-                </View>            
-            </View>
-            <View>
                 <View>
-                    <Text style={{fontSize: 20}}>Income:</Text>
-                </View>
-                {player.income.map(item => 
-                    <TouchableOpacity
-                        key={item.type}
-                        name={item.type}
-                        onPress={() => {
-
-                        }}
-                        >
-                        <View style={styles.incomeRow}>
-                            <Text style={styles.incomeName}>{item.type}: </Text>
+                    <View style={styles.tableTile}>
+                        <Text style={{fontSize: 20}}>Income</Text>
+                    </View>
+                    {player.income.map(item => 
+                        <View key={item.type} style={styles.incomeRow}>
+                            <Text style={styles.incomeName}>{item.type} </Text>
                             <Text style={styles.incomeAmount}>${GameState.numWithCommas(item.amount)}</Text>
                         </View>
-                    </TouchableOpacity>
-                )}
+                    )}
+                </View>
+                <Expenses {...props}/>
+
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -70,21 +79,57 @@ const Assets = (props) => {
     */
 
     return (
-        <View style={styles.tabContainer}>
-            <Text>Assets</Text>
-        </View>
+        <ScrollView style={{
+            //flex: 3,
+            height: 250,
+        }}>
+            <View style={styles.tabContainer}>
+                <Text>Assets</Text>
+            </View>
+        </ScrollView>
     )
 }
 
-const Liabilities = (props) => {
+const Expenses = (props) => {
     const { paymentCalc, openPaymentCalc } = props;
     const player = GameState.players[GameState.currentPlayer];
     const dispatch = useDispatch()
     const stuff = useSelector(state => state.paymentCalc)
 
     return (
-        <View style={styles.tabContainer}>
-            {player.liabilities.map(item => 
+        <View style={styles.expensesContainer}>
+            <View style={styles.tableTile}>
+                <Text style={{fontSize: 20}}>Expenses:</Text>
+            </View>
+            <View style={styles.expensesRow}>
+                <Text style={styles.expensesName}>Taxes</Text>
+                <Text style={styles.expensesCost}>${GameState.numWithCommas(player.taxes)}</Text>
+            </View>
+            {player.expenses.map(item => 
+                <View key={item.type} style={styles.expensesRow}>
+                    <Text style={styles.expensesName}>{item.type}</Text>
+                    <Text style={styles.expensesCost}>${GameState.numWithCommas(item.payment)}</Text>
+                </View>
+            )}
+            {player.children > 0? 
+                <View style={styles.expensesRow}>
+                    <Text style={styles.expensesName}>Children {'(' + String(player.children) + 'x)'}</Text>
+                    <Text style={styles.expensesCost}>${GameState.numWithCommas(player.childExpense)}</Text>
+                </View> 
+                : <View></View>
+            }
+            <View style={styles.summaryRow}>
+                        <Text style={styles.summaryText}>Insurance</Text> 
+                        <Text>${!player.hasInsurance ? '0' : GameState.numWithCommas(GameState.getInsuranceCost(GameState.currentPlayer))}</Text>
+                    </View> 
+            <View style={styles.expensesRow}>
+                <Text style={styles.expensesName}>Other Expenses</Text>
+                <Text style={styles.expensesCost}>${GameState.numWithCommas(player.otherExpenses)}</Text>
+            </View>
+            <View style={styles.tableTile}>
+                <Text style={{fontSize: 20}}>Loans:</Text>
+            </View>
+            {player.expenses.map(item => 
                 <TouchableOpacity
                     key={item.type}
                     name={item.type}
@@ -93,13 +138,12 @@ const Liabilities = (props) => {
                         GameState.paymentCalc.open = true;
                         GameState.paymentCalc.type = item.type;
                         dispatch(getPayCalc(true))
-                        console.log('stuff', stuff)
-
+                        //console.log('stuff', stuff)
                     }}
                     >
-                    <View style={styles.liabilitiesRow}>
-                        <Text style={styles.liabilitiesName}>{item.type}:</Text>
-                        <Text style={styles.liabilitiesCost}>${GameState.numWithCommas(item.cost)}</Text>
+                    <View style={styles.expensesRow}>
+                        <Text style={styles.expensesName}>{item.type}:</Text>
+                        <Text style={styles.expensesCost}>${GameState.numWithCommas(item.cost)}</Text>
                     </View>
                 </TouchableOpacity>
             )}
@@ -112,34 +156,27 @@ const StatementTab = createMaterialTopTabNavigator();
 function StatementTabs(props) {
   return (
     <StatementTab.Navigator
-        initialRouteName="Stats"
+        initialRouteName="Summary"
         initialLayout={{ 
             width: '100%', 
         }}
     >
         <StatementTab.Screen 
-            name="Stats"  
-            children={() => <Stats {...props} />}
+            name="Summary"  
+            children={() => <Summary {...props} />}
         />
         <StatementTab.Screen 
             name="Assets" 
             children={() => <Assets {...props} />}
          />
-        <StatementTab.Screen 
-            name="Liabilities" 
-            children={() => <Liabilities {...props} />}
-        />
     </StatementTab.Navigator>
   );
 }
 
 const Statement = (props) => {
     const { data, setData } = props;
-
     const [loaded, setLoaded] = useState(false)
-
     const player = GameState.players[GameState.currentPlayer];
-    
     const dispatch = useDispatch();
     
     if (!loaded){
@@ -149,11 +186,10 @@ const Statement = (props) => {
         //setData(GameState)
     }
 
-
     return(
         <View style={styles.statementContainer}>            
             <StatementTabs {...props}/>
-        </View>    
+        </View>   
     )
 }
 
@@ -164,10 +200,8 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         flexDirection: 'row',
         flex: 3,
-        
         maxWidth: Dimensions.get('window').width,
         width: '100%',
-        marginTop: 30,
         borderRadius: 15,
     },
     statementHeader: {
@@ -183,7 +217,10 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         
     },
-
+    tableTile: {
+        marginVertical: 5,
+        
+    },
     // summary table
     summaryRow: {
         flexDirection: 'row',
@@ -220,7 +257,26 @@ const styles = StyleSheet.create({
     },
     // assets
 
-    // liabilities table
+    // expenses table
+    expensesContainer: {
+        marginVertical: 5,
+    },
+    expensesRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 3,
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
+    },
+    expensesName: {
+        textTransform: 'capitalize',
+        fontSize: 16,
+    },
+    expensesCost: {
+        fontSize: 16,
+    },
     liabilitiesRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',

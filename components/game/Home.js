@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     singlePlayerText: {
         fontSize: 18,
         lineHeight: 21,
-        fontWeight: 'bold',
+        fontWeight: "500",
         letterSpacing: 0.25,
         color: 'black',
     },
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     optionsText: {
         fontSize: 18,
         lineHeight: 21,
-        fontWeight: 'bold',
+        fontWeight: '500',
         letterSpacing: 0.25,
         color: 'black',
     },

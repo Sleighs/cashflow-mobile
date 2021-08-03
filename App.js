@@ -70,9 +70,19 @@ export default function App() {
 
   if (!loaded){
     return(
-      <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'gray', textAlign: 'center', 
-      alignItems: 'center' }}>
-        <Text style={{ fontSize: 40, color: 'white' }}>Loading</Text>
+      <View style={{ 
+        flex: 1,
+        justifyContent: 'center', 
+        backgroundColor: '#dbddc3', 
+        textAlign: 'center', 
+        alignItems: 'center' 
+      }}>
+        <Text style={{ 
+          fontSize: 30, 
+          color: 'gray' 
+        }}>
+          Loading...
+        </Text>
       </View>
     );
   }

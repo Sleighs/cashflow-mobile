@@ -58,8 +58,6 @@ GameState.movePlayer = (moveType) => {
         player.cash += player.payday;
     }
 
-    
-
     // Remove player from old space
     const index = BoardSpaces[player.currentSpace - 1].players.indexOf(player.name);
     
@@ -259,4 +257,89 @@ GameState.numWithCommas = (num) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+GameState.getInsuranceCost = (currentPlayer) => {
+    const player = GameState.players[currentPlayer]
+    var childTax = 0;
+    var insuranceCost = 0;
+
+    if (!player.hasInsurance){
+        return insuranceCost
+    } else {
+        if (player.children > 0) {
+            childTax = player.chldren * .01
+        }
+    
+        insuranceCost = player.payday * (.08 + childTax)
+
+        return Math.floor(insuranceCost)
+    }
+}
+
+GameState.totalExpenses = (currentPlayer) => {
+    const player = GameState.players[currentPlayer];
+
+    return (
+        player.mortgagePayment + 
+        player.creditCardPayment + 
+        player.retailPayment + 
+        player.otherExpenses + 
+        player.childExpense + 
+        player.loanPayment + 
+        player.boatPayment + 
+        GameState.getInsuranceCost(currentPlayer))
+}
+
+GameState.totalIncome = (currentPlayer) => {
+    const player = GameState.players[currentPlayer];
+
+    return player.startingSalary
+}
+
+GameState.updateStatement = (currentPlayer) => {
+    const player = GameState.players[currentPlayer];
+
+    /*
+    calculate total income
+         asset income
+         salary
+        
+
+    calculate total expenses
+        loans
+        children
+        insurance
+        taxes
+
+    
+    total income
+    */
+
+    player.payday = GameState.totalIncome(currentPlayer) - GameState.totalExpenses(currentPlayer)
+
+
+}
+
+GameState.nextTurn =() => {
+    var moved = 0;
+
+    for (var i = 0; i < GameState.players.length; i++){
+        if (GameState.players[i].moved === true){
+            moved++
+        }
+    }
+
+    if (moved === GameState.players.length) {
+        GameState.turnCount += GameState.turnCount + 1;
+        GameState.turnPhase = 'roll';
+        GameState.currentPlayer = 0;
+
+        for (var j = 0; j < GameState.players.length; j++){
+            if (GameState.players[j].moved === true){
+                GameState.players[j].moved = false;
+            }
+        }
+    }
+
+    
+}
 export default GameState

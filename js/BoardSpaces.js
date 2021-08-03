@@ -33,7 +33,7 @@ var BoardSpaces= [
     },
     {
         key: 6,
-        field: 'PAYCHECK',
+        field: 'PAYDAY',
         style: styles.paycheckSpace,
         players: [],
     },
@@ -81,7 +81,7 @@ var BoardSpaces= [
     },
     {
         key: 14,
-        field: 'PAYCHECK',
+        field: 'PAYDAY',
         style: styles.paycheckSpace,
         players: [],
     },
@@ -129,7 +129,7 @@ var BoardSpaces= [
     },
     {
         key: 22,
-        field: 'PAYCHECK',
+        field: 'PAYDAY',
         style: styles.paycheckSpace,
         players: [],
     },

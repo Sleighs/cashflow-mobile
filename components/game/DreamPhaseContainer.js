@@ -108,9 +108,9 @@ const DreamPhaseContainer = ({ setPhase, playerObj }) => {
             </Pressable>
             <View style={styles.startingStats}>
                 <Text style={styles.startingStatsText}>{getJobText(playerObj.jobTitle)}</Text>
-                <Text style={styles.startingStatsText}>Your starting salary is ${playerObj.startingSalary}.</Text>
-                <Text style={styles.startingStatsText}>You have ${playerObj.startingSavings} in your savings.</Text>
-                <Text style={styles.startingStatsText}>That means your starting cash is ${playerObj.startingSavings}.</Text>
+                <Text style={styles.startingStatsText}>Your starting salary is ${GameState.numWithCommas(playerObj.startingSalary)}.</Text>
+                <Text style={styles.startingStatsText}>You have ${GameState.numWithCommas(playerObj.startingSavings)} in your savings.</Text>
+                <Text style={styles.startingStatsText}>That means your starting cash is ${GameState.numWithCommas(playerObj.startingSavings)}.</Text>
             </View>
         </View>
     )
@@ -121,17 +121,18 @@ const styles = StyleSheet.create({
     dreamSelectionContainer: {
         backgroundColor: 'white',
         alignContent: 'center',
-        width: '95%',
-        height: '95%',
+        width: '92%',
+        height: '92%',
         paddingHorizontal: 30,
-        paddingVertical: 75,
+        paddingVertical: 40,
         borderRadius: 15,
-        marginTop: 20,
+        marginTop: 50,
 
         
     },
     dreamSelectionTop:{
         height: 275,
+        marginBottom: 20,
     },
     dreamSelTitle: {
         fontSize: 26,
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 24,
         height: 60,
-        fontWeight: 500,
+        fontWeight: "500",
     },
     dreamSelDes: {
         color: 'black',
@@ -160,9 +161,9 @@ const styles = StyleSheet.create({
         
     },
     dreamSelBtns: {
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 15,
+        borderRadius: 20,
         elevation: 3,
         backgroundColor: 'gold',
         width: '35%',
@@ -170,11 +171,10 @@ const styles = StyleSheet.create({
     dreamSelText: {
         textAlign: 'center',
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: "500",
         letterSpacing: 0.25,
         color: 'white',
     },
-    
     dreamSelBtnLeft: {
 
     },
@@ -184,9 +184,9 @@ const styles = StyleSheet.create({
     dreamSetBtn: { 
         justifyContent: 'center',
         flexDirection: 'row',
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: 12,
-        borderRadius: 15,
+        borderRadius: 20,
         elevation: 3,
         backgroundColor: '#a997a9',
         marginTop: 25,
@@ -198,10 +198,9 @@ const styles = StyleSheet.create({
     startingStats: {
         justifyContent: 'center',
         marginTop: 20,
-        
     },
     startingStatsText: {
-        fontSize: 22,
+        fontSize: 20,
     },
 
 })

@@ -29,12 +29,13 @@ import ProfileScreen from './main/Profile'
 import DebugScreen from './main/Debug'
 import DrawerHeader from './game/DrawerHeader'
 
-const Drawer = createDrawerNavigator();
 const HomeStack = createStackNavigator();
 
 function HomeStackScreen(props) {
   return (
-    <HomeStack.Navigator initialRouteName={Screens[0].name}>
+    <HomeStack.Navigator 
+        initialRouteName={Screens[0].name}
+    >
       {
         Screens.map(screen => 
             <HomeStack.Screen
@@ -54,15 +55,6 @@ function HomeStackScreen(props) {
     </HomeStack.Navigator>
   );
 }
-
-function CustomDrawerContent(props) {
-    return (
-      <DrawerContentScrollView {...props}>
-        <DrawerItemList {...props} />
-        <DrawerItem label="Help" onPress={() => alert('Link to help')} />
-      </DrawerContentScrollView>
-    );
-  }
 
 const Screens = [
     {
@@ -84,40 +76,6 @@ const Screens = [
         component: GameSetupScreen
     },
 ]
-
-function DrawerNav(){
-    return(
-        <Drawer.Navigator 
-          drawerType="permanent"
-          initialRouteName="Home"
-          swipeEnabled="true"
-          drawerContentOptions={{
-            activeTintColor: '#e91e63',
-            itemStyle: { marginVertical: 10 },
-          }}
-          drawerContent={(props) => <CustomDrawerContent {...props} />}
-        >
-          {
-            Screens.map(drawer => 
-                <Drawer.Screen
-                    key={drawer.name}
-                    name={drawer.name}
-                    component={drawer.component}
-                    options={{
-                        headerShown: true,
-                        header: () => <DrawerHeader screen={drawer.name}/> ,
-                        drawerIcon:({focused})=>
-                            <MaterialCommunityIcons 
-                                name={'face-profile'}
-                                size={24} 
-                                color={"black"} 
-                            />,
-                    }}
-                />)
-            }
-        </Drawer.Navigator>
-    )
-}
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -152,7 +110,15 @@ const Main = () => {
     })
 
     return (
-        <Tab.Navigator initialRouteName="Home" labeled={false}>
+        <Tab.Navigator 
+            initialRouteName="Home" 
+            labeled={false}
+            screenOptions={{
+                tabBarStyle: { 
+                    backgroundColor: 'gray', 
+                },
+              }}
+        >
             <Tab.Screen 
                 name="Home"
                 component={HomeStackScreen}
@@ -183,13 +149,5 @@ const Main = () => {
         </Tab.Navigator>
     )
 }
-/*
-const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
-    currentGameData: store.gameDataState.currentGameData
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({fetchUser, fetchGameData}, dispatch)
 
-export default connect(mapStateToProps, mapDispatchProps)(Main)
-*/
 export default Main
