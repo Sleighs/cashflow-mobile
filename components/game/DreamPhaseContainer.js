@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native'
 import GameState from '../../js/GameState'
 import DreamPhase from '../../js/DreamPhase'
 import BoardSpaces from '../../js/BoardSpaces'
+import Main from '../../js/Main'
 
 
 const DreamPhaseContainer = ({ setPhase, playerObj }) => {
@@ -100,17 +101,16 @@ const DreamPhaseContainer = ({ setPhase, playerObj }) => {
                     }
 
                     // End turn
-                    GameState.endTurn();
-            
+                    Main.endTurn();
                 }}
             >
                 <Text style={styles.dreamSetText}>Select Dream</Text>
             </Pressable>
             <View style={styles.startingStats}>
                 <Text style={styles.startingStatsText}>{getJobText(playerObj.jobTitle)}</Text>
-                <Text style={styles.startingStatsText}>Your starting salary is ${GameState.numWithCommas(playerObj.startingSalary)}.</Text>
-                <Text style={styles.startingStatsText}>You have ${GameState.numWithCommas(playerObj.startingSavings)} in your savings.</Text>
-                <Text style={styles.startingStatsText}>That means your starting cash is ${GameState.numWithCommas(playerObj.startingSavings)}.</Text>
+                <Text style={styles.startingStatsText}>Your starting salary is ${Main.numWithCommas(playerObj.startingSalary)}.</Text>
+                <Text style={styles.startingStatsText}>You have ${Main.numWithCommas(playerObj.startingSavings)} in your savings.</Text>
+                <Text style={styles.startingStatsText}>That means your starting cash is ${Main.numWithCommas(playerObj.startingSavings)}.</Text>
             </View>
         </View>
     )
@@ -122,11 +122,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignContent: 'center',
         width: '92%',
-        height: '92%',
+        maxHeight: '85%',
         paddingHorizontal: 30,
-        paddingVertical: 40,
+        paddingVertical: 30,
         borderRadius: 15,
-        marginTop: 50,
+        flex: 12,
+        marginBottom: 65,
 
         
     },

@@ -11,6 +11,7 @@ import GameState from '../../js/GameState';
 import firebase from 'firebase'
 import BoardSpaces from '../../js/BoardSpaces';
 import store from '../../redux/store';
+import Calc from '../../js/Calc';
 
 export default function GameSetup({ navigation }) {
     const [setupData, setSetupData] = useState(null);
@@ -99,7 +100,8 @@ export default function GameSetup({ navigation }) {
             });
         })*/
 
-        GameState.updateStatement(GameState.currentPlayer);
+        // Update financial statement for first time
+        Calc.updateStatement(GameState.currentPlayer);
     }
 
     return (

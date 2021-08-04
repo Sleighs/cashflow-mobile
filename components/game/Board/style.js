@@ -6,19 +6,17 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         marginVertical: 5,
-        flex: 2,
+        flex: 1,
 
     },
     board1row1:{
         flexDirection:'row',
         flexWrap:'wrap',
-        height: 30,
         flex: 1,
     },
     board1row2:{
         flexDirection:'row-reverse', 
         flexWrap:'wrap',
-        height: 30,
         flex: 1,
     },
     boardSpace: {

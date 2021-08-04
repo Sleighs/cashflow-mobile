@@ -14,6 +14,10 @@
     - allows players more options to sell assets. original game required waiting for offers to sell
 - new way to buy insurance on turn
     - with doodad or offer
+- new board
+    - time
+    - in between cards time passes
+
 
 # single player setup screen layout
 - player count select (for device hand off playing)
@@ -31,7 +35,8 @@
 # todo
 - local storage
     https://reactnative.dev/docs/asyncstorage
-    
+- loans
+- payment calc
     
     
     
@@ -42,3 +47,6 @@
     board
     card - middle 
     full statement will swipe in from right side
+
+
+#

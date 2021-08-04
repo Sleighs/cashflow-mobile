@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, Pressable, StyleSheet } from 'react-native'
 import GameState from '../../js/GameState';
+import Main from '../../js/Main';
 
 const RollButton = (props) => {
     const { type, rolled, setRolled, turnPhase, setTurnPhase, cardInfo, setCardInfo} = props;
@@ -11,7 +12,7 @@ const RollButton = (props) => {
                 <Pressable
                     style={styles.btn}
                     onPress={()=>{
-                        GameState.movePlayer(type)
+                        Main.movePlayer(type)
                         setRolled(true)
                         setTurnPhase('middle')
                         setCardInfo(GameState.midPhaseInfo)

@@ -3,51 +3,51 @@ import { View, Text, Pressable, StyleSheet, Dimensions, TouchableOpacity, Scroll
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import { connect, useStore, useSelector, useDispatch } from 'react-redux';
-
-import GameState from '../../js/GameState';
 import store from '../../redux/store';
 import { getGameData, getPayCalc } from '../../redux/reducers/rootReducer';
 
+import GameState from '../../js/GameState';
+import Calc from '../../js/Calc';
+import Main from '../../js/Main';
+
 const Summary = (props) => {
     const player = GameState.players[GameState.currentPlayer];
-    
 
     return (
         <ScrollView style={{
-            //flex: 3,
             height: 250,
         }}>
             <View style={styles.tabContainer}>
                 <View>
-                    <View style={styles.tableTile}>
-                        <Text style={{fontSize: 20}}>Summary</Text>
+                    <View style={styles.summaryTableTitleContainer}>
+                        <Text style={styles.tableTitle}>Summary</Text>
                     </View>
                     <View style={styles.summaryRow}>
                         <Text style={[styles.summaryText, {color: 'darkgreen'}]}>Cash</Text>
-                        <Text> ${GameState.numWithCommas(player.cash)}</Text>
+                        <Text> ${Main.numWithCommas(player.cash)}</Text>
                     </View>
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryText}>Total Income</Text> 
-                        <Text>${GameState.numWithCommas(GameState.totalIncome(player.key))}</Text>
+                        <Text>${Main.numWithCommas(Calc.totalIncome(player.key))}</Text>
                     </View>
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryText}>Total Expenses</Text> 
-                        <Text>${GameState.numWithCommas(GameState.totalExpenses(player.key))}</Text>
+                        <Text>${Main.numWithCommas(Calc.totalExpenses(player.key))}</Text>
                     </View>
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryText}>Payday</Text> 
-                        <Text>${GameState.numWithCommas(player.payday)}</Text>
+                        <Text>${Main.numWithCommas(player.payday)}</Text>
                     </View>
                                
                 </View>
                 <View>
-                    <View style={styles.tableTile}>
-                        <Text style={{fontSize: 20}}>Income</Text>
+                    <View style={styles.tableTitleContainer}>
+                        <Text style={styles.tableTitle}>Income</Text>
                     </View>
                     {player.income.map(item => 
                         <View key={item.type} style={styles.incomeRow}>
                             <Text style={styles.incomeName}>{item.type} </Text>
-                            <Text style={styles.incomeAmount}>${GameState.numWithCommas(item.amount)}</Text>
+                            <Text style={styles.incomeAmount}>${Main.numWithCommas(item.amount)}</Text>
                         </View>
                     )}
                 </View>
@@ -80,7 +80,6 @@ const Assets = (props) => {
 
     return (
         <ScrollView style={{
-            //flex: 3,
             height: 250,
         }}>
             <View style={styles.tabContainer}>
@@ -91,59 +90,71 @@ const Assets = (props) => {
 }
 
 const Expenses = (props) => {
-    const { paymentCalc, openPaymentCalc } = props;
+    const { 
+        paymentCalcState, 
+        setPaymentCalcState, 
+        payCalcType,
+        setPayCalcType 
+    } = props;
     const player = GameState.players[GameState.currentPlayer];
     const dispatch = useDispatch()
     const stuff = useSelector(state => state.paymentCalc)
 
     return (
         <View style={styles.expensesContainer}>
-            <View style={styles.tableTile}>
-                <Text style={{fontSize: 20}}>Expenses:</Text>
+            <View style={styles.tableTitleContainer}>
+                <Text style={styles.tableTitle}>Expenses</Text>
             </View>
             <View style={styles.expensesRow}>
                 <Text style={styles.expensesName}>Taxes</Text>
-                <Text style={styles.expensesCost}>${GameState.numWithCommas(player.taxes)}</Text>
+                <Text style={styles.expensesCost}>${Main.numWithCommas(player.taxes)}</Text>
             </View>
             {player.expenses.map(item => 
                 <View key={item.type} style={styles.expensesRow}>
                     <Text style={styles.expensesName}>{item.type}</Text>
-                    <Text style={styles.expensesCost}>${GameState.numWithCommas(item.payment)}</Text>
+                    <Text style={styles.expensesCost}>${Main.numWithCommas(item.payment)}</Text>
                 </View>
             )}
             {player.children > 0? 
                 <View style={styles.expensesRow}>
                     <Text style={styles.expensesName}>Children {'(' + String(player.children) + 'x)'}</Text>
-                    <Text style={styles.expensesCost}>${GameState.numWithCommas(player.childExpense)}</Text>
+                    <Text style={styles.expensesCost}>${Main.numWithCommas(player.childExpense)}</Text>
                 </View> 
                 : <View></View>
             }
             <View style={styles.summaryRow}>
                         <Text style={styles.summaryText}>Insurance</Text> 
-                        <Text>${!player.hasInsurance ? '0' : GameState.numWithCommas(GameState.getInsuranceCost(GameState.currentPlayer))}</Text>
+                        <Text>${!player.hasInsurance ? '0' : Main.numWithCommas(GameState.getInsuranceCost(GameState.currentPlayer))}</Text>
                     </View> 
             <View style={styles.expensesRow}>
                 <Text style={styles.expensesName}>Other Expenses</Text>
-                <Text style={styles.expensesCost}>${GameState.numWithCommas(player.otherExpenses)}</Text>
+                <Text style={styles.expensesCost}>${Main.numWithCommas(player.otherExpenses)}</Text>
             </View>
-            <View style={styles.tableTile}>
-                <Text style={{fontSize: 20}}>Loans:</Text>
+            <View style={styles.tableTitleContainer}>
+                <Text style={styles.tableTitle}>Loans</Text>
             </View>
             {player.expenses.map(item => 
                 <TouchableOpacity
                     key={item.type}
                     name={item.type}
                     onPress={() => {
-                        openPaymentCalc(true);
                         GameState.paymentCalc.open = true;
                         GameState.paymentCalc.type = item.type;
-                        dispatch(getPayCalc(true))
+                        
+                        dispatch(getPayCalc(item.type))
+
                         //console.log('stuff', stuff)
+
+                        if (GameState.paymentCalc.open === true){
+                            setPayCalcType(item.type)
+                        } else {
+                            setPaymentCalcState(true)
+                        }
                     }}
                     >
                     <View style={styles.expensesRow}>
                         <Text style={styles.expensesName}>{item.type}:</Text>
-                        <Text style={styles.expensesCost}>${GameState.numWithCommas(item.cost)}</Text>
+                        <Text style={styles.expensesCost}>${Main.numWithCommas(item.cost)}</Text>
                     </View>
                 </TouchableOpacity>
             )}
@@ -198,8 +209,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         justifyContent: 'center',
         alignContent: 'center',
-        flexDirection: 'row',
-        flex: 3,
+        //alignItems: 'center',
+        //flexDirection: 'row',
+        flex: 6,
         maxWidth: Dimensions.get('window').width,
         width: '100%',
         borderRadius: 15,
@@ -207,20 +219,30 @@ const styles = StyleSheet.create({
     statementHeader: {
         backgroundColor: '#f2f1f7',
         height: 25,
-        width: 100,
+        //width: 100,
         borderRadius: 12,
         fontSize: 16,
     },
     tabContainer: {
-        //maxWidth: Dimensions.get('window').width,
         paddingHorizontal: 15,
         paddingVertical: 10,
         
     },
-    tableTile: {
-        marginVertical: 5,
+    tableTitleContainer: {
+        marginBottom: 5,
+        marginTop: 10,
         
     },
+    summaryTableTitleContainer: {
+        marginBottom: 5,
+        marginTop: 5,
+        
+    },
+    tableTitle: {
+        fontSize: 18, 
+        color: '#616161',
+    },
+
     // summary table
     summaryRow: {
         flexDirection: 'row',

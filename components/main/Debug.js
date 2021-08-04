@@ -24,20 +24,21 @@ const GameStateInfo = (props) => {
 
 
 export default function Debug() {
-    var string = JSON.stringify(GameState)
-    var arr = []
+    const [string, setString] = useState(JSON.stringify(GameState))
+    const [arr, setArr] = useState(null)
 
-    const [refresh, setRefresh] = useState(false)
 
     const getInfo = (state) => {
         var newArr = [];
         var keys = Object.keys(state)
-        
-        for (var i = 0; i < state.length; i++) {
+
+        for (var i = 0; i < keys.length; i++) {
             newArr.push(state[keys[i]])
         }
 
-        arr = newArr
+        setArr(newArr)
+
+        console.log('debug', arr)
     }
     
     return (
@@ -51,12 +52,6 @@ export default function Debug() {
                 onPress={()=>{
                     getInfo(GameState)
 
-                    if (!refresh){
-                        setRefresh(true) 
-                    } else {
-                        setRefresh(false)
-                    }
-
                     console.log('debug refreshed')      
                 }}>
                 <Text>Refresh</Text>
@@ -64,7 +59,20 @@ export default function Debug() {
             <ScrollView style={{
                 height: '50%',
             }}>
-                <GameStateInfo data={arr}/>
+                {!arr ? 
+                    <View></View> : 
+                    <View style={{
+                        fontSize: 16, 
+                        justifyContent: 'center',
+                        margin: 20,
+                    }}>
+                        {arr.map((item, index) =>
+                            <View key={index}>
+                                <Text>{String(item)}</Text>
+                            </View>
+                        )}
+                    </View>
+                }
             </ScrollView>
         </View>
     )
