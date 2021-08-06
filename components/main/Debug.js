@@ -24,7 +24,7 @@ const GameStateInfo = (props) => {
 
 
 export default function Debug() {
-    const [string, setString] = useState(JSON.stringify(GameState))
+    const [string, setString] = useState(JSON.stringify(GameState.players[GameState.currentPlayer]))
     const [arr, setArr] = useState(null)
 
 
@@ -50,7 +50,13 @@ export default function Debug() {
                     backgroundColor: 'lightblue',
                 }}
                 onPress={()=>{
-                    getInfo(GameState)
+                    if (GameState.players.length > 0){
+                       getInfo(GameState.players[GameState.currentPlayer]) 
+                    } else {
+                        getInfo(GameState)
+                    }
+                    
+                    
 
                     console.log('debug refreshed')      
                 }}>
@@ -59,18 +65,20 @@ export default function Debug() {
             <ScrollView style={{
                 height: '50%',
             }}>
-                {!arr ? 
-                    <View></View> : 
-                    <View style={{
+                {!arr 
+                    ? <View></View> 
+                    : <View style={{
                         fontSize: 16, 
                         justifyContent: 'center',
                         margin: 20,
                     }}>
-                        {arr.map((item, index) =>
-                            <View key={index}>
-                                <Text>{String(item)}</Text>
-                            </View>
-                        )}
+                        {arr.map((item, index) =>{
+                             return(
+                                <View key={index}>
+                                    <Text>{JSON.stringify(item)}</Text>
+                                </View>
+                            )
+                        })}
                     </View>
                 }
             </ScrollView>

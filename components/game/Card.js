@@ -9,6 +9,7 @@ import Main from '../../js/Main';
 
 import PaymentCalc from './PaymentCalc';
 import RollButton from './RollButton';
+import Calc from '../../js/Calc';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -41,15 +42,6 @@ const RollPhase = (props) => {
                     turnPhase={turnPhase} 
                     setTurnPhase={setTurnPhase}
                 />
-                {player.charityTurns > 0 ? 
-                    <RollButton 
-                        {...props}
-                        type='double' 
-                        rolled={rolled} 
-                        setRolled={setRolled}
-                        turnPhase={turnPhase} 
-                        setTurnPhase={setTurnPhase}
-                    /> : <View></View>}
             </View>
         </View>
     )
@@ -126,7 +118,23 @@ const MidPhase = (props) => {
                     <View>
                         <Pressable style={styles.payBtn}
                             onPress={() =>{
-                                console.log('doodad clicked')
+                                console.log('doodad clicked', GameState.currentDoodad)
+
+                                if (GameState.currentDoodad && (GameState.currentDoodad.cost < player.cash)){
+                                    Calc.pay(GameState.currentPlayer, GameState.currentDoodad.cost)
+
+                                    console.log('doodad paid')
+                                    
+                                    // Continue to end turn phase
+                                    GameState.turnPhase = 'end'
+                                    setTurnPhase('end')
+                                } 
+                                
+                                if (GameState.currentDoodad && (GameState.currentDoodad.cost > player.cash)){
+                                    // request loan
+                                    console.log('get loan for doodad cost')
+                                }
+                                     
                             }}>
                             <Text>PAY</Text>
                         </Pressable>
@@ -137,6 +145,11 @@ const MidPhase = (props) => {
                         <Pressable style={styles.donateBtn}
                             onPress={() =>{
                                 console.log('donate clicked')
+
+                                player.charityTurns += 3;
+
+                                GameState.turnPhase = 'end';
+                        
                             }}>
                             <Text>DONATE</Text>
                         </Pressable>
@@ -231,25 +244,15 @@ const EndPhase = (props) => {
         dispatch(getGameData(GameState))
     })
 
+    // Show result of turn on endphase
+
     return(
-        <View style={styles.endContainer}>
+        <View style={styles.container}>
             <View style={styles.textContainer}>
                 <Text style={styles.cardTitle}>FINISH YOUR TURN</Text>
                 <Text style={styles.cardDescription}>Before you end your turn, review your financial statement. You may also use this time to review your deals.</Text>
             
-                <View style={{
-                    paddingHorizontal: 25,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                }}>
-                    <Pressable style={styles.repayBtn}>
-                        <Text>Repay</Text>
-                    </Pressable>
-                    <Pressable style={styles.borrowBtn}>
-                        <Text>Borrow</Text>
-                    </Pressable>
-                    
-                </View>
+                <Text>{'{"TURN RESULT"}'}</Text>
             </View>
             <View style={styles.btnContainer}>
 
@@ -257,6 +260,7 @@ const EndPhase = (props) => {
                 <Pressable style={styles.endBtn} 
                     onPress={()=>{
                         Main.nextTurn();
+                        //Main.endTurn();
                         setTurnPhase('roll')
                     }}>
                     <Text>END TURN</Text>
@@ -282,11 +286,12 @@ const Card = (props) => {
             <View style={{
                 justifyContent: 'space-between',
                 flexDirection: 'row',
-                paddingHorizontal: 20,
-                margin: 5,
+                paddingHorizontal: 30,
+                marginVertical: 10,
+                marginTop: 20,
             }}>
-                <Text style={{font: 'gray'}}>cash: ${Main.numWithCommas(player.cash)}</Text>
-                <Text style={{font: 'gray'}}>payday: ${Main.numWithCommas(player.payday)}</Text>
+                <Text style={styles.playerInfo}>Cash: ${Main.numWithCommas(player.cash)}</Text>
+                <Text style={styles.playerInfo}>Payday: ${Main.numWithCommas(player.payday)}</Text>
             </View>
          
             {GameState.paymentCalc.open ? <PaymentCalc {...props} /> :
@@ -301,23 +306,16 @@ const Card = (props) => {
 
 const styles = StyleSheet.create({
     cardContainer: {
-        alignContent: 'center',
-        
-        flex: 6,
+        justifyContent: 'center',
         width: '100%',
-        //height: 350,
-        //maxHeight: 350,
-        borderRadius: 15,
-        margin: 5,
-        
+        marginVertical: 5,
     },
     container: {
-        backgroundColor: "#ffffff",
+        //backgroundColor: "#ffffff",
         height: 300,
-    },
-    endContainer: {
-
-        
+        paddingHorizontal: 30,
+        paddingVertical: 20,
+        justifyContent: 'space-between'
     },
     cardTitle: {
         textTransform: 'capitalize',
@@ -325,12 +323,15 @@ const styles = StyleSheet.create({
         fontWeight: "500",
     },
     textContainer: {
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        flex: 4,
+
     },
     cardDescription: {
 
+    },
+    playerInfo: {
+        color: '#454835',
+        fontWeight: '500',
+        fontSize: 18,
     },
     diceAmount: {
         fontSize: 20,
@@ -338,20 +339,20 @@ const styles = StyleSheet.create({
     },
     btnContainer: {
         flexDirection: 'row',
-        flex: 1,
+        //flex: 1,
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        minHeight: 70,
+        height: 60,
 
     },
+
+    // Opportunity
     oppBtnContainer: {
         
         flexDirection: 'row',
         flex: 1,
         justifyContent: 'space-between',
-        
         minHeight: 70,
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
     },
     oppBtn: {
         backgroundColor: '#e2ebe0',
@@ -366,6 +367,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         height: 40,
     },
+    
+    // Buttons
     payBtn: {
         
         justifyContent: 'center',

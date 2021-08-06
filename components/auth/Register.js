@@ -40,15 +40,30 @@ export class Register extends Component {
                 <TextInput 
                     placeholder="name"
                     onChangeText={(name) => this.setState({name})}
+                    style={{
+                        height: 60,
+                        width: '80%',
+                        fontSize: 16,
+                    }}
                 />
                 <TextInput 
                     placeholder="email"
                     onChangeText={(email) => this.setState({email})}
+                    style={{
+                        height: 60,
+                        width: '80%',
+                        fontSize: 16,
+                    }}
                 />
                 <TextInput 
                     placeholder="password"
                     secureTextEntry={true}
                     onChangeText={(password) => this.setState({password})}
+                    style={{
+                        height: 60,
+                        width: '80%',
+                        fontSize: 16,
+                    }}
                 />
                 <Button 
                     onPress= {()=> this.onSignUp()}

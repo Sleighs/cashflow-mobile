@@ -37,7 +37,15 @@
     https://reactnative.dev/docs/asyncstorage
 - loans
 - payment calc
-    
+- financial path 
+    - graph of past financial decisions
+    - show a history line of 
+        - asset income
+        - number of assets
+        - expense costs
+        -
+    show a projections line
+    show financial reccomendations
     
     
 # Cashflow mobile
@@ -48,5 +56,9 @@
     card - middle 
     full statement will swipe in from right side
 
-
-#
+    ## prototype 
+    
+    - morning, noon, night to replace turn
+        - roll
+#   ## layout
+    - chart

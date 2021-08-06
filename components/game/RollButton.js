@@ -5,38 +5,35 @@ import Main from '../../js/Main';
 
 const RollButton = (props) => {
     const { type, rolled, setRolled, turnPhase, setTurnPhase, cardInfo, setCardInfo} = props;
-
-    if (type === 'normal'){
-        return (
-            <View style={styles.container}>
-                <Pressable
+    const player = GameState.players[GameState.currentPlayer];
+    
+    return (
+        <View style={styles.container}>
+            <Pressable
+                style={styles.btn}
+                onPress={()=>{
+                    Main.movePlayer('normal')
+                    setRolled(true)
+                    setTurnPhase('middle')
+                    setCardInfo(GameState.midPhaseInfo)
+                }}>
+                <Text style={styles.text}>Roll</Text>
+            </Pressable>
+            {player.charityTurns > 0 
+                ? <Pressable
                     style={styles.btn}
                     onPress={()=>{
-                        Main.movePlayer(type)
-                        setRolled(true)
-                        setTurnPhase('middle')
-                        setCardInfo(GameState.midPhaseInfo)
-                    }}>
-                    <Text style={styles.text}>Roll</Text>
-                </Pressable>
-            </View>
-        )
-    } else if (type === 'double') {
-        return(
-            <View style={styles.container}>
-                <Pressable
-                    style={styles.btn}
-                    onPress={()=>{
-                        GameState.movePlayer(type)
+                        Main.movePlayer('double')
                         setRolled(true)
                         setTurnPhase('middle')
                         setCardInfo(GameState.midPhaseInfo)
                     }}>
                     <Text style={styles.text}>Roll 2x</Text>
                 </Pressable>
-            </View> 
-        )
-    }
+                : <View></View>
+            }
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({

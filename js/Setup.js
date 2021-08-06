@@ -84,6 +84,13 @@ Setup.newPlayer = function(playerScenario) {
             payment: playerScenario[7]
         }
     ]
+
+    this.chartData = {
+        payday: [],
+        cash: [],
+        expenses: [],
+        income: []
+    }
 };
 
 Setup.scenarioChoices = [

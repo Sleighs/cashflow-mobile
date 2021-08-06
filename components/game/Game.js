@@ -115,24 +115,29 @@ export default function Game(props) {
     const [cardInfo, setCardInfo] = useState(null)
     const [totalPayCalcCost, setTotalPayCalcCost] = useState(0);
     const [payCalcType, setPayCalcType] = useState(null)
+    const [refresh, setRefresh ] = useState(null)
 
+    
     const dispatch = useDispatch()
 
     useEffect(() => {
         Calc.updateStatement(GameState.currentPlayer)
-        
     })
 
     if (gamePhase === null){
         setPhase(GameState.gamePhase)
     } 
+
+    if (refresh) {
+        setRefresh(false)
+    }
     
     if (GameState.gamePhase === "rat race") {    
         return (
             <SafeAreaView style={{
                 flex: 1,
                 paddingTop: StatusBar.currentHeight,
-                paddingBottom: 55,
+                paddingBottom: 50,
             }}>
                 <View style={styles.container}>
                     <RatRacePhaseContainer 
@@ -158,6 +163,8 @@ export default function Game(props) {
                         setTotalPayCalcCost={setTotalPayCalcCost}
                         payCalcType={payCalcType}
                         setPayCalcType={setPayCalcType}
+                        refresh={refresh}
+                        setRefresh={setRefresh}
                     />
                 </View>
             </SafeAreaView>
@@ -198,11 +205,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#ebe9e3',
         flexDirection: "column",
         flex: 1,
-        justifyContent: 'space-between',
+        //justifyContent: 'space-between',
         alignItems: 'center',
         alignContent: 'center',
         maxWidth: Dimensions.get('window').width,
-        //paddingBottom: 55
     },
     title: {
         textAlign: 'center',
@@ -243,6 +249,7 @@ const styles = StyleSheet.create({
     // Rat Race
     ratRacePhaseContainer:{
         justifyContent: 'center',
+        alignItems: 'center',
     },
 })
 

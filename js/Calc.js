@@ -19,6 +19,14 @@ var Calc = {
         
         total income
         */
+       
+        let expObj = player.expenses.find((item, i) => {
+            if (item.type === 'loans'){
+                item.payment = item.cost * .1;
+            } 
+
+            return expObj;
+        });
 
         const childCost = Math.round(parseInt(Calc.totalIncome(currentPlayer)) * 0.056);
 
@@ -87,6 +95,41 @@ var Calc = {
         player.taxes = Math.round(taxes);
         
         return Math.round(taxes);
+    },
+    getLoan: function(currentPlayer, amount){
+        const player = GameState.players[currentPlayer]
+
+        var loansExist = false;
+
+        // Check for current loans, if present add to player expenses array
+        let obj = player.expenses.find((item, i) => {
+            if (item.type === 'loans'){
+                player.cash = player.cash + amount;
+                item.cost = item.cost + amount;
+                item.payment = item.cost * .1;
+                loansExist = true;
+            } 
+
+            return obj;
+        });
+
+        // if no loans present a
+        if (!loansExist){
+            player.cash = player.cash + amount;
+
+            player.expenses.push({
+                type: 'loans',
+                cost: amount,
+                payment: amount * .1
+            })
+        }
+    },
+    pay: function(currentPlayer, amount){
+        const player = GameState.players[currentPlayer]
+
+        player.cash = player.cash - amount;
+
+        Calc.updateStatement(currentPlayer)
     }
 };
 

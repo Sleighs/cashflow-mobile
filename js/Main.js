@@ -2,18 +2,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getGameData } from '../redux/reducers/rootReducer';
 
 import BoardSpaces from "./BoardSpaces";
+import Calc from './Calc';
 import CardDeck from "./Cards";
 import GameState from "./GameState";
 
 var Main = {
     movePlayer: function(moveType) {
+        var player = GameState.players[GameState.currentPlayer];
+    
         // Roll dice
         var dice = GameState.rollDie(moveType);
         GameState.diceAmount = dice;
     
         // Get original player location
-        var player = GameState.players[GameState.currentPlayer];
-    
         // Get new space location
         var newSpace ; 
         if ( player.currentSpace + dice > 24 ){
@@ -53,18 +54,69 @@ var Main = {
         // Get space details
         var space = BoardSpaces[player.currentSpace - 1];
     
-        //get space type 
-            /* 
-            child
-            doodad
-            payday
-            downsize
-            offer
-            opportunity
-            charity
-             */
+        Main.loadCard(space.field, GameState.currentPlayer)
+    
+        console.log('move info', {
+            dice: dice,
+            prevSpace: player.currentSpace,
+            newSpace: newSpace,
+            boardSpace: BoardSpaces[player.currentSpace - 1],
+        })
+    },
+    endTurn: function() {
+        var player = GameState.players[GameState.currentPlayer];
+        var totalExp = Calc.totalExpenses(GameState.currentPlayer)
+        var totalInc = Calc.totalIncome(GameState.currentPlayer)
+
+        // save payday, expenses, income to chart data  
+        player.chartData.expenses.push(totalExp);
+        player.chartData.income.push(totalInc);
+        player.chartData.payday.push(totalInc - totalExp);
+        player.chartData.cash.push(player.cash);
+
+        if ((GameState.currentPlayer + 1) === GameState.playerCount) {
+            GameState.turnCount++;
+        } else {
+            GameState.currentPlayer++;
+        }
+    
+        GameState.turnPhase = "roll";
+    },
+    nextTurn: function() {
+        var player = GameState.players[GameState.currentPlayer];
+        var totalExp = Calc.totalExpenses(GameState.currentPlayer)
+        var totalInc = Calc.totalIncome(GameState.currentPlayer)
+
+        // save payday, expenses, income to chart data  
+        player.chartData.expenses.push(totalExp);
+        player.chartData.income.push(totalInc);
+        player.chartData.payday.push(totalInc - totalExp);
+        player.chartData.cash.push(player.cash);
         
-        // Constructor for displaying the middle turn phase
+        var moved = 0;
+    
+        for (var i = 0; i < GameState.players.length; i++){
+            if (GameState.players[i].moved === true){
+                moved++
+            }
+        }
+        
+        // if all player moved, start new turn
+        if (moved === GameState.players.length) {
+            GameState.turnCount += GameState.turnCount + 1;
+            GameState.turnPhase = 'roll';
+            GameState.currentPlayer = 0;
+    
+            for (var j = 0; j < GameState.players.length; j++){
+                if (GameState.players[j].moved === true){
+                    GameState.players[j].moved = false;
+                }
+            }
+        }
+    },
+    loadCard: function(spaceType, currentPlayer){
+        const player = GameState.players[currentPlayer]
+
         function midPhaseInfo(
             title, 
             description1,
@@ -82,7 +134,7 @@ var Main = {
         var info;
     
         // Arrange display info for component
-        switch(space.field){
+        switch(spaceType){
             case 'OPPORTUNITY':
                 info = new midPhaseInfo(
                     'DEAL OPPORTUNITY',
@@ -104,7 +156,12 @@ var Main = {
                 break;
             case 'OFFER':
                 Main.getOffer();
-                var offer = !GameState.currentOffer.offer ? (!GameState.currentOffer.offerPerUnit ? '' : ("Offer per unit: $" + GameState.currentOffer.offerPerUnit)) : ("Offer: $" + GameState.currentOffer.offer);
+                var offer = 
+                    !GameState.currentOffer.offer 
+                        ? (!GameState.currentOffer.offerPerUnit 
+                            ? '' 
+                            : ("Offer per unit: $" + GameState.currentOffer.offerPerUnit)) 
+                        : ("Offer: $" + GameState.currentOffer.offer);
                 
                 info = new midPhaseInfo(
                     GameState.currentOffer.name,
@@ -164,56 +221,16 @@ var Main = {
                     insured,
                     '',
                     ''
-    
                 ) 
                 break;
         }
         
         GameState.midPhaseInfo = info;
-    
-        console.log('move info', {
-            dice: dice,
-            prevSpace: player.currentSpace,
-            newSpace: newSpace,
-            boardSpace: BoardSpaces[player.currentSpace - 1],
-            midPhaseInfo: info,
-        })
-    },
-    endTurn: function() {
-        if ((GameState.currentPlayer + 1) === GameState.playerCount) {
-            GameState.turnCount++;
-        } else {
-            GameState.currentPlayer++;
-        }
-    
-        GameState.turnPhase = "roll";
-    },
-    nextTurn: function() {
-        var moved = 0;
-    
-        for (var i = 0; i < GameState.players.length; i++){
-            if (GameState.players[i].moved === true){
-                moved++
-            }
-        }
-    
-        if (moved === GameState.players.length) {
-            GameState.turnCount += GameState.turnCount + 1;
-            GameState.turnPhase = 'roll';
-            GameState.currentPlayer = 0;
-    
-            for (var j = 0; j < GameState.players.length; j++){
-                if (GameState.players[j].moved === true){
-                    GameState.players[j].moved = false;
-                }
-            }
-        }
-    
-        
     },
     getDoodad: function() {
         var player = GameState.players[GameState.currentPlayer];
 
+        // Get random card
         var keys = Object.keys(CardDeck.doodad);
         var randDoodad = function(object) {
             return object[keys[Math.floor(keys.length * Math.random())]];
@@ -225,7 +242,14 @@ var Main = {
             //get new doodad
             Main.getDoodad();
         } else {
+            // store doodad
             GameState.currentDoodad = doodad;
+
+            if (doodad.amount) {
+                GameState.currentDoodad.cost = player.cash * doodad.amount
+            }
+            
+            console.log(GameState.currentDoodad)
         }
     },
     numWithCommas: function(num) {

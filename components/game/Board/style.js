@@ -5,44 +5,51 @@ const styles = StyleSheet.create({
     boardContainer: {
         width: '100%',
         justifyContent: 'center',
-        marginVertical: 5,
+        marginVertical: 2,
+        height: 60,
         flex: 1,
 
     },
     board1row1:{
         flexDirection:'row',
         flexWrap:'wrap',
-        flex: 1,
+        justifyContent: 'center',
     },
     board1row2:{
         flexDirection:'row-reverse', 
         flexWrap:'wrap',
-        flex: 1,
+        justifyContent: 'center',
+        
     },
     boardSpace: {
         borderColor: 'white',
         borderStyle: 'solid',
         borderWidth: 2,
-        borderRadius: 4,
+        borderRadius: 1,
         textAlign: 'center',
         justifyContent: 'center',
-        flex: 1,
+        
+        height: 25,
+        width: 25,
+
     },
     boardSpaceHighlight: {
-        borderColor: 'gold',
+        borderColor: 'red',
         borderStyle: 'solid',
         borderWidth: 2,
-        borderRadius: 4,
+        borderRadius: 1,
         textAlign: 'center',
         justifyContent: 'center',
-        flex: 1,
+        
+        height: 25,
+        width: 25,
     },
     boardSpaceText: {
         color: "#ffffff",
         fontSize: 8,
     },
     opportunitySpace:{
-        backgroundColor: "green", 
+        backgroundColor: "green",
     },
     doodadSpace: {
         backgroundColor: "darkslategray", 

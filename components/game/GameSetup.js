@@ -13,12 +13,37 @@ import BoardSpaces from '../../js/BoardSpaces';
 import store from '../../redux/store';
 import Calc from '../../js/Calc';
 
-export default function GameSetup({ navigation }) {
+const JobSelector = (props) => {
+    const { playerObj, insurance } = props;
+    
+        if (playerObj) {
+            return (
+                <View style={{
+                    backgroundColor: "white",
+                    padding: 10,
+                    
+                }}>
+                    <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
+                    <Text>JobTitle: {playerObj.jobTitle}</Text>
+                    <Text>Salary: {playerObj.startingSalary}</Text>
+                    <Text>Savings: {playerObj.startingSavings}</Text>
+                    <Text>Insurance:{!insurance ? ' None' : ' Insured'}</Text>
+                </View>
+            )
+        } else {
+            return (<View></View>)
+        }
+
+}
+
+export default function GameSetup(props) {
+    const { navigation } = props;
     const [setupData, setSetupData] = useState(null);
     const [playerJob, setPlayerJob] = useState(null);
     const [playerObj, setPlayerObj] = useState(null);
     const [gameId, setGameId] = useState(null);
     const [insurance, setInsurance] = useState(false);
+
     const getInsuranceBtnColor = (ins) => {
         var bgColor = '#fdd1d1'; //light red
         if (ins === true) {
@@ -156,10 +181,6 @@ export default function GameSetup({ navigation }) {
                 </Pressable>
 
             </View>
-            
-            <View>
-                <Text style={styles.optionsTitle}>Options</Text>
-            </View>
 
             <Pressable 
                 onPress={() => navigation.goBack()}
@@ -168,21 +189,7 @@ export default function GameSetup({ navigation }) {
                 <Text style={{color: 'black'}}>Go Back</Text>
             </Pressable>
 
-            {!playerObj ? (
-                    <View></View>
-                ) : (
-                    <View style={{
-                        backgroundColor: "white",
-                        padding: 10,
-                        
-                    }}>
-                        <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
-                        <Text>JobTitle: {playerObj.jobTitle}</Text>
-                        <Text>Salary: {playerObj.startingSalary}</Text>
-                        <Text>Savings: {playerObj.startingSavings}</Text>
-                        <Text>Insurance:{!insurance ? ' None' : ' Insured'}</Text>
-                    </View>
-                )}
+            <JobSelector playerObj={playerObj} insurance={insurance} {...props}/>
         </View>
     )
 }

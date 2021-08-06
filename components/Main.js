@@ -83,7 +83,7 @@ const EmptyScreen = () =>{
     return(null)
 }
 
-const Main = () => {
+const Main = (props) => {
     const dispatch = useDispatch()
     const [userCheck, setUserCheck] = useState(false);
 
@@ -121,7 +121,7 @@ const Main = () => {
         >
             <Tab.Screen 
                 name="Home"
-                component={HomeStackScreen}
+                children={() => <HomeStackScreen {...props} />}
                 options={{
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="home" color={color} size={26}/>

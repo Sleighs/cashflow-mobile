@@ -22,10 +22,11 @@ var GameState = {
 };
 
 GameState.rollDie = (rollType)=>{
-    var num = Math.floor(Math.random() * 6) + 1;
+    var num = 1 //Math.floor(Math.random() * 6) + 1;
     
     if (rollType === 'double'){
         num = num * 2;
+        GameState.players[GameState.currentPlayer].charityTurns -= 1;
     }
 
     var text = 'You rolled a ' + num;

@@ -14,18 +14,18 @@ const PaymentCalc = (props) => {
         totalPayCalcCost, 
         setTotalPayCalcCost,
         payCalcType,
-        setPayCalcType
+        setPayCalcType,
+        setRefresh
     } = props;
+
     const [payCalcAmt, setPayCalcAmt] = useState(1000);
-    
+    const [payCalcName, setPayCalcName] = useState('None Selected');
 
     const dispatch = useDispatch()
 
     var expenseArr = player.expenses;
-    
 
     useEffect(() => {
-
         var cost = 0;
 
         let loanObj = expenseArr.find(item => {
@@ -39,9 +39,29 @@ const PaymentCalc = (props) => {
 
         setTotalPayCalcCost(cost)
         
-        if (GameState.paymentCalc.type) {
+        if (GameState.paymentCalc.type === null || GameState.paymentCalc.type === 'none') {
             setPayCalcType('none')
+
         } 
+
+        // Set Name
+        switch(GameState.paymentCalc.type) {
+            case 'loans':
+                setPayCalcName('Loans')
+                break;
+            case 'mortgage':
+                setPayCalcName('Mortgage')
+                break;
+            case 'car loan':
+                setPayCalcName('Car Loan')
+                break;
+            case 'credit debt':
+                setPayCalcName('Credit Debt')
+                break;
+            case 'retail debt':
+                setPayCalcName('Retail Debt')
+                break;
+        }
     })
 
     
@@ -59,7 +79,9 @@ const PaymentCalc = (props) => {
                 if (item.type === type && (item.cost === amount || item.cost < amount)){
                     playerExpensesArr.splice(i, 1);
                     GameState.paymentCalc.type = 'none';
-                    player.cash -= item.cost; 
+                    player.cash -= item.cost;
+
+                    setPayCalcType('none')
                 } else if (item.type === type){
                     item.cost -= amount;
                     player.cash -= amount;
@@ -98,54 +120,67 @@ const PaymentCalc = (props) => {
             case 'tv debt':
                 console.log('tv debt paid')
                 break;
-
         }
-                               
-        setTotalPayCalcCost(newCost)
+        
+        if (newCost > 0){
+            setTotalPayCalcCost(newCost)
+        } 
+
+        if (newCost === 0) {
+            GameState.paymentCalc.type = null;
+            setPayCalcType('none')
+        }
+
+        Calc.updateStatement(GameState.currentPlayer);
+        setRefresh(true)
     }
 
     const payCalcDone = () => {
-        GameState.paymentCalc.open = false;
         GameState.paymentCalc.type = null;
 
         //dispatch(getPayCalc(false))
+        //setTotalPayCalcCost(0)
         setPaymentCalcState(false)
         setPayCalcType('none')
+        setRefresh(true)
     }
     
     return(
         <View style={styles.container}>
             <Text style={styles.title}>Payment Calc</Text>
-            <Text>{GameState.paymentCalc.type}</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 5,}}>
+            <Text style={{
+                color:'#753838',
+                fontSize: 22,
+            }}>{payCalcName}</Text>
+            <View style={styles.row}>
                 <Text>Payment</Text>
                 <Text>${Main.numWithCommas(payCalcAmt)}</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 5,}}>
+            <View style={styles.row}>
                 <Text>Debt Amount</Text>
                 <Text>${Main.numWithCommas(totalPayCalcCost)}</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 5,}}>
-                {(GameState.paymentCalc.type === 'none') || !GameState.paymentCalc.type ?  <View></View> : <Pressable
+            <View style={styles.row}>
+                {(GameState.paymentCalc.type === 'none') || !GameState.paymentCalc.type ? <View></View> : <Pressable
                     onPress={()=>{
                         if (player.cash >= payCalcAmt ){
                             payCalcPay(GameState.paymentCalc.type, payCalcAmt);
                         } else {
                             console.log('not enough to make ' + GameState.paymentCalc.type + ' payment')
-                        
                         }          
-                        Calc.updateStatement(GameState.currentPlayer);
                     }}>
                     <Text>PAY</Text>
                 </Pressable>}
                 <Pressable
                     onPress={()=>{
+                        Calc.updateStatement(GameState.currentPlayer);
+                        GameState.paymentCalc.open = false;
+                        
                         payCalcDone()
                     }}>
                     <Text>DONE</Text>
                 </Pressable>
             </View>
-            
         </View>
     )
 }
@@ -154,7 +189,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         flexDirection: 'column',
-        width: 375,
+        width: '100%',
         height: 300,
         backgroundColor: '#ffffff',
         borderRadius: 25,
@@ -163,7 +198,8 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
     },
     title: {
-
+        fontSize: 22,
+        marginHorizontal: 5,
     },
     btn: {
         paddingVertical: 12,
@@ -172,10 +208,15 @@ const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: 'white',
     },
+    row:{ 
+        fontSize: 16,
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        margin: 7,
+    },
     text: {
         textAlign: 'center',
     },
 })
-
 
 export default PaymentCalc

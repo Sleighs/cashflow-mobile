@@ -10,6 +10,8 @@ import GameState from '../../js/GameState';
 import Calc from '../../js/Calc';
 import Main from '../../js/Main';
 
+import Chart from './Chart';
+
 const Summary = (props) => {
     const player = GameState.players[GameState.currentPlayer];
 
@@ -17,7 +19,7 @@ const Summary = (props) => {
         <ScrollView style={{
             height: 250,
         }}>
-            <View style={styles.tabContainer}>
+            <View style={styles.summaryContainer}>
                 <View>
                     <View style={styles.summaryTableTitleContainer}>
                         <Text style={styles.tableTitle}>Summary</Text>
@@ -51,8 +53,7 @@ const Summary = (props) => {
                         </View>
                     )}
                 </View>
-                <Expenses {...props}/>
-
+                <Expenses {...props} />
             </View>
         </ScrollView>
     )
@@ -82,11 +83,118 @@ const Assets = (props) => {
         <ScrollView style={{
             height: 250,
         }}>
-            <View style={styles.tabContainer}>
+            <View style={styles.assetsContainer}>
                 <Text>Assets</Text>
             </View>
         </ScrollView>
     )
+}
+
+const Research = (props) => {
+    const player = GameState.players[GameState.currentPlayer];
+    /* tab navigator
+        - property
+            - developed land
+            - undeveloped land
+            - coins
+            - cd
+        - stocks
+            - mutuals
+            - preferred
+            - stock
+        - businesses
+            - company
+            - limited partnership
+            - automated business
+
+
+    */
+
+    return (
+        <ScrollView style={{
+            height: 250,
+        }}>
+            <View style={{
+                paddingHorizontal: 10,
+
+            }}>
+                <Chart name={'Cash'} />
+                
+                <Chart name={'Payday'} />
+            </View>
+        </ScrollView>
+    )
+}
+
+const Bank = (props) => {
+    const { 
+        paymentCalcState, 
+        setPaymentCalcState, 
+        payCalcType,
+        setPayCalcType,
+        refresh,
+        setRefresh
+    } = props;
+
+
+    const player = GameState.players[GameState.currentPlayer];
+    const dispatch = useDispatch()
+
+    return(
+        <ScrollView>
+            <View style={styles.bankContainer}>
+                <View style={styles.tableTitleContainer}>
+                    <Text style={styles.tableTitle}>Borrow</Text>
+                </View>
+                <TouchableOpacity
+                    name={'Borrow'}
+                    onPress={() => {
+                        Calc.getLoan(GameState.currentPlayer, 1000)
+
+                        console.log('borrow clicked')
+
+                        setRefresh(true)
+                    }}>
+                    <View style={styles.bankRow}>
+                        <Text>$1000</Text>
+                    </View>
+                </TouchableOpacity>
+                
+                <View style={styles.tableTitleContainer}>
+                    <Text style={styles.tableTitle}>Loans</Text>
+                </View>
+                {player.expenses.map(item => 
+                    <TouchableOpacity
+                        key={item.type}
+                        name={item.type}
+                        onPress={() => {
+                            GameState.paymentCalc.open = true;
+                            GameState.paymentCalc.type = item.type;
+                            
+                            dispatch(getPayCalc(item.type))
+
+                            //console.log('stuff', stuff)
+
+                            if (GameState.paymentCalc.open === true){
+                                setPayCalcType(item.type)
+                            } else {
+                                setPaymentCalcState(true)
+                            }
+                        }}
+                        >
+                        <View style={styles.bankRow}>
+                            <Text style={styles.bankName}>{item.type}:</Text>
+                            <Text style={styles.bankCost}>${Main.numWithCommas(item.cost)}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+                
+            </View>
+            
+        </ScrollView>
+    )
+    
+    
 }
 
 const Expenses = (props) => {
@@ -98,8 +206,7 @@ const Expenses = (props) => {
     } = props;
     const player = GameState.players[GameState.currentPlayer];
     const dispatch = useDispatch()
-    const stuff = useSelector(state => state.paymentCalc)
-
+    
     return (
         <View style={styles.expensesContainer}>
             <View style={styles.tableTitleContainer}>
@@ -130,34 +237,6 @@ const Expenses = (props) => {
                 <Text style={styles.expensesName}>Other Expenses</Text>
                 <Text style={styles.expensesCost}>${Main.numWithCommas(player.otherExpenses)}</Text>
             </View>
-            <View style={styles.tableTitleContainer}>
-                <Text style={styles.tableTitle}>Loans</Text>
-            </View>
-            {player.expenses.map(item => 
-                <TouchableOpacity
-                    key={item.type}
-                    name={item.type}
-                    onPress={() => {
-                        GameState.paymentCalc.open = true;
-                        GameState.paymentCalc.type = item.type;
-                        
-                        dispatch(getPayCalc(item.type))
-
-                        //console.log('stuff', stuff)
-
-                        if (GameState.paymentCalc.open === true){
-                            setPayCalcType(item.type)
-                        } else {
-                            setPaymentCalcState(true)
-                        }
-                    }}
-                    >
-                    <View style={styles.expensesRow}>
-                        <Text style={styles.expensesName}>{item.type}:</Text>
-                        <Text style={styles.expensesCost}>${Main.numWithCommas(item.cost)}</Text>
-                    </View>
-                </TouchableOpacity>
-            )}
         </View>
     )
 }
@@ -179,7 +258,15 @@ function StatementTabs(props) {
         <StatementTab.Screen 
             name="Assets" 
             children={() => <Assets {...props} />}
-         />
+        />
+        {/*<StatementTab.Screen 
+            name="Research" 
+            children={() => <Research {...props} />}
+        />*/}
+         <StatementTab.Screen 
+            name="Bank" 
+            children={() => <Bank {...props} />}
+        />
     </StatementTab.Navigator>
   );
 }
@@ -208,13 +295,18 @@ const styles = StyleSheet.create({
     statementContainer: {
         backgroundColor: "#ffffff",
         justifyContent: 'center',
+        maxWidth: Dimensions.get('window').width,
+        height: 310,
+
+        /*
         alignContent: 'center',
         //alignItems: 'center',
         //flexDirection: 'row',
         flex: 6,
-        maxWidth: Dimensions.get('window').width,
-        width: '100%',
+        
+        //width: '100%',
         borderRadius: 15,
+        ,*/
     },
     statementHeader: {
         backgroundColor: '#f2f1f7',
@@ -223,10 +315,13 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         fontSize: 16,
     },
-    tabContainer: {
+    summaryContainer: {
         paddingHorizontal: 15,
         paddingVertical: 10,
         
+    },
+    assetsContainer: {
+
     },
     tableTitleContainer: {
         marginBottom: 5,
@@ -248,7 +343,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 3,
-        //borderBottomColor: '#ffffff',
         backgroundColor: '#ffffff',
         paddingHorizontal: 12,
         paddingVertical: 8,
@@ -277,6 +371,7 @@ const styles = StyleSheet.create({
     incomeAmount: {
         fontSize: 16,
     },
+
     // assets
 
     // expenses table
@@ -299,21 +394,26 @@ const styles = StyleSheet.create({
     expensesCost: {
         fontSize: 16,
     },
-    liabilitiesRow: {
+
+    // bank
+    bankContainer: {
+        marginVertical: 5,
+        paddingHorizontal: 15,
+    },
+    bankRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 3,
-        //borderBottomColor: '#ffffff',
         backgroundColor: '#ffffff',
         paddingHorizontal: 12,
         paddingVertical: 8,
         borderRadius: 15,
     },
-    liabilitiesName: {
+    bankName: {
         textTransform: 'capitalize',
         fontSize: 16,
     },
-    liabilitiesCost: {
+    bankCost: {
         fontSize: 16,
     },
 })
