@@ -53,7 +53,7 @@ Setup.newPlayer = function(playerScenario) {
     this.hasInsurance = false;
     this.fastTrackAssets = [];
 
-    this.loanApproval = true;
+    this.loanApproved = true;
     this.mortgagePrepay = false;
     this.moved = false;
     this.income = [

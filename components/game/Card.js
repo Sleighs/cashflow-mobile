@@ -58,6 +58,9 @@ const MidPhase = (props) => {
     const [description3, setDescription3] = useState('');
     const [cost, setCost] = useState('');
 
+    const [debtAmount, setDebtAmount] = useState(null);
+    const [debtState, setDebtState] = useState(null)
+
     useEffect(() => {
         setCardInfo(GameState.midPhaseInfo );
         setTitle(cardInfo.title)
@@ -133,6 +136,25 @@ const MidPhase = (props) => {
                                 if (GameState.currentDoodad && (GameState.currentDoodad.cost > player.cash)){
                                     // request loan
                                     console.log('get loan for doodad cost')
+
+                        
+                                    GameState.debtScreen.open = true
+                                    setDebtAmount(GameState.currentDoodad.cost)
+                                    setDebtState('open')
+
+                                    /*
+                                    
+                                        - check if player can get loan
+                                            - if yes 
+                                                - offer loan
+                                            - if no => bankruptcy
+                                                - check if player has assets to sell to cover costs
+                                                - must sell assets to bank at reduced value
+                                            
+                                        - if cannot cover costs
+                                            - game over
+
+                                    */    
                                 }
                                      
                             }}>
@@ -145,11 +167,8 @@ const MidPhase = (props) => {
                         <Pressable style={styles.donateBtn}
                             onPress={() =>{
                                 console.log('donate clicked')
-
                                 player.charityTurns += 3;
-
                                 GameState.turnPhase = 'end';
-                        
                             }}>
                             <Text>DONATE</Text>
                         </Pressable>
@@ -293,12 +312,13 @@ const Card = (props) => {
                 <Text style={styles.playerInfo}>Cash: ${Main.numWithCommas(player.cash)}</Text>
                 <Text style={styles.playerInfo}>Payday: ${Main.numWithCommas(player.payday)}</Text>
             </View>
-         
-            {GameState.paymentCalc.open ? <PaymentCalc {...props} /> :
-                GameState.turnPhase === 'roll' ? <RollPhase {...props} /> : 
-                    GameState.turnPhase === 'middle' ? <MidPhase {...props} /> : 
-                        GameState.turnPhase === 'deal' ? <Deal type={GameState.currentDeal ? GameState.currentDeal.type : 'none'} {...props} /> :
-                            <EndPhase {...props} />
+            
+            {GameState.debtScreen.open ? <DebtCard {...props} /> :
+                GameState.paymentCalc.open ? <PaymentCalc {...props} /> :
+                    GameState.turnPhase === 'roll' ? <RollPhase {...props} /> : 
+                        GameState.turnPhase === 'middle' ? <MidPhase {...props} /> : 
+                            GameState.turnPhase === 'deal' ? <Deal type={GameState.currentDeal ? GameState.currentDeal.type : 'none'} {...props} /> :
+                                <EndPhase {...props} />
             }
         </View>    
     )
@@ -335,6 +355,7 @@ const styles = StyleSheet.create({
     },
     diceAmount: {
         fontSize: 20,
+        marginRight: 15,
         
     },
     btnContainer: {
@@ -350,9 +371,9 @@ const styles = StyleSheet.create({
         
         flexDirection: 'row',
         flex: 1,
-        justifyContent: 'space-between',
+        justifyContent: 'space-even',
         minHeight: 70,
-        paddingHorizontal: 10,
+        //paddingHorizontal: 10,
     },
     oppBtn: {
         backgroundColor: '#e2ebe0',
@@ -365,7 +386,7 @@ const styles = StyleSheet.create({
         borderRadius: 22,
         elevation: 3,
         backgroundColor: 'white',
-        height: 40,
+        marginHorizontal: 10,
     },
     
     // Buttons

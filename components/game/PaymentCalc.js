@@ -99,14 +99,12 @@ const PaymentCalc = (props) => {
             playerExpensesArr: player.expenses
         })
 
-        // if new amount = 0
         switch(type) {
-            case 'loan':
+            case 'loans':
                 console.log('loan paid');
                 break;
             case 'mortgage':
                 console.log('mortgage paid');
-                
                 break;
             case 'credit debt':
                 console.log('credit debt paid');
@@ -127,7 +125,7 @@ const PaymentCalc = (props) => {
         } 
 
         if (newCost === 0) {
-            GameState.paymentCalc.type = null;
+            GameState.paymentCalc.type = 'none';
             setPayCalcType('none')
         }
 
@@ -151,6 +149,7 @@ const PaymentCalc = (props) => {
             <Text style={{
                 color:'#753838',
                 fontSize: 22,
+                marginHorizontal: 5,
             }}>{payCalcName}</Text>
             <View style={styles.row}>
                 <Text>Payment</Text>
@@ -191,7 +190,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '100%',
         height: 300,
-        backgroundColor: '#ffffff',
+        //backgroundColor: '#ffffff',
         borderRadius: 25,
         elevation: 5,
         paddingHorizontal: 50,

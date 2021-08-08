@@ -84,7 +84,9 @@ const Assets = (props) => {
             height: 250,
         }}>
             <View style={styles.assetsContainer}>
-                <Text>Assets</Text>
+                <View style={styles.tableTitleContainer}>
+                    <Text style={styles.tableTitle}>Assets</Text>
+                </View>
             </View>
         </ScrollView>
     )
@@ -321,7 +323,8 @@ const styles = StyleSheet.create({
         
     },
     assetsContainer: {
-
+        paddingHorizontal: 15,
+        paddingVertical: 10,
     },
     tableTitleContainer: {
         marginBottom: 5,
@@ -375,9 +378,6 @@ const styles = StyleSheet.create({
     // assets
 
     // expenses table
-    expensesContainer: {
-        marginVertical: 5,
-    },
     expensesRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',

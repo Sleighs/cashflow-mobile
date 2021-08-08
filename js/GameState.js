@@ -1,3 +1,4 @@
+import { SignalCellularNullOutlined } from "@material-ui/icons";
 import BoardSpaces from "./BoardSpaces";
 import Calc from "./Calc";
 import Cards from "./Cards";
@@ -17,12 +18,16 @@ var GameState = {
     midPhaseInfo: null,
     paymentCalc: {
         open: false,
-        type: null
+        type: null,
+    },
+    debtScreen: {
+        open: false,
+        type: null,
     },
 };
 
 GameState.rollDie = (rollType)=>{
-    var num = 1 //Math.floor(Math.random() * 6) + 1;
+    var num = 1// Math.floor(Math.random() * 6) + 1;
     
     if (rollType === 'double'){
         num = num * 2;

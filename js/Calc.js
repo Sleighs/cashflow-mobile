@@ -28,6 +28,13 @@ var Calc = {
             return expObj;
         });
 
+        //check loan approval 
+        if (player.payday < 0){
+            player.loanApproved = false
+        } else {
+            player.loanApproved = true
+        }
+
         const childCost = Math.round(parseInt(Calc.totalIncome(currentPlayer)) * 0.056);
 
         player.childExpense = childCost;
@@ -41,7 +48,6 @@ var Calc = {
 
         // get total income <('.'<)
         income += player.startingSalary;
-
 
         player.totalIncome = income;
     
@@ -113,7 +119,7 @@ var Calc = {
             return obj;
         });
 
-        // if no loans present a
+        // if no loans are present, add new expense
         if (!loansExist){
             player.cash = player.cash + amount;
 
@@ -127,8 +133,10 @@ var Calc = {
     pay: function(currentPlayer, amount){
         const player = GameState.players[currentPlayer]
 
+        // Subtract amount from player cash
         player.cash = player.cash - amount;
 
+        // Update statement
         Calc.updateStatement(currentPlayer)
     }
 };

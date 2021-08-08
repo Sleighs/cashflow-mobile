@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Button, StyleSheet, Pressable, Dimensions, SafeAreaView, StatusBar } from 'react-native'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { View, Text, StyleSheet, Pressable, Dimensions, SafeAreaView, StatusBar } from 'react-native'
 
 import Card from './Card'
 import Board from './Board'
@@ -106,18 +105,19 @@ const RatRacePhaseContainer = (props) => {
 export default function Game(props) {
     const player = GameState.players[GameState.currentPlayer];
     const [gamePhase, setPhase] = useState(null)
-    const [turnPhase, setTurnPhase ] = useState(null)
+    const [turnPhase, setTurnPhase] = useState(null)
     const [data, setData] = useState(null)
     const [selectedSpace, setSelectedSpace] = useState(null)
     const [paymentCalcState, setPaymentCalcState] = useState(null)
-    const [currentSpace, setCurrentSpace ] = useState(null)
+    const [currentSpace, setCurrentSpace] = useState(null)
     const [rolled, setRolled] = useState(false)
     const [cardInfo, setCardInfo] = useState(null)
     const [totalPayCalcCost, setTotalPayCalcCost] = useState(0);
     const [payCalcType, setPayCalcType] = useState(null)
-    const [refresh, setRefresh ] = useState(null)
+    const [refresh, setRefresh] = useState(null)
+    const [debtState, setDebtState] = useState(null)
+    const [debtAmount, setDebtAmount] = useState(null)
 
-    
     const dispatch = useDispatch()
 
     useEffect(() => {

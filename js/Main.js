@@ -24,11 +24,11 @@ var Main = {
         }
         
         // If pass paycheck get payday - currently set to salary
-        if (player.currentSpace < 5 && newSpace >= 5) {
+        if (player.currentSpace < 6 && newSpace >= 6) {
             player.cash += player.payday;
-        } else if (player.currentSpace < 13 && newSpace >= 13) {
+        } else if (player.currentSpace < 14 && newSpace >= 14) {
             player.cash += player.payday;
-        } else if (player.currentSpace < 21 && newSpace + dice >= 21) {
+        } else if (player.currentSpace < 22 && newSpace + dice >= 22) {
             player.cash += player.payday;
         }
     
@@ -114,7 +114,7 @@ var Main = {
             }
         }
     },
-    loadCard: function(spaceType, currentPlayer){
+    loadCard: function(spaceType, currentPlayer, phase){
         const player = GameState.players[currentPlayer]
 
         function midPhaseInfo(
@@ -132,7 +132,11 @@ var Main = {
         };
     
         var info;
-    
+        
+        if (phase === 'mid'){
+
+        }
+        
         // Arrange display info for component
         switch(spaceType){
             case 'OPPORTUNITY':
@@ -183,7 +187,7 @@ var Main = {
             case 'PAYDAY':
                 info = new midPhaseInfo(
                     'PAYDAY',
-                    //'You\'ve made $' + player.payday + ' this pay period.',
+                    'You\'ve earned $' + player.payday + ' this pay period.',
                     '', 
                     '', 
                     '',
@@ -248,7 +252,7 @@ var Main = {
             if (doodad.amount) {
                 GameState.currentDoodad.cost = player.cash * doodad.amount
             }
-            
+
             console.log(GameState.currentDoodad)
         }
     },
@@ -268,7 +272,6 @@ var Main = {
         GameState.currentOffer = currentOffer;
 
         console.log('current offer', GameState.currentOffer)
-
     },
     getSmallDeal: function() {
         var player = GameState.players[GameState.currentPlayer];
@@ -311,6 +314,15 @@ var Main = {
 		}
 
         console.log('large deal', currentDeal)
+    },
+    checkBankruptcy: function(currentPlayer){
+        const player = GameState.players[currentPlayer]
+
+        if (player.payday < 0) {
+            player.loanApproval = false;
+        } else {
+			player.loanApproval = true;
+		}
     },
 }
 
