@@ -138,7 +138,36 @@ var Calc = {
 
         // Update statement
         Calc.updateStatement(currentPlayer)
-    }
+    },
+    buyStock: function (currentPlayer, type, price, amount) {
+        const player = GameState.players[currentPlayer]
+
+        var alreadyOwned = false;
+
+        // Check for previous stock in player assets
+        let assetObj = player.stockAssets.find((item, i) => {
+            // If stock exists pay and add shares to current amount
+            if (item && item.type === type && item.price === price){
+                alreadyOwned = true;
+                player.cash -= price * amount;
+                item.shares += amount;
+            }  
+        });
+
+        // If already owned add new stock to assets
+        if (!alreadyOwned) {
+            player.cash -= price * amount;
+
+            player.stockAssets.push({
+                type: type,
+                symbol: GameState.currentDeal.symbol,
+                shares: amount,
+                price: price
+            })
+        }
+
+        console.log('buy stock ', player.stockAssets, alreadyOwned)
+    },
 };
 
 export default Calc

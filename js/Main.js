@@ -279,7 +279,7 @@ var Main = {
         var obj = CardDeck.smallDeal;
         var keys = Object.keys(obj);
         var randDeal = function(object) {
-            return object[keys[Math.floor(keys.length * Math.random())]];
+            return object[keys[0]]//Math.floor(keys.length * Math.random())]];
         };
 
         const currentDeal = randDeal(obj);

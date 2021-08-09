@@ -27,7 +27,7 @@ var GameState = {
 };
 
 GameState.rollDie = (rollType)=>{
-    var num = 1// Math.floor(Math.random() * 6) + 1;
+    var num = Math.floor(Math.random() * 6) + 1;
     
     if (rollType === 'double'){
         num = num * 2;

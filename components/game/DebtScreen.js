@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Pressable, Dimensions, SafeAreaView, StatusBar } from 'react-native'
+import Calc from '../../js/Calc';
 import GameState from '../../js/GameState';
 import Main from '../../js/Main';
 
@@ -10,15 +11,58 @@ const LoanApproved = (props) => {
         debtState, 
         setDebtState, 
         debtAmount, 
-        setDebtAmount  
+        setDebtAmount ,
+        setRefresh
     } = props;
 
     const [text1, setText1] = useState('Loan Approved')
+
+    const roundLoan = (amount) => {
+        var loanAmt = 1000;
+
+        if (GameState.debtScreen.cost < 1000){
+            return loanAmt
+        }
+
+        if (1000 <= GameState.debtScreen.cost){
+            loanAmt  = Math.round(GameState.debtScreen.cost / 1000) * 1000
+
+            return loanAmt
+        } 
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.cardTitle}>Debt Screen</Text>
             <Text style={styles.cardText}>{text1}</Text>
+            
+            {GameState.debtScreen.cost <= player.cash 
+                ? <Pressable 
+                    style={styles.loanBtn}
+                    onPress={() => {
+                        //Calc.pay(GameState.currentPlayer, GameState.debtScreen.cost)
+
+                        //setDebtState(false)
+
+                        //console.log('debt paid')
+
+                        GameState.debtScreen.open = false;
+
+                        setRefresh(true)
+                    }}>
+                    <Text>Return to Pay</Text>
+                </Pressable>
+                : <Pressable
+                    style={styles.loanBtn}
+                    onPress={() => {
+                        // add loan
+                        Calc.getLoan(GameState.currentPlayer, 1000)
+                        
+                        setRefresh(true)
+                    }}>
+                    <Text>Get loan</Text>
+                </Pressable>
+            }
         </View>
     )
 }
@@ -78,7 +122,7 @@ const DebtScreen = (props) => {
         debtState, 
         setDebtState, 
         debtAmount, 
-        setDebtAmount  
+        setDebtAmount,  
     } = props;
 
     useEffect(() => {
@@ -91,8 +135,6 @@ const DebtScreen = (props) => {
         approved
         not approved (game over)
     */
-
-    const player = GameState.players[GameState.currentPlayer];
 
     // if loan needed show loan option
     
@@ -143,11 +185,17 @@ const styles = StyleSheet.create({
         fontWeight: "500",
     },
     btn: {
-        height: 40,
-        width: 80,
-        borderWidth: 2,
-        borderColor: 'black',
+        
     },
+    loanBtn: {
+        //height: 40,
+        //width: 100,
+        paddingHorizontal: 25,
+        paddingVertical: 15,
+        borderRadius: 25,
+        backgroundColor: 'white',
+        textAlign: 'center',
+    }
 })
 
 export default DebtScreen

@@ -11,6 +11,9 @@ import Calc from '../../js/Calc';
 import Main from '../../js/Main';
 
 import Chart from './Chart';
+import StatementDebug from './StatementDebug';
+
+
 
 const Summary = (props) => {
     const player = GameState.players[GameState.currentPlayer];
@@ -40,7 +43,13 @@ const Summary = (props) => {
                         <Text style={styles.summaryText}>Payday</Text> 
                         <Text>${Main.numWithCommas(player.payday)}</Text>
                     </View>
-                               
+                    {player.children === 0 
+                        ? <View></View>
+                        : <View style={styles.summaryRow}>
+                            <Text style={styles.summaryText}>Children</Text> 
+                            <Text>{player.children}x</Text>
+                        </View>
+                    }         
                 </View>
                 <View>
                     <View style={styles.tableTitleContainer}>
@@ -87,6 +96,26 @@ const Assets = (props) => {
                 <View style={styles.tableTitleContainer}>
                     <Text style={styles.tableTitle}>Assets</Text>
                 </View>
+                {player.stockAssets.map(item => {
+                    // determine asset type
+                    var stockPurchasedPrice;
+                    var sharesOwned;
+
+                    if (item && (item.type === 'Mutual Fund' || item.type === 'Stock' || item.type === 'Preferred Stock')){
+                        stockPurchasedPrice = item.price;
+                        sharesOwned = item.shares;
+
+                        return ( 
+                            <View key={item.type} style={styles.assetsRow}>
+                                <Text style={styles.assetsName}>{item.shares} of {item.type}</Text>
+                                <Text style={styles.assetsAmount}> at ${Main.numWithCommas(item.price)}</Text>
+                            </View>
+                            )
+                    } else {
+                        return(<View></View>)
+                    } 
+                    
+                })}
             </View>
         </ScrollView>
     )
@@ -151,16 +180,25 @@ const Bank = (props) => {
                 <TouchableOpacity
                     name={'Borrow'}
                     onPress={() => {
-                        Calc.getLoan(GameState.currentPlayer, 1000)
+                        if (player.loanApproved){
+                            Calc.getLoan(GameState.currentPlayer, 1000)
 
-                        console.log('borrow clicked')
+                            console.log('borrowed $1000')
+                        } else {
+                            console.log('not approved')
+                        }
 
                         setRefresh(true)
                     }}>
                     <View style={styles.bankRow}>
-                        <Text>$1000</Text>
+                        <Text>{player.loanApproved ? '$1000' : '$0'}</Text>
                     </View>
                 </TouchableOpacity>
+
+                <View style={[styles.bankRow, {justifyContent: 'space-between',}]}>
+                        <Text>Approved for Loan</Text>
+                        <Text>{player.loanApproved ? 'Yes' : 'No'}</Text>
+                    </View>
                 
                 <View style={styles.tableTitleContainer}>
                     <Text style={styles.tableTitle}>Loans</Text>
@@ -195,8 +233,6 @@ const Bank = (props) => {
             
         </ScrollView>
     )
-    
-    
 }
 
 const Expenses = (props) => {
@@ -269,6 +305,10 @@ function StatementTabs(props) {
             name="Bank" 
             children={() => <Bank {...props} />}
         />
+        <StatementTab.Screen 
+            name="Debug" 
+            children={() => <StatementDebug {...props} />} 
+        />
     </StatementTab.Navigator>
   );
 }
@@ -299,21 +339,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         maxWidth: Dimensions.get('window').width,
         height: 310,
-
-        /*
-        alignContent: 'center',
-        //alignItems: 'center',
-        //flexDirection: 'row',
-        flex: 6,
-        
-        //width: '100%',
-        borderRadius: 15,
-        ,*/
     },
     statementHeader: {
         backgroundColor: '#f2f1f7',
         height: 25,
-        //width: 100,
         borderRadius: 12,
         fontSize: 16,
     },
@@ -376,6 +405,23 @@ const styles = StyleSheet.create({
     },
 
     // assets
+    assetsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 3,
+        //borderBottomColor: '#ffffff',
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
+    },
+    assetsName: {
+        textTransform: 'capitalize',
+        fontSize: 16,
+    },
+    assetsAmount: {
+        fontSize: 16,
+    },
 
     // expenses table
     expensesRow: {

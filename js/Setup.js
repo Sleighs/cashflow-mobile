@@ -62,6 +62,7 @@ Setup.newPlayer = function(playerScenario) {
             amount: playerScenario[1]
         }
     ];
+    
     this.expenses = [
         {
             type: 'mortgage',
