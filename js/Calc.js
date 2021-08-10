@@ -166,7 +166,34 @@ var Calc = {
             })
         }
 
+        GameState.events.push(amount + ' shares of ' + GameState.currentDeal.symbol + ' purchased at ' + price)
+
         console.log('buy stock ', player.stockAssets, alreadyOwned)
+    },
+    sellStock: function(currentPlayer, type, amount, oldPrice, newPrice){
+        const player = GameState.players[currentPlayer]
+
+        // Check for previous stock in player assets
+        var removeIndex = null;
+        let assetObj = player.stockAssets.find((item, i) => {
+            // If stock exists pay and add shares to current amount
+            if (item && item.type === type && item.price === oldPrice){
+                player.cash += newPrice * amount;
+                item.shares -= amount;
+            } 
+
+            if (item && item.shares === 0){
+                removeIndex = i
+            }
+        });
+
+        if (removeIndex){
+            player.stockAssets.splice(removeIndex, 1);
+        }
+
+        GameState.events.push(amount + ' shares of ' + GameState.currentDeal.symbol + ' sold at ' + newPrice)
+
+        console.log('sold stock ', player.stockAssets)
     },
 };
 

@@ -74,7 +74,7 @@ export default function GameSetup(props) {
             newPlayer.hasInsurance = true;
         }
 
-        newPlayer.cash += newPlayer.startingSalary;
+        newPlayer.cash += newPlayer.startingSavings;
         newPlayer.key = GameState.currentPlayer;
 
         // Save player object to state
@@ -196,7 +196,7 @@ export default function GameSetup(props) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#e5eee3',
+        backgroundColor: '#f5f2e0',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',

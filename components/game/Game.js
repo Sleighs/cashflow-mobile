@@ -202,10 +202,9 @@ export default function Game(props) {
 const styles = StyleSheet.create({
     // Container
     container: {
-        backgroundColor: '#ebe9e3',
+        backgroundColor: '#e5eee3',
         flexDirection: "column",
         flex: 1,
-        //justifyContent: 'space-between',
         alignItems: 'center',
         alignContent: 'center',
         maxWidth: Dimensions.get('window').width,

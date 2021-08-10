@@ -93,18 +93,6 @@ const MidPhase = (props) => {
         setCost(cardInfo.cost)
     })
 
-    //get space type 
-        /* 
-        child
-        doodad
-        payday
-        downsize
-        offer
-        opportunity
-        charity
-         */
-
-
     return(
         <View style={styles.container}>
             <View style={styles.textContainer}>
@@ -146,7 +134,7 @@ const MidPhase = (props) => {
                     <View>
                         <Pressable style={styles.payBtn}
                             onPress={() =>{
-                                console.log('doodad clicked', GameState.currentDoodad)
+                                console.log('pay doodad clicked', GameState.currentDoodad)
 
                                 if (GameState.currentDoodad && (GameState.currentDoodad.cost < player.cash)){
                                     Calc.pay(GameState.currentPlayer, GameState.currentDoodad.cost)
@@ -160,9 +148,7 @@ const MidPhase = (props) => {
                                     // Continue to end turn phase
                                     GameState.turnPhase = 'end'
                                     setTurnPhase('end')
-                                } 
-                                
-                                if (GameState.currentDoodad && (GameState.currentDoodad.cost > player.cash)){
+                                } else if (GameState.currentDoodad && (GameState.currentDoodad.cost > player.cash)){
                                     // request loan
                                     console.log('get loan for doodad cost')
 
@@ -172,50 +158,48 @@ const MidPhase = (props) => {
                                     setDebtState('open')
                                     
                                     setRefresh(true)
-
-                                    /*
-                                        - check if player can get loan
-                                            - if yes 
-                                                - offer loan
-                                            - if no => bankruptcy
-                                                - check if player has assets to sell to cover costs
-                                                - must sell assets to bank at reduced value
-                                            
-                                        - if cannot cover costs
-                                            - game over
-                                    */    
                                 }
                             }}>
                             <Text>PAY</Text>
                         </Pressable>
                     </View>
                 ) : (<View></View>)}
-                {cardType === 'CHARITY' ? (
-                    <View>
-                        {player.cash < player.payday 
-                            ? <View></View>
+                {cardType === 'CHARITY' ? 
+                    <View style={{flexDirection: 'row',}}>
+                        {player.cash < (player.payday * .1)
+                            ? <View>
+                                <Text>${Main.numWithCommas(player.payday * .1)} needed for donation</Text>
+                            </View>
                             : <Pressable style={styles.donateBtn}
                                 onPress={() =>{
                                     console.log('donation received')
 
                                     GameState.events.push('3x charity turns added')
 
-                                    Calc.pay(GameState.currentPlayer, player.payday)
+                                    Calc.pay(GameState.currentPlayer, Math.round(player.payday * .1))
 
                                     player.charityTurns += 3;
                                     GameState.turnPhase = 'end';
 
-                                    GameState.turnResult = 'You paid $' + Main.numWithCommas(player.payday) + '. 3x Charity turns added'
+                                    GameState.turnResult = 'You paid $' + Main.numWithCommas(player.payday * .1) + '. 3x Charity turns added'
 
                                     setRefresh(true)
                                 }}>
                                 <Text>DONATE</Text>
                             </Pressable>
                         }
+                        <Pressable style={styles.continueBtn}
+                            onPress={() =>{
+                                GameState.turnPhase = 'end';
+                                setTurnPhase('end');
+
+                            }}>
+                            <Text style={{fontSize: 10}}>CONTINUE</Text>
+                        </Pressable>
                     </View>
-                ) : (<View></View>)}
-                {cardType === 'PAYDAY' ? (
-                    <View>
+                 : <View></View>}
+                {cardType === 'PAYDAY' 
+                    ? <View>
                         <Pressable style={styles.continueBtn}
                             onPress={() =>{
                                 GameState.events.push('$' + Main.numWithCommas(player.payday) + ' added to savings')
@@ -228,7 +212,7 @@ const MidPhase = (props) => {
                             <Text style={{fontSize: 10}}>CONTINUE</Text>
                         </Pressable>
                     </View>
-                ) : <View></View>}
+                    : <View></View>}
                 {cardType === 'CHILD' ? (
                     <View>
                         <Pressable style={styles.continueBtn}
@@ -253,24 +237,10 @@ const MidPhase = (props) => {
                         </Pressable>
                     </View>
                 ) : <View></View>}
-                
-                <Pressable style={[styles.continueBtn, {
-                    backgroundColor: '#e7d4d4',
-                }]}
-                    onPress={() =>{
-                        GameState.turnPhase = 'end';
-                        setTurnPhase('end');
-                    }}>
-                    <Text style={{
-                        fontSize: 8,
-                    }}>CONTINUE</Text>
-                </Pressable>
             </View>
         </View>
     )
 }
-
-
 
 const EndPhase = (props) => {
     const { setTurnPhase, turnResult } = props;

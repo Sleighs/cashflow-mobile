@@ -96,7 +96,7 @@ const Assets = (props) => {
                 <View style={styles.tableTitleContainer}>
                     <Text style={styles.tableTitle}>Assets</Text>
                 </View>
-                {player.stockAssets.map(item => {
+                {player.stockAssets.map((item, i) => {
                     // determine asset type
                     var stockPurchasedPrice;
                     var sharesOwned;
@@ -106,9 +106,9 @@ const Assets = (props) => {
                         sharesOwned = item.shares;
 
                         return ( 
-                            <View key={item.type} style={styles.assetsRow}>
-                                <Text style={styles.assetsName}>{item.shares} of {item.type}</Text>
-                                <Text style={styles.assetsAmount}> at ${Main.numWithCommas(item.price)}</Text>
+                            <View key={i} style={styles.assetsRow}>
+                                <Text style={styles.assetsName}>{item.shares} shares of {item.symbol}</Text>
+                                <Text style={styles.assetsAmount}> purchased at ${Main.numWithCommas(item.price)}</Text>
                             </View>
                             )
                     } else {
