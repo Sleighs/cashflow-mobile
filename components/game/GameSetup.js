@@ -196,7 +196,7 @@ export default function GameSetup(props) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#f5f2e0',
+        backgroundColor: '#f2f1ea',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',

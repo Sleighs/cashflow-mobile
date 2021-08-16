@@ -187,9 +187,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingVertical: 10,
         paddingHorizontal: 12,
-        borderRadius: 20,
+        borderRadius: 24,
         elevation: 3,
-        backgroundColor: '#a997a9',
+        backgroundColor: '#835387',
         marginTop: 25,
     },
     dreamSetText: {

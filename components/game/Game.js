@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Pressable, Dimensions, SafeAreaView, StatusBar } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import { View, Text, StyleSheet, Button, Pressable, Dimensions, SafeAreaView, StatusBar } from 'react-native'
+import { createStackNavigator } from '@react-navigation/stack'
 
 import Card from './Card'
 import Board from './Board'
@@ -15,7 +16,64 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getGameData, getUser } from '../../redux/reducers/rootReducer'
 import Calc from '../../js/Calc';
 import Main from '../../js/Main';
+import Stock from './Stock'
+/*
+const GameStack = createStackNavigator();
 
+function GameStackScreen(props) {
+  return (
+    <GameStack.Navigator 
+        initialRouteName={Screens[0].name}
+    >
+      {
+        Screens.map(screen => 
+            <GameStack.Screen
+                key={screen.name}
+                name={screen.name}
+                options={{
+                  headerShown: false,
+                }}
+                children={
+                    screen.component === DreamPhaseScreen ? (()=> <DreamPhase {...props}/>) :
+                        screen.component === RatRaceScreen ? (()=> <RatRace {...props}/>) :
+                            screen.component === StockScreen ? (()=> <Stock {...props}/>) :  
+                                screen.component === BankScreen ? (()=> <Bank {...props}/>) :   
+                                    <BankScreen {...props}/>
+                }
+            />)
+        }
+    </GameStack.Navigator>
+  );
+}
+
+const Screens = [
+    
+    {
+        name:'Dream',
+        iconType:'Material',
+        iconName:'user-friends',
+        component: DreamPhaseScreen
+    },
+    {
+        name:'Rat Race',
+        iconType:'Material',
+        iconName:'user-friends',
+        component: RatRaceScreen
+    },
+    {
+        name:'Bank',
+        iconType:'Material',
+        iconName:'user-friends',
+        component: BankScreen
+    },
+    {
+        name:'Stock',
+        iconType:'Material',
+        iconName:'user-friends',
+        component: StockScreen
+    },
+]
+*/
 const EventViewer = (props) => {
     const dispatch = useDispatch()
     const [showBtns, setShowBtns] = useState(false)
@@ -33,58 +91,59 @@ const EventViewer = (props) => {
                 <Text style={styles.eventViewerText}>{GameState.events[GameState.events.length - 1]}</Text>
             </View>
             {!showBtns 
-            ? <View></View>
-            : <View style={styles.eventViewerBtnContainer}>
-                <Pressable
-                    onPress={() => {
-                        setTimesPressed((current) => current + 1);
-                    }}
-                    style={({ pressed }) => [
-                        {
-                            backgroundColor: pressed
-                            ? 'rgb(210, 230, 255)'
-                            : 'white',
-                            borderRadius: 8,
-                            padding: 6
-                        }
-                    ]}>
-                    {({ pressed }) => (
-                        <Text style={styles.text}>
-                            {textLog + (pressed ? 'Pressed!' : 'Press Me')}
-                        </Text>
-                    )}
-                </Pressable>
-                <Pressable
-                    style={{
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        alignContent: 'center',
-                        height: 30,
-                        width: 90,
-                        borderRadius: 15,
-                        backgroundColor: '#ffffff',
-                    }}
-                    onPress={()=>{
-                        dispatch(getGameData(GameState))
-                    }}>
-                    <Text>Save State</Text>
-                </Pressable>
-                <Pressable
-                    style={{
-                        justifyContent: 'center',
-                        alignContent: 'center',
-                        textAlign: 'center',
-                        height: 30,
-                        width: 90,
-                        borderRadius: 15,
-                        backgroundColor: '#ffffff',
-                    }}
-                    onPress={()=>{
-                        console.log(store.getState())
-                    }}>
-                    <Text>Print State</Text>
-                </Pressable>
-            </View>}
+                ? <View></View>
+                : <View style={styles.eventViewerBtnContainer}>
+                    <Pressable
+                        onPress={() => {
+                            setTimesPressed((current) => current + 1);
+                        }}
+                        style={({ pressed }) => [
+                            {
+                                backgroundColor: pressed
+                                ? 'rgb(210, 230, 255)'
+                                : 'white',
+                                borderRadius: 8,
+                                padding: 6
+                            }
+                        ]}>
+                        {({ pressed }) => (
+                            <Text style={styles.text}>
+                                {textLog + (pressed ? 'Pressed!' : 'Press Me')}
+                            </Text>
+                        )}
+                    </Pressable>
+                    <Pressable
+                        style={{
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            alignContent: 'center',
+                            height: 30,
+                            width: 90,
+                            borderRadius: 15,
+                            backgroundColor: '#ffffff',
+                        }}
+                        onPress={()=>{
+                            dispatch(getGameData(GameState))
+                        }}>
+                        <Text>Save State</Text>
+                    </Pressable>
+                    <Pressable
+                        style={{
+                            justifyContent: 'center',
+                            alignContent: 'center',
+                            textAlign: 'center',
+                            height: 30,
+                            width: 90,
+                            borderRadius: 15,
+                            backgroundColor: '#ffffff',
+                        }}
+                        onPress={()=>{
+                            console.log(store.getState())
+                        }}>
+                        <Text>Print State</Text>
+                    </Pressable>
+                </View>
+            }
         </View>
     )
 }
@@ -104,6 +163,9 @@ const RatRacePhaseContainer = (props) => {
 
 export default function Game(props) {
     const player = GameState.players[GameState.currentPlayer];
+    const { navigation } = props
+
+    const [loaded, setLoaded] = useState(false);
     const [gamePhase, setPhase] = useState(null)
     const [turnPhase, setTurnPhase] = useState(null)
     const [data, setData] = useState(null)
@@ -120,10 +182,6 @@ export default function Game(props) {
 
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        Calc.updateStatement(GameState.currentPlayer)
-    })
-
     if (gamePhase === null){
         setPhase(GameState.gamePhase)
     } 
@@ -131,8 +189,51 @@ export default function Game(props) {
     if (refresh) {
         setRefresh(false)
     }
+
+    function useDidMount() {
+        const didMountRef = useRef(true);
+        
+        useEffect(() => {
+          didMountRef.current = false;
+        });
+
+        return didMountRef.current;
+    };
+
+    const didMount = useDidMount()
+
+    useEffect(() => {
+        /*if (didMount) {
+            console.log('mounted');
+          } else {
+            console.log('state updated');
+          }*/
+
+        Calc.updateStatement(GameState.currentPlayer)
+
+        //setLoaded(true)
+    })
+
+    /*if (!loaded){
+        return(
+          <View style={{ 
+            flex: 1,
+            justifyContent: 'center', 
+            backgroundColor: 'navy', 
+            textAlign: 'center', 
+            alignItems: 'center' 
+          }}>
+            <Text style={{ 
+              fontSize: 30, 
+              color: 'lightgray' 
+            }}>
+              Loading...
+            </Text>
+          </View>
+        );
+    }*/
     
-    if (GameState.gamePhase === "rat race") {    
+    if (GameState.gamePhase === "rat race") {
         return (
             <SafeAreaView style={{
                 flex: 1,
@@ -189,6 +290,7 @@ export default function Game(props) {
             }}>
                 <View style={styles.container}>
                     <EventViewer {...props}/>
+
                     <DreamPhaseContainer 
                         setPhase={setPhase} 
                         playerObj={GameState.players[GameState.currentPlayer]}
@@ -202,9 +304,10 @@ export default function Game(props) {
 const styles = StyleSheet.create({
     // Container
     container: {
-        backgroundColor: '#e5eee3',
+        backgroundColor: '#eaf0f2',
         flexDirection: "column",
         flex: 1,
+        zIndex: 3,
         alignItems: 'center',
         alignContent: 'center',
         maxWidth: Dimensions.get('window').width,
@@ -243,7 +346,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flex: 1,
     },
-
 
     // Rat Race
     ratRacePhaseContainer:{

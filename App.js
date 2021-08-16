@@ -42,7 +42,6 @@ import GameScreen from './components/game/Game'
 import GameSetup from './components/game/GameSetup'
 
 const Stack = createStackNavigator();
-const HomeStack = createStackNavigator();
 
 const styles = StyleSheet.create({
   container: {

@@ -7,11 +7,25 @@ import CardDeck from "./Cards";
 import GameState from "./GameState";
 
 var Main = {
+    rollDie: function(rollType) {
+        var num = 2//Math.floor(Math.random() * 6) + 1;
+        
+        if (rollType === 'double'){
+            num = num * 2;
+            GameState.players[GameState.currentPlayer].charityTurns -= 1;
+        }
+    
+        var text = 'You rolled a ' + num;
+        
+        GameState.events.push(text);
+    
+        return num;
+    },
     movePlayer: function(moveType) {
         var player = GameState.players[GameState.currentPlayer];
     
         // Roll dice
-        var dice = GameState.rollDie(moveType);
+        var dice = Main.rollDie(moveType);
         GameState.diceAmount = dice;
     
         // Get original player location
@@ -187,7 +201,11 @@ var Main = {
             case 'PAYDAY':
                 info = new midPhaseInfo(
                     'PAYDAY',
-                    'You\'ve earned $' + player.payday + ' this pay period.',
+                    (
+                        player.payday >= 0 
+                        ? 'You\'ve earned $' + player.payday + ' this pay period.'
+                        : 'You\'ve paid $' + player.payday + ' to the bank this pay period.' 
+                    ),
                     '', 
                     '', 
                     '',

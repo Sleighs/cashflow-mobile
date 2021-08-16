@@ -1,40 +1,46 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Pressable, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, Pressable, StyleSheet, Button, Dimensions } from 'react-native'
+import { useNavigation } from '@react-navigation/native';
 
 import GameState from '../../js/GameState';
 import Main from '../../js/Main';
 import Calc from '../../js/Calc';
 
-const Stock = (props) => {   
-    const { type, setTurnPhase, setRefresh } = props
+const Stocks = (props) => {   
+    const { type, setTurnPhase, setRefresh, navigation } = props
 
     const [sharesOwned, setSharesOwned] = useState(0)
     const [sharePrice, setSharePrice] = useState(null)
     const [shareAmount, setShareAmount] = useState(0)
     const [buyBtns, setBuyBtns] = useState(false)
     const [sellBtns, setSellBtns] = useState(false)
+    const [buyStockScreen, setBuyStockScreen] = useState(false)
+    const [sellStockScreen, setSellStockScreen] = useState(false)
+    const [purchaseType, setPurchaseType] = useState(null)
 
     const stock = GameState.currentDeal;
     const player = GameState.players[GameState.currentPlayer];
 
-    
-
     useEffect(() => {
+        if (type === "Mutual Fund" || type === "Stock" || type === "Preferred Stock"){
+            
+            // Get total number of shares owned from player array
+            let stockAssetsSearch = player.stockAssets.find(item => {
+                if (item && item.type === type /*&& item.price === GameState.currentDeal.price*/){
+                    GameState.currentDeal.sharesOwned = item.shares
 
-        let stockAssetsSearch = player.stockAssets.find(item => {
+                } 
+            })
+            console.log('stock search', GameState.currentDeal.sharesOwned )
 
-            if (item && item.type === type && item.price === GameState.currentDeal.price){
-                setSharesOwned(item.shares)
-            } 
-
-        })
-        //check shares owned
-        setSharePrice(GameState.currentDeal.price)
-        //setShareAmount(GameState.currentDeal.amount)
-
+            if (GameState.currentDeal.sharesOwned ){
+                setSharesOwned(GameState.currentDeal.sharesOwned)
+            }
+           
+            //check shares owned
+            setSharePrice(GameState.currentDeal.price)
+        }
     })
-
-
 
     return (
         <View style={styles.stockContainer}>
@@ -45,154 +51,17 @@ const Stock = (props) => {
                 <Text>Cost: ${stock.price}</Text>
                 <Text>Trading Range: {stock.range}</Text>
                 <Text>Shares Owned: {sharesOwned}</Text>
-                {
-                    !buyBtns 
-                    ? <Text></Text> 
-                    : <Text>Purchase {shareAmount} at ${stock.price} for ${Main.numWithCommas(shareAmount * stock.price)}?</Text>
-                }
-                {
-                    !sellBtns 
-                    ? <Text></Text> 
-                    : <Text>Sell {shareAmount} at ${stock.price} for ${Main.numWithCommas(shareAmount * stock.price)}?</Text>
-                }
-                
-            </View>
-            
-            <View style={styles.sharesBtnContainer}>
-                {!buyBtns 
-                ? <View></View> 
-                : <View style={{
-                    flexDirection: 'row',
-                }}>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if (shareAmount - 100 > 0){
-                                setShareAmount(shareAmount - 100)
-                            }
-                        }}>
-                        <Text>-100</Text>
-                    </Pressable>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if (shareAmount - 10 > 0){
-                                setShareAmount(shareAmount - 10)
-                            }
-                        }}>
-                        <Text>-10</Text>
-                    </Pressable>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if ((shareAmount + 10) * stock.price < player.cash){
-                                setShareAmount(shareAmount + 10)
-                            }
-                        }}>
-                        <Text>+10</Text>
-                    </Pressable>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if ((shareAmount + 100) * stock.price < player.cash){
-                                setShareAmount(shareAmount + 100)
-                            }
-                        }}>
-                        <Text>+100</Text>
-                    </Pressable>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
-
-                            if (shareAmount > 0 && player.cash >= (sharePrice * shareAmount)){
-                                Calc.buyStock( GameState.currentPlayer, type, sharePrice, shareAmount) 
-                            } else {
-                                console.log('cannot afford stockpurchase')
-                            }
-
-                            setBuyBtns(false)
-                            setSellBtns(false)
-
-                            setRefresh(true)
-                        }}>
-                        <Text>Purchase</Text>
-                    </Pressable>
-                </View>}    
-
-                {!sellBtns 
-                ? <View></View> 
-                : <View style={{
-                    flexDirection: 'row',
-                }}>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if (shareAmount - 100 > 0){
-                                setShareAmount(shareAmount - 100)
-                            }
-                        }}>
-                        <Text>-100</Text>
-                    </Pressable>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if (shareAmount - 10 > 0){
-                                setShareAmount(shareAmount - 10)
-                            }
-                        }}>
-                        <Text>-10</Text>
-                    </Pressable>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if ((shareAmount + 10) <= sharesOwned){
-                                setShareAmount(shareAmount + 10)
-                            }
-                        }}>
-                        <Text>+10</Text>
-                    </Pressable>
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            if ((shareAmount + 100) <= sharesOwned){
-                                setShareAmount(shareAmount + 100)
-                            }
-                        }}>
-                        <Text>+100</Text>
-                    </Pressable>
-
-                    {
-                        //map stock assets and display button for each 
-                        player.stockAssets.map((item, i) => {
-
-                            if (item && item.symbol === stock.symbol){
-                                return (
-                                    <Pressable style={styles.buySharesBtn}
-                                        key={i}
-                                        onPress={() => {
-                                            console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
-                                            Calc.sellStock(GameState.currentPlayer, type, shareAmount, item.price, sharePrice,)
-                                            
-                                            setBuyBtns(false)
-                                            setSellBtns(false)
-    
-                                            setRefresh(true)
-                                        }}>
-                                        <Text>Sell {shareAmount}x for {shareAmount * sharePrice}</Text>
-                                    </Pressable>
-                                )
-                            } else {
-                                return (<View></View>)
-                            }
-                        })
-                    }
-                </View>}
             </View>
 
             <View style={styles.btnContainer}>
-                <Pressable style={(!buyBtns ? styles.buySharesBtn : styles.buySharesOnBtn)}
+                <Pressable style={styles.buySharesBtn}
                     onPress={() => {
                         console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
                         
-                        if (!buyBtns){
-                            setBuyBtns(true)
-                        } else {
-                            setBuyBtns(false)
-                        }   
-                        
-                        setSellBtns(false)
+                        GameState.stockPurchaseType = 'buy'
+
+                        navigation.navigate('Stock')
+                        setPurchaseType('buy')
 
                         setRefresh(true)
                     }}>
@@ -200,17 +69,15 @@ const Stock = (props) => {
                 </Pressable>
 
                 {sharesOwned 
-                ? <Pressable style={(!sellBtns ? styles.sellSharesBtn : styles.sellSharesOnBtn)}
+                ? <Pressable style={styles.sellSharesBtn}
                     onPress={() => {
+
                         console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
                         
-                        if (!sellBtns){
-                            setSellBtns(true)
-                        } else {
-                            setSellBtns(false)
-                        }   
+                        GameState.stockPurchaseType = 'sell'
 
-                        setBuyBtns(false)
+                        navigation.navigate('Stock')
+                        setPurchaseType('sell')
 
                         setRefresh(true)
                     }}>
@@ -234,12 +101,28 @@ const Stock = (props) => {
 const RealEstate = (props) => {
     const { type } = props
 
+    /*
+    type
+    name
+    description
+    rule
+    roi
+    cost
+    downpayment
+    mortgage
+    cashflow
+    tag
+    landtype
+
+    
+    */
+
     return (
         <View>
             <Text>{type}</Text>
 
             <View style={styles.btnContainer}>
-                <Pressable style={styles.payBtn}
+                <Pressable style={styles.buyBtn}
                     onPress={() => {
                         
                     }}>
@@ -259,6 +142,7 @@ const RealEstate = (props) => {
 
 const Deal = (props) => {
     const { setTurnPhase , type } = props;
+    const navigation = useNavigation();
 
     useEffect(()=>{
         
@@ -290,10 +174,7 @@ const Deal = (props) => {
 
         */
 
-
-
         console.log('deal type: ', type)
-
     })
 
     // 
@@ -302,10 +183,12 @@ const Deal = (props) => {
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 {type === "Mutual Fund" || type === "Stock" 
-                    ? <Stock type={type} {...props} /> 
+                    ? <Stocks type={type} {...props} navigation={navigation} /> 
                     : type === "Real Estate" 
                         ? <RealEstate type={type} {...props} /> 
-                        : <View><Text>Deal - {type}</Text></View>}
+                        : <View>
+                            <Text>Deal - {type}</Text>
+                        </View>}
             </View>
         </View>
     )
@@ -366,7 +249,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignContent: 'center',
         height: 40,
-        paddingHorizontal: 12,
+        paddingHorizontal: 22,
         borderRadius: 22,
         elevation: 3,
         backgroundColor: 'white',
@@ -388,7 +271,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignContent: 'center',
         height: 40,
-        paddingHorizontal: 12,
+        paddingHorizontal: 22,
         borderRadius: 22,
         elevation: 3,
         backgroundColor: 'white',

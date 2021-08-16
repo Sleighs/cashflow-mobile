@@ -3,14 +3,7 @@ import { View, Text } from 'react-native'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createStackNavigator } from '@react-navigation/stack'
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
-import {
-    createDrawerNavigator,
-    DrawerContentScrollView,
-    DrawerItemList,
-    DrawerItem,
-  } from '@react-navigation/drawer';
-import { getHeaderTitle } from '@react-navigation/elements';
+import { useNavigation } from '@react-navigation/native'
 
 import { connect, useDispatch } from 'react-redux'
 import store from '../redux/store'
@@ -21,17 +14,26 @@ import firebase from 'firebase'
 import Home from './game/Home'
 import GameSetup from './game/GameSetup'
 import Game from './game/Game'
+import Stock from './game/Stock'
 
 import HomeScreen from './game/Home'
 import GameSetupScreen from './game/GameSetup'
 import GameScreen from './game/Game'
+import StockScreen from './game/Stock'
 import ProfileScreen from './main/Profile'
 import DebugScreen from './main/Debug'
-import DrawerHeader from './game/DrawerHeader'
+
 
 const HomeStack = createStackNavigator();
 
 function HomeStackScreen(props) {
+
+  const navigation = useNavigation();
+
+  useEffect(()=>{
+    //console.log('homestacknav: ', navigation)
+    })
+
   return (
     <HomeStack.Navigator 
         initialRouteName={Screens[0].name}
@@ -41,14 +43,15 @@ function HomeStackScreen(props) {
             <HomeStack.Screen
                 key={screen.name}
                 name={screen.name}
-                //component={screen.component}
                 options={{
                   headerShown: false,
                 }}
                 children={
-                    screen.component === HomeScreen ? (()=> <Home {...props}/>) :
-                        screen.component === GameSetupScreen ? (()=> <GameSetup {...props}/>) :
-                            screen.component === GameScreen ? (()=> <Game {...props}/>) : <Home {...props}/>
+                    screen.component === HomeScreen ? (()=> <Home {...props} navigation={navigation}/>) :
+                    screen.component === GameSetupScreen ? (()=> <GameSetup {...props}/>) :
+                    screen.component === GameScreen ? (()=> <Game {...props} navigation={navigation}/>) :  
+                    screen.component === StockScreen ? (()=> <Stock {...props} navigation={navigation}/>) :                                    
+                        <Home {...props}/>
                 }
             />)
         }
@@ -74,6 +77,12 @@ const Screens = [
         iconType:'Material',
         iconName:'user-friends',
         component: GameSetupScreen
+    },
+    {
+        name:'Stock',
+        iconType:'Material',
+        iconName:'user-friends',
+        component: StockScreen
     },
 ]
 

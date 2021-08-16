@@ -94,28 +94,27 @@ const Assets = (props) => {
         }}>
             <View style={styles.assetsContainer}>
                 <View style={styles.tableTitleContainer}>
-                    <Text style={styles.tableTitle}>Assets</Text>
+                    <Text style={styles.tableTitle}>Stocks</Text>
                 </View>
                 {player.stockAssets.map((item, i) => {
                     // determine asset type
-                    var stockPurchasedPrice;
-                    var sharesOwned;
-
                     if (item && (item.type === 'Mutual Fund' || item.type === 'Stock' || item.type === 'Preferred Stock')){
-                        stockPurchasedPrice = item.price;
-                        sharesOwned = item.shares;
-
                         return ( 
                             <View key={i} style={styles.assetsRow}>
-                                <Text style={styles.assetsName}>{item.shares} shares of {item.symbol}</Text>
-                                <Text style={styles.assetsAmount}> purchased at ${Main.numWithCommas(item.price)}</Text>
+                                <Text style={styles.assetsName}>{item.symbol} {item.type}</Text>
+                                <Text style={styles.assetsAmount}>{item.shares} shares</Text>
                             </View>
                             )
                     } else {
-                        return(<View></View>)
+                        
+                        return //(<View></View>)
                     } 
-                    
+
+                    //add onclick to see receipt of purchases per symbol
                 })}
+                <View style={styles.tableTitleContainer}>
+                    <Text style={styles.tableTitle}>Real Estate</Text>
+                </View>
             </View>
         </ScrollView>
     )
@@ -260,8 +259,8 @@ const Expenses = (props) => {
                     <Text style={styles.expensesCost}>${Main.numWithCommas(item.payment)}</Text>
                 </View>
             )}
-            {player.children > 0? 
-                <View style={styles.expensesRow}>
+            {player.children > 0 
+                ? <View style={styles.expensesRow}>
                     <Text style={styles.expensesName}>Children {'(' + String(player.children) + 'x)'}</Text>
                     <Text style={styles.expensesCost}>${Main.numWithCommas(player.childExpense)}</Text>
                 </View> 
@@ -374,7 +373,7 @@ const styles = StyleSheet.create({
     summaryRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 3,
+        marginVertical: 4,
         backgroundColor: '#ffffff',
         paddingHorizontal: 12,
         paddingVertical: 8,
@@ -389,7 +388,7 @@ const styles = StyleSheet.create({
     incomeRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 3,
+        marginVertical: 4,
         //borderBottomColor: '#ffffff',
         backgroundColor: '#ffffff',
         paddingHorizontal: 12,
@@ -408,7 +407,7 @@ const styles = StyleSheet.create({
     assetsRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 3,
+        marginVertical: 4,
         //borderBottomColor: '#ffffff',
         backgroundColor: '#ffffff',
         paddingHorizontal: 12,
@@ -427,7 +426,7 @@ const styles = StyleSheet.create({
     expensesRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 3,
+        marginVertical: 4,
         backgroundColor: '#ffffff',
         paddingHorizontal: 12,
         paddingVertical: 8,
@@ -449,7 +448,7 @@ const styles = StyleSheet.create({
     bankRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 3,
+        marginVertical: 4,
         backgroundColor: '#ffffff',
         paddingHorizontal: 12,
         paddingVertical: 8,

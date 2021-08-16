@@ -147,7 +147,7 @@ var Calc = {
         // Check for previous stock in player assets
         let assetObj = player.stockAssets.find((item, i) => {
             // If stock exists pay and add shares to current amount
-            if (item && item.type === type && item.price === price){
+            if (item && item.type === type /*&& item.price === price*/){
                 alreadyOwned = true;
                 player.cash -= price * amount;
                 item.shares += amount;
@@ -162,13 +162,19 @@ var Calc = {
                 type: type,
                 symbol: GameState.currentDeal.symbol,
                 shares: amount,
-                price: price
-            })
+                purchasePrice: [],
+            }) 
         }
+
+        let findStock = player.stockAssets.find((item) => {
+            if (item && item.type === type){
+                item.purchasePrice.push([price, amount])
+            }  
+        })
 
         GameState.events.push(amount + ' shares of ' + GameState.currentDeal.symbol + ' purchased at ' + price)
 
-        console.log('buy stock ', player.stockAssets, alreadyOwned)
+        console.log('buy stock ', player.stockAssets)
     },
     sellStock: function(currentPlayer, type, amount, oldPrice, newPrice){
         const player = GameState.players[currentPlayer]
@@ -177,12 +183,13 @@ var Calc = {
         var removeIndex = null;
         let assetObj = player.stockAssets.find((item, i) => {
             // If stock exists pay and add shares to current amount
-            if (item && item.type === type && item.price === oldPrice){
+            if (item && item.type === type /*&& item.price === oldPrice*/){
                 player.cash += newPrice * amount;
                 item.shares -= amount;
             } 
 
             if (item && item.shares === 0){
+                console.log('item', item)
                 removeIndex = i
             }
         });

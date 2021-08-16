@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Pressable, StyleSheet, Dimensions } from 'react-native'
+import { useNavigation } from '@react-navigation/native';
+
 import { useDispatch } from 'react-redux';
 import { getGameData } from '../../redux/reducers/rootReducer';
 
-import BoardSpaces from '../../js/BoardSpaces';
 import GameState from '../../js/GameState';
 import Main from '../../js/Main';
 import Calc from '../../js/Calc';
@@ -267,7 +268,6 @@ const EndPhase = (props) => {
                 <Pressable style={styles.endBtn} 
                     onPress={()=>{
                         Main.nextTurn();
-                        //Main.endTurn();
                         setTurnPhase('roll')
                     }}>
                     <Text>END TURN</Text>
@@ -279,6 +279,7 @@ const EndPhase = (props) => {
 
 const Card = (props) => {
     const player = GameState.players[GameState.currentPlayer];
+
     const { setCardInfo } = props;
 
     useEffect(()=>{

@@ -24,22 +24,8 @@ var GameState = {
         open: false,
         type: null,
     },
+    alert: false,
 };
-
-GameState.rollDie = (rollType)=>{
-    var num = Math.floor(Math.random() * 6) + 1;
-    
-    if (rollType === 'double'){
-        num = num * 2;
-        GameState.players[GameState.currentPlayer].charityTurns -= 1;
-    }
-
-    var text = 'You rolled a ' + num;
-    
-    GameState.events.push(text);
-
-    return num;
-}
 
 GameState.checkOccupiedSpaces = (space)=>{
     if (space.players.length > 0){
