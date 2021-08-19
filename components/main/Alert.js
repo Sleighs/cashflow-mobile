@@ -10,9 +10,16 @@ const Alert = (props) => {
         confirmBtnText, 
         returnBtnText,
         btns,
+        refresh,
         setRefresh, 
         navigation 
     } = props
+
+    useEffect(() => {
+        if (refresh){
+            setRefresh(false)
+        }
+    })
 
     return (
         <View style={styles.page}>
@@ -53,7 +60,7 @@ const Alert = (props) => {
     )
 }
 
-//dim screen
+// dim screen
 // get dimensions
 
 const styles = StyleSheet.create({
@@ -63,10 +70,10 @@ const styles = StyleSheet.create({
         zIndex: 5,
         //opacity: .2,
         //backgroundColor: 'gray',
-        backgroundColor: 'transparent',
+        //backgroundColor: 'transparent',
     },
     container: {
-        marginVertical: '40%',
+        marginVertical: '45%',
         width: '90%',
         height: 275,
         justifyContent: 'center',
@@ -75,7 +82,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: 'white',
         alignContent: 'center',
-        
+        marginHorizontal: '5%',
         paddingBottom: 20,
         flex: 1,
     },
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 25,
     },  
     message: {
-        fontSize: 16
+        fontSize: 16,
     },
     btnContainer: {
         flexDirection: 'row',

@@ -14,7 +14,6 @@ import Chart from './Chart';
 import StatementDebug from './StatementDebug';
 
 
-
 const Summary = (props) => {
     const player = GameState.players[GameState.currentPlayer];
 
@@ -98,7 +97,7 @@ const Assets = (props) => {
                 </View>
                 {player.stockAssets.map((item, i) => {
                     // determine asset type
-                    if (item && (item.type === 'Mutual Fund' || item.type === 'Stock' || item.type === 'Preferred Stock')){
+                    if (item && item.shares > 0 && (item.type === 'Mutual Fund' || item.type === 'Stock' || item.type === 'Preferred Stock')){
                         return ( 
                             <View key={i} style={styles.assetsRow}>
                                 <Text style={styles.assetsName}>{item.symbol} {item.type}</Text>
@@ -106,8 +105,7 @@ const Assets = (props) => {
                             </View>
                             )
                     } else {
-                        
-                        return //(<View></View>)
+                        return
                     } 
 
                     //add onclick to see receipt of purchases per symbol
@@ -287,6 +285,7 @@ function StatementTabs(props) {
         initialLayout={{ 
             width: '100%', 
         }}
+        lazy={true}
     >
         <StatementTab.Screen 
             name="Summary"  

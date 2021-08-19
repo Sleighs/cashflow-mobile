@@ -7,13 +7,17 @@ import Main from '../../js/Main';
 import Calc from '../../js/Calc';
 
 const Stocks = (props) => {   
-    const { type, setTurnPhase, setRefresh, navigation } = props
+    const { 
+        type, 
+        setTurnPhase, 
+        refresh, 
+        setRefresh, 
+        navigation 
+    } = props
 
     const [sharesOwned, setSharesOwned] = useState(0)
     const [sharePrice, setSharePrice] = useState(null)
     const [shareAmount, setShareAmount] = useState(0)
-    const [buyBtns, setBuyBtns] = useState(false)
-    const [sellBtns, setSellBtns] = useState(false)
     const [buyStockScreen, setBuyStockScreen] = useState(false)
     const [sellStockScreen, setSellStockScreen] = useState(false)
     const [purchaseType, setPurchaseType] = useState(null)
@@ -23,17 +27,14 @@ const Stocks = (props) => {
 
     useEffect(() => {
         if (type === "Mutual Fund" || type === "Stock" || type === "Preferred Stock"){
-            
             // Get total number of shares owned from player array
             let stockAssetsSearch = player.stockAssets.find(item => {
-                if (item && item.type === type /*&& item.price === GameState.currentDeal.price*/){
+                if (item && item.type === type){
                     GameState.currentDeal.sharesOwned = item.shares
-
                 } 
             })
-            console.log('stock search', GameState.currentDeal.sharesOwned )
 
-            if (GameState.currentDeal.sharesOwned ){
+            if (GameState.currentDeal.sharesOwned && GameState.currentDeal.sharesOwned > 0){
                 setSharesOwned(GameState.currentDeal.sharesOwned)
             }
            
@@ -56,30 +57,23 @@ const Stocks = (props) => {
             <View style={styles.btnContainer}>
                 <Pressable style={styles.buySharesBtn}
                     onPress={() => {
-                        console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
-                        
                         GameState.stockPurchaseType = 'buy'
+                        setPurchaseType('buy')
+                        setRefresh(true)
 
                         navigation.navigate('Stock')
-                        setPurchaseType('buy')
-
-                        setRefresh(true)
                     }}>
                     <Text>Buy</Text>
                 </Pressable>
-
                 {sharesOwned 
                 ? <Pressable style={styles.sellSharesBtn}
                     onPress={() => {
-
-                        console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
-                        
                         GameState.stockPurchaseType = 'sell'
 
-                        navigation.navigate('Stock')
                         setPurchaseType('sell')
-
                         setRefresh(true)
+
+                        navigation.navigate('Stock')
                     }}>
                     <Text>Sell</Text>
                 </Pressable>
@@ -87,7 +81,7 @@ const Stocks = (props) => {
                 
                 <Pressable
                     style={styles.doneBtn}
-                    onPress={()=>{
+                    onPress={() => {
                         GameState.turnPhase = 'end';
                         setTurnPhase('end')
                     }}>
@@ -113,14 +107,11 @@ const RealEstate = (props) => {
     cashflow
     tag
     landtype
-
-    
     */
 
     return (
         <View>
             <Text>{type}</Text>
-
             <View style={styles.btnContainer}>
                 <Pressable style={styles.buyBtn}
                     onPress={() => {
@@ -141,11 +132,10 @@ const RealEstate = (props) => {
 }
 
 const Deal = (props) => {
-    const { setTurnPhase , type } = props;
+    const { setTurnPhase , type, refresh, setRefresh } = props;
     const navigation = useNavigation();
 
     useEffect(()=>{
-        
         /*
         mutual
         
@@ -174,18 +164,20 @@ const Deal = (props) => {
 
         */
 
+        if (refresh){
+            setRefresh(false)
+        }
+
         console.log('deal type: ', type)
     })
-
-    // 
 
     return(
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 {type === "Mutual Fund" || type === "Stock" 
-                    ? <Stocks type={type} {...props} navigation={navigation} /> 
+                    ? <Stocks type={type} navigation={navigation} {...props} /> 
                     : type === "Real Estate" 
-                        ? <RealEstate type={type} {...props} /> 
+                        ? <RealEstate type={type} navigation={navigation} {...props} /> 
                         : <View>
                             <Text>Deal - {type}</Text>
                         </View>}

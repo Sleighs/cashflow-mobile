@@ -70,12 +70,12 @@ var Main = {
     
         Main.loadCard(space.field, GameState.currentPlayer)
     
-        console.log('move info', {
+        /*console.log('move info', {
             dice: dice,
             prevSpace: player.currentSpace,
             newSpace: newSpace,
             boardSpace: BoardSpaces[player.currentSpace - 1],
-        })
+        })*/
     },
     endTurn: function() {
         var player = GameState.players[GameState.currentPlayer];

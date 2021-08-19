@@ -139,66 +139,83 @@ var Calc = {
         // Update statement
         Calc.updateStatement(currentPlayer)
     },
-    buyStock: function (currentPlayer, type, price, amount) {
+    buyStock: function (currentPlayer, type, symbol, price, shares, saleRecord) {
         const player = GameState.players[currentPlayer]
 
         var alreadyOwned = false;
+        var record = saleRecord;
 
         // Check for previous stock in player assets
         let assetObj = player.stockAssets.find((item, i) => {
             // If stock exists pay and add shares to current amount
-            if (item && item.type === type /*&& item.price === price*/){
+            if (item && item.symbol === symbol /*&& item.price === price*/){
                 alreadyOwned = true;
-                player.cash -= price * amount;
-                item.shares += amount;
+                player.cash -= price * shares;
+                item.shares += shares;
+                item.transactions.push(saleRecord)
             }  
         });
 
-        // If already owned add new stock to assets
+        // If not already owned add new stock to assets
         if (!alreadyOwned) {
-            player.cash -= price * amount;
+            player.cash -= price * shares;
 
             player.stockAssets.push({
                 type: type,
-                symbol: GameState.currentDeal.symbol,
-                shares: amount,
-                purchasePrice: [],
+                symbol: symbol,
+                shares: shares,
+                transactions: [],
             }) 
         }
 
+        // Save transactions details
         let findStock = player.stockAssets.find((item) => {
-            if (item && item.type === type){
-                item.purchasePrice.push([price, amount])
+            if (item && item.symbol === symbol){
+                record.newBalance = player.cash;
+                record.totalShares = item.shares;
+
+                item.transactions.push(record)
             }  
         })
 
-        GameState.events.push(amount + ' shares of ' + GameState.currentDeal.symbol + ' purchased at ' + price)
+        // Save event
+        GameState.events.push(shares + ' shares of ' + symbol + ' purchased at ' + price)
 
         console.log('buy stock ', player.stockAssets)
     },
-    sellStock: function(currentPlayer, type, amount, oldPrice, newPrice){
+    sellStock: function(currentPlayer, type, symbol, sharesToSell, purchasePrice, saleRecord){
         const player = GameState.players[currentPlayer]
 
         // Check for previous stock in player assets
         var removeIndex = null;
-        let assetObj = player.stockAssets.find((item, i) => {
-            // If stock exists pay and add shares to current amount
-            if (item && item.type === type /*&& item.price === oldPrice*/){
-                player.cash += newPrice * amount;
-                item.shares -= amount;
-            } 
 
+        var record = saleRecord;
+
+        let assetObj = player.stockAssets.find((item, i) => {
+            // If stock exists add payment and subtract shares from owned shares
+            if (item && item.symbol === symbol){
+                player.cash += purchasePrice * sharesToSell;
+                item.shares -= sharesToSell;
+                record.newBalance = player.cash;
+                record.totalShares = item.shares;
+                item.transactions.push(record)
+                
+            } 
+            /*
             if (item && item.shares === 0){
                 console.log('item', item)
                 removeIndex = i
             }
+            */
         });
 
+        /*
         if (removeIndex){
             player.stockAssets.splice(removeIndex, 1);
         }
+        */
 
-        GameState.events.push(amount + ' shares of ' + GameState.currentDeal.symbol + ' sold at ' + newPrice)
+        GameState.events.push(sharesToSell + ' shares of ' + symbol + ' sold at ' + purchasePrice)
 
         console.log('sold stock ', player.stockAssets)
     },

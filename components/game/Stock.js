@@ -5,13 +5,13 @@ import GameState from '../../js/GameState';
 import Main from '../../js/Main';
 import Calc from '../../js/Calc';
 import Alert from '../main/Alert';
+import { Games } from '@material-ui/icons';
 
 const Stock = (props) => {
     const player = GameState.players[GameState.currentPlayer];
     const { navigation } = props;
     const purchaseType = GameState.stockPurchaseType;
-    const salePrice = GameState.currentDeal.price;
-
+    
     const [refresh, setRefresh] = useState(false)
     const [amountToTrade, setAmountToTrade] = useState(0)
     const [sharesToTrade, setSharesToTrade] = useState(0)
@@ -62,12 +62,21 @@ const Stock = (props) => {
     }
 
     const getMax = () => {
-        var max = Math.floor(player.cash / GameState.currentDeal.price)
+        var max;
 
-        setAmountToTrade(max * GameState.currentDeal.price)
+        if (purchaseType === 'buy'){
+            max = Math.floor(player.cash / GameState.currentDeal.price)
+
+            setAmountToTrade(max * GameState.currentDeal.price)
+            setSharesToTrade((player.cash / GameState.currentDeal.price) - (player.cash % GameState.currentDeal.price))
+
+        } else if (purchaseType === 'sell'){
+            max = GameState.currentDeal.sharesOwned
+
+            setSharesToTrade(max)
+            setAmountToTrade(GameState.currentDeal.price * max)
+        }
         
-        setSharesToTrade((player.cash / GameState.currentDeal.price) - (player.cash % GameState.currentDeal.price))
-
         setRefresh(true)
 
         console.log('max: ', max, sharesToTrade, amountToTrade)
@@ -103,46 +112,60 @@ const Stock = (props) => {
     }
 
     useEffect(() => {
+        let assetObj = player.stockAssets.find((item, i) => {
+            // If stock exists add payment and subtract shares from owned shares
+            if (item && item.symbol === GameState.currentDeal.symbol){
+                GameState.currentDeal.ownedShares = item.shares;
+            } 
+        });
+
         if (refresh) {
-            
             setRefresh(false)
         } 
 
-        // get stock for currentDeal.symbol
+
     })
+
+    if (GameState.alert && purchaseType === 'buy'){
+        return(
+            <Alert {...props} 
+                title={'Stock Purchase'} 
+                message={'You purchased ' + purchase.shares + ' shares of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(purchase.cost)} 
+                confirmBtnText={'Buy More'} 
+                returnBtnText={'Done'}
+                setRefresh={setRefresh}
+                refresh={refresh}
+                btns={{
+                    confirm: player.cash >= GameState.currentDeal.price
+                        ? true
+                        : false
+                    ,
+                    return: true,
+                }}
+            />
+        )
+    } else if (GameState.alert && purchaseType === 'sell'){
+        return (
+            <Alert {...props} 
+                title={'Stock Sale'} 
+                message={'You sold ' + purchase.shares + ' shares of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(purchase.cost)} 
+                confirmBtnText={'Sell More'} 
+                returnBtnText={'Done'}
+                setRefresh={setRefresh}
+                refresh={refresh}
+                btns={{
+                    confirm: GameState.currentDeal.sharesOwned && GameState.currentDeal.sharesOwned > 0 
+                        ? true
+                        : false
+                    ,
+                    return: true,
+                }}
+            />
+        )
+    }
 
     return ( 
         <View style={styles.container}>
-            {GameState.alert && GameState.stockPurchaseType === 'buy'
-                ? <Alert {...props} 
-                    title={'Stock Purchase'} 
-                    message={'You purchased ' + purchase.shares + ' shares of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(purchase.cost)} 
-                    confirmBtnText={'Ok'} 
-                    returnBtnText={'Done'}
-                    setRefresh={setRefresh}
-                    refresh={refresh}
-                    btns={{
-                        confirm: true,
-                        return: true,
-                    }}
-                />
-                : <View></View>
-            }
-            {GameState.alert && GameState.stockPurchaseType === 'sell'
-                ? <Alert {...props} 
-                    title={'Stock Sale'} 
-                    message={'You sold ' + purchase.shares + ' shares of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(saleAmount)} 
-                    confirmBtnText={'Ok'} 
-                    returnBtnText={'Done'}
-                    setRefresh={setRefresh}
-                    refresh={refresh}
-                    btns={{
-                        confirm: true,
-                        return: true,
-                    }}
-                />
-                : <View></View>
-            }
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -161,10 +184,10 @@ const Stock = (props) => {
                             setOrderOption('Shares')
                         }
                     }}>
-                        <Text>{orderOption}</Text>
-                        <MaterialCommunityIcons name="chevron-down" color={'blue'} size={20}
-                            style={{marginLeft: 5,}}/>
-                    </Pressable>
+                    <Text>{orderOption}</Text>
+                    <MaterialCommunityIcons name="chevron-down" color={'blue'} size={20}
+                        style={{marginLeft: 5,}}/>
+                </Pressable>
             </View>
             
             <View style={styles.amountContainer}>
@@ -176,12 +199,17 @@ const Stock = (props) => {
                             textAlign: 'center',
                             fontSize: 22,
                         }]}>
-                            {
-                                sharesToTrade === 0 || parseInt(amountToTrade) === 0
-                                ? ''
-                                : amountToTrade <= player.cash 
-                                    ? 'Buy ' + sharesToTrade + ' shares for $' + Main.numWithCommas(parseInt(amountToTrade))
-                                    : 'Not enough funds. $' + (Main.numWithCommas(parseInt(amountToTrade) - player.cash)) + ' required.'
+                            {   purchaseType === 'buy'
+                                ? sharesToTrade === 0 || parseInt(amountToTrade) === 0
+                                    ? ''
+                                    : amountToTrade <= player.cash 
+                                        ? 'Buy ' + sharesToTrade + ' shares for $' + Main.numWithCommas(parseInt(amountToTrade))
+                                        : 'Not enough funds. $' + (Main.numWithCommas(parseInt(amountToTrade) - player.cash)) + ' required.'
+                                : sharesToTrade === 0 || parseInt(amountToTrade) === 0
+                                    ? ''
+                                    : amountToTrade <= player.cash 
+                                        ? 'Sell ' + sharesToTrade + ' shares for $' + Main.numWithCommas(parseInt(amountToTrade))
+                                        : ''
                             }
                         </Text>
                     </View>
@@ -194,13 +222,11 @@ const Stock = (props) => {
                                 : sharesToTrade
                             }
                         </Text>
-                    
                     </View>
                     <View style={styles.amtContainerRow}>
                         <Text style={styles.amtContainerText}>Share Price</Text>
                         <Text style={styles.amtContainerText}>${GameState.currentDeal.price}</Text>
                     </View>
-                    
                 </View>
                 
                 {purchaseType === 'buy'
@@ -213,12 +239,20 @@ const Stock = (props) => {
                                     Calc.buyStock( 
                                         GameState.currentPlayer, 
                                         GameState.currentDeal.type, 
+                                        GameState.currentDeal.symbol, 
                                         GameState.currentDeal.price, 
-                                        sharesToTrade) 
+                                        sharesToTrade,
+                                        {
+                                            type: 'purchase',
+                                            shares: sharesToTrade,
+                                            cost: amountToTrade,
+                                        }
+                                    ) 
 
                                     GameState.alert = true
 
                                     setPurchase({
+                                        type: 'purchase',
                                         shares: sharesToTrade,
                                         cost: amountToTrade,
                                     })
@@ -227,7 +261,7 @@ const Stock = (props) => {
                                     setAmountToTrade(0)
                                     setRefresh(true)
                                 } else {
-                                    console.log('cannot afford stockpurchase')
+                                    console.log('cannot afford stock purchase')
                                 }
                             }}>
                             <Text style={styles.saleBtnText}>Buy</Text>
@@ -240,14 +274,46 @@ const Stock = (props) => {
                          <Text>{GameState.currentDeal.sharesOwned} shares available to sell {GameState.currentDeal.symbol}</Text>
                         <Pressable style={styles.saleBtn}
                             onPress={() => {
+                                // if shares less than owned amount allow sale
+                                if (amountToTrade <= player.cash && sharesToTrade <= GameState.currentDeal.sharesOwned){
+                                    //console.log('selling stock')
+                                    GameState.currentDeal.sharesOwned -= sharesToTrade;
 
+                                    Calc.sellStock(
+                                        GameState.currentPlayer, 
+                                        GameState.currentDeal.type, 
+                                        GameState.currentDeal.symbol, 
+                                        sharesToTrade, 
+                                        GameState.currentDeal.price,
+                                        {
+                                            type: 'sale',
+                                            shares: sharesToTrade,
+                                            cost: amountToTrade,
+                                        }
+                                    )
+
+                                    GameState.alert = true
+
+                                    setPurchase({
+                                        type: 'sale',
+                                        shares: sharesToTrade,
+                                        cost: amountToTrade,
+                                    })
+
+                                    setSharesToTrade(0)
+                                    setAmountToTrade(0)
+                                    setRefresh(true)
+
+                                    console.log(sharesToTrade + ' of ' + GameState.currentDeal.symbol + ' sold')
+                                } else if (sharesToTrade > GameState.currentDeal.sharesOwned) {
+                                    console.log('not enough stock owned')
+                                }
                             }}>
                             <Text>Sell</Text>
                         </Pressable>
                     </View>
                     : <View></View>
                 }
-                
             </View>
             <View style={styles.numpadContainer}>
                 <View style={styles.numberRow}>
@@ -284,11 +350,11 @@ const Stock = (props) => {
                         <Text style={styles.rowNum}>7</Text>
                     </Pressable>
                     <Pressable style={styles.numberContainer}
-                        onPress={() => addDigit(7)}>
+                        onPress={() => addDigit(8)}>
                         <Text style={styles.rowNum}>8</Text>
                     </Pressable>
                     <Pressable style={styles.numberContainer}
-                        onPress={() => addDigit(7)}>
+                        onPress={() => addDigit(9)}>
                         <Text style={styles.rowNum}>9</Text>
                     </Pressable>
                 </View>
@@ -304,17 +370,16 @@ const Stock = (props) => {
                     <Pressable style={styles.numberContainer}
                         onPress={() => {
                             deleteValue()
-                            
                             console.log('delete')
                         }}>
-                        <MaterialCommunityIcons name="arrow-left" color={'blue'} size={28}
-                            style={styles.rowNum}
-                            
+                        <MaterialCommunityIcons 
+                            name="arrow-left" 
+                            color={'blue'} 
+                            size={28}
+                            style={styles.rowNum} 
                         />
-                    </Pressable>
-                   
+                    </Pressable>                 
                 </View>
-        
             </View>
         </View>
     )
@@ -399,72 +464,3 @@ const styles = StyleSheet.create({
 })
 
 export default Stock
-
-  /*
-
-buy max
-
-
-
-
-            <View style={styles.sharesBtnContainer}>
-                {!buyBtns 
-                ? <View></View> 
-                : <View style={{
-                    flexDirection: 'row',
-                }}>
-                    
-                    <Pressable style={styles.buySharesBtn}
-                        onPress={() => {
-                            console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
-
-                            if (shareAmount > 0 && player.cash >= (sharePrice * shareAmount)){
-                                Calc.buyStock( GameState.currentPlayer, type, sharePrice, shareAmount) 
-                            } else {
-                                console.log('cannot afford stockpurchase')
-                            }
-
-                            setBuyBtns(false)
-                            setSellBtns(false)
-
-                            setRefresh(true)
-                        }}>
-                        <Text>Purchase</Text>
-                    </Pressable>
-                </View>}    
-
-                {!sellBtns 
-                ? <View></View> 
-                : <View style={{
-                    flexDirection: 'row',
-                }}>
-                    
-
-                    {
-                        //map stock assets and display button for each 
-                        player.stockAssets.map((item, i) => {
-
-                            if (item && item.symbol === stock.symbol){
-                                return (
-                                    <Pressable style={styles.buySharesBtn}
-                                        key={i}
-                                        onPress={() => {
-                                            console.log(GameState.currentPlayer, type, sharePrice, shareAmount)
-                                            Calc.sellStock(GameState.currentPlayer, type, shareAmount, item.price, sharePrice,)
-                                            
-                                            setBuyBtns(false)
-                                            setSellBtns(false)
-    
-                                            setRefresh(true)
-                                        }}>
-                                        <Text>Sell {shareAmount}x for {shareAmount * sharePrice}</Text>
-                                    </Pressable>
-                                )
-                            } else {
-                                return (<View></View>)
-                            }
-                        })
-                    }
-                </View>}
-            </View>
-            */
