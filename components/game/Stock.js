@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, Text, Button, Pressable, StyleSheet, Dimensions } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import GameState from '../../js/GameState';
 import Main from '../../js/Main';
 import Calc from '../../js/Calc';
 import Alert from '../main/Alert';
-import { Games } from '@material-ui/icons';
 
 const Stock = (props) => {
     const player = GameState.players[GameState.currentPlayer];
     const { navigation } = props;
     const purchaseType = GameState.stockPurchaseType;
+    const someRef = useRef(null)
     
     const [refresh, setRefresh] = useState(false)
     const [amountToTrade, setAmountToTrade] = useState(0)
@@ -123,8 +123,15 @@ const Stock = (props) => {
             setRefresh(false)
         } 
 
+        /*if (!someRef.current) {
+            return;
+        }
 
-    })
+        someRef.current.setNativeProps(true)
+        console.log('someRef', someRef)*/
+
+
+    }, [refresh])
 
     if (GameState.alert && purchaseType === 'buy'){
         return(

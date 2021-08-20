@@ -201,23 +201,16 @@ var Calc = {
                 item.transactions.push(record)
                 
             } 
-            /*
-            if (item && item.shares === 0){
-                console.log('item', item)
-                removeIndex = i
-            }
-            */
         });
-
-        /*
-        if (removeIndex){
-            player.stockAssets.splice(removeIndex, 1);
-        }
-        */
 
         GameState.events.push(sharesToSell + ' shares of ' + symbol + ' sold at ' + purchasePrice)
 
         console.log('sold stock ', player.stockAssets)
+    },
+    buyRealEstate: function(property){
+        const player = GameState.players[currentPlayer]
+
+        console.log('buyRealEstate property', property)
     },
 };
 

@@ -17,63 +17,7 @@ import { getGameData, getUser } from '../../redux/reducers/rootReducer'
 import Calc from '../../js/Calc';
 import Main from '../../js/Main';
 import Stock from './Stock'
-/*
-const GameStack = createStackNavigator();
 
-function GameStackScreen(props) {
-  return (
-    <GameStack.Navigator 
-        initialRouteName={Screens[0].name}
-    >
-      {
-        Screens.map(screen => 
-            <GameStack.Screen
-                key={screen.name}
-                name={screen.name}
-                options={{
-                  headerShown: false,
-                }}
-                children={
-                    screen.component === DreamPhaseScreen ? (()=> <DreamPhase {...props}/>) :
-                        screen.component === RatRaceScreen ? (()=> <RatRace {...props}/>) :
-                            screen.component === StockScreen ? (()=> <Stock {...props}/>) :  
-                                screen.component === BankScreen ? (()=> <Bank {...props}/>) :   
-                                    <BankScreen {...props}/>
-                }
-            />)
-        }
-    </GameStack.Navigator>
-  );
-}
-
-const Screens = [
-    
-    {
-        name:'Dream',
-        iconType:'Material',
-        iconName:'user-friends',
-        component: DreamPhaseScreen
-    },
-    {
-        name:'Rat Race',
-        iconType:'Material',
-        iconName:'user-friends',
-        component: RatRaceScreen
-    },
-    {
-        name:'Bank',
-        iconType:'Material',
-        iconName:'user-friends',
-        component: BankScreen
-    },
-    {
-        name:'Stock',
-        iconType:'Material',
-        iconName:'user-friends',
-        component: StockScreen
-    },
-]
-*/
 const EventViewer = (props) => {
     const dispatch = useDispatch()
     const [showBtns, setShowBtns] = useState(false)

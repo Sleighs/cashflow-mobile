@@ -95,6 +95,21 @@ const Stocks = (props) => {
 const RealEstate = (props) => {
     const { type } = props
 
+    const property = GameState.currentDeal;
+    const player = GameState.players[GameState.currentPlayer];
+
+    useEffect(() => {
+        
+        /*if (type === "Real Estate"){
+            // Get total number of shares owned from player array
+            let propertyAssetsSearch = player.realEstateAssets.find(item => {
+                if (item && item.type === type){
+                    console.log('owned property', item)
+                } 
+            })
+        }*/
+    })
+
     /*
     type
     name
@@ -110,11 +125,28 @@ const RealEstate = (props) => {
     */
 
     return (
-        <View>
-            <Text>{type}</Text>
+        <View style={styles.realEstateContainer}>
+            <View style={styles.stockTextContainer}>
+                <Text>{property.type}</Text>
+                <Text>{property.name}</Text>
+                <Text>{property.landType}</Text>
+                <Text>{property.description}</Text>
+                <Text>Cost: ${Main.numWithCommas(property.cost) }</Text>
+                <Text>Down Payment: ${Main.numWithCommas(property.downPayment) }</Text>
+                <Text>Mortgage: ${Main.numWithCommas(property.mortgage) }</Text>
+                <Text>Income: ${Main.numWithCommas(property.cashFlow) }</Text>
+                
+            </View>
             <View style={styles.btnContainer}>
                 <Pressable style={styles.buyBtn}
                     onPress={() => {
+                        
+                        if (player.cash >= property.downPayment){
+                            console.log('buying real estate...')
+                           Calc.buyRealEstate(property) 
+                        } else {
+                            console.log('not enough to purchase property')
+                        }
                         
                     }}>
                     <Text>Buy</Text>
@@ -246,6 +278,17 @@ const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: 'white',
         color: 'darkgreen',
+    },
+    
+    buyBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        height: 40,
+        paddingHorizontal: 12,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
     },
     buySharesOnBtn: {
         justifyContent: 'center',

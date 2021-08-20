@@ -317,13 +317,6 @@ const Statement = (props) => {
     const player = GameState.players[GameState.currentPlayer];
     const dispatch = useDispatch();
     
-    if (!loaded){
-        //dispatch(getGameData(GameState))
-        //setLoaded(true)
-        //console.log('statement props', props)
-        //setData(GameState)
-    }
-
     return(
         <View style={styles.statementContainer}>            
             <StatementTabs {...props}/>

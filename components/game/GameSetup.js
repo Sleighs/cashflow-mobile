@@ -54,17 +54,15 @@ export default function GameSetup(props) {
     
     const createPlayer = () => {
         var randScenario = Math.floor(Math.random() * (Setup.scenarioChoices.length - 1));
-        
-        /*console.log({
-            scenario: Setup.scenarioChoices[randScenario],
-            randomNum: randScenario
-        })*/
-        
         var state = store.getState()
         
         // Create player
         var newPlayer = new Setup.newPlayer(Setup.scenarioChoices[randScenario]);
-        newPlayer.name = state.currentUser.name;
+        if (!state.currentUser.name){
+            newPlayer.name = 'player1'
+        } else {
+            newPlayer.name = state.currentUser.name
+        }
         
         console.log('create user', state)
         
