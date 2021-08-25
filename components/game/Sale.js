@@ -6,10 +6,23 @@ import Main from '../../js/Main';
 import Calc from '../../js/Calc';
 import Alert from '../main/Alert';
 
-const Stock = (props) => {
+/* use for 
+    stocks
+    mutuals
+    preferred stocks
+    certificates of deposit
+
+*/
+
+const Sale = (props) => {
     const player = GameState.players[GameState.currentPlayer];
-    const { navigation } = props;
+    const { 
+        navigation,
+        saleType
+     } = props;
+
     const purchaseType = GameState.stockPurchaseType;
+    const saleAsset = GameState.currentDeal.type;
     const someRef = useRef(null)
     
     const [refresh, setRefresh] = useState(false)
@@ -112,30 +125,33 @@ const Stock = (props) => {
     }
 
     useEffect(() => {
-        let assetObj = player.stockAssets.find((item, i) => {
-            // If stock exists add payment and subtract shares from owned shares
-            if (item && item.symbol === GameState.currentDeal.symbol){
-                GameState.currentDeal.ownedShares = item.shares;
-            } 
-        });
 
+        if (saleAsset === "Certificate of Deposit"){
+            let assetObj = player.cdAssets.find((item, i) => {
+                // If stock exists add payment and subtract shares from owned shares
+                if (item && item.symbol === GameState.currentDeal.symbol){
+                    GameState.currentDeal.ownedShares = item.amount;
+                } 
+            });
+        } else {
+            let assetObj = player.stockAssets.find((item, i) => {
+                // If stock exists add payment and subtract shares from owned shares
+                if (item && item.symbol === GameState.currentDeal.symbol){
+                    GameState.currentDeal.ownedShares = item.shares;
+                } 
+            });
+        }
+        
         if (refresh) {
             setRefresh(false)
         } 
-
-        /*if (!someRef.current) {
-            return;
-        }
-
-        someRef.current.setNativeProps(true)
-        console.log('someRef', someRef)*/
     }, [refresh])
 
     if (GameState.alert && purchaseType === 'buy'){
         return(
             <Alert {...props} 
-                title={'Stock Purchase'} 
-                message={'You purchased ' + purchase.shares + ' shares of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(purchase.cost)} 
+                title={'Purchase Succesful'} 
+                message={'You purchased ' + purchase.shares + ' ' + (saleAsset === 'Certificate of Deposit' ? 'Deposits': 'Shares') + ' of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(purchase.cost)} 
                 confirmBtnText={'Buy More'} 
                 returnBtnText={'Done'}
                 setRefresh={setRefresh}
@@ -152,8 +168,8 @@ const Stock = (props) => {
     } else if (GameState.alert && purchaseType === 'sell'){
         return (
             <Alert {...props} 
-                title={'Stock Sale'} 
-                message={'You sold ' + purchase.shares + ' shares of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(purchase.cost)} 
+                title={'Sale Successful'} 
+                message={'You sold ' + purchase.shares + ' ' + (saleAsset === 'Certificate of Deposit' ? 'Deposits': 'Shares') + ' of ' + GameState.currentDeal.symbol + ' for $' + Main.numWithCommas(purchase.cost)} 
                 confirmBtnText={'Sell More'} 
                 returnBtnText={'Done'}
                 setRefresh={setRefresh}
@@ -186,7 +202,7 @@ const Stock = (props) => {
                             setOrderOption('Dollars')
                         } else {
                             setAmountToTrade(0)
-                            setOrderOption('Shares')
+                            setOrderOption(saleAsset === 'Certificate of Deposit' ? 'Deposits': 'Shares')
                         }
                     }}>
                     <Text>{orderOption}</Text>
@@ -208,12 +224,12 @@ const Stock = (props) => {
                                 ? sharesToTrade === 0 || parseInt(amountToTrade) === 0
                                     ? ''
                                     : amountToTrade <= player.cash 
-                                        ? 'Buy ' + sharesToTrade + ' shares for $' + Main.numWithCommas(parseInt(amountToTrade))
+                                        ? 'Buy ' + sharesToTrade + ' ' + (saleAsset === 'Certificate of Deposit' ? 'Deposits': 'Shares') + ' for $' + Main.numWithCommas(parseInt(amountToTrade))
                                         : 'Not enough funds. $' + (Main.numWithCommas(parseInt(amountToTrade) - player.cash)) + ' required.'
                                 : sharesToTrade === 0 || parseInt(amountToTrade) === 0
                                     ? ''
                                     : sharesToTrade <= GameState.currentDeal.sharesOwned
-                                        ? 'Sell ' + sharesToTrade + ' shares for $' + Main.numWithCommas(parseInt(amountToTrade))
+                                        ? 'Sell ' + sharesToTrade + ' ' + (saleAsset === 'Certificate of Deposit' ? 'Deposits': 'Shares') + ' for $' + Main.numWithCommas(parseInt(amountToTrade))
                                         : ''
                             }
                         </Text>
@@ -241,19 +257,36 @@ const Stock = (props) => {
                             style={styles.saleBtn}
                             onPress={() => {
                                 if (sharesToTrade > 0 && player.cash >= (GameState.currentDeal.price * sharesToTrade)){
-                                    Calc.buyStock( 
-                                        GameState.currentPlayer, 
-                                        GameState.currentDeal.type, 
-                                        GameState.currentDeal.symbol, 
-                                        GameState.currentDeal.price, 
-                                        sharesToTrade,
-                                        {
-                                            type: 'purchase',
-                                            shares: sharesToTrade,
-                                            cost: amountToTrade,
-                                            id: GameState.currentDeal.id
-                                        }
-                                    ) 
+                                    if (saleAsset === 'Certificate of Deposit'){
+                                        Calc.buyStock( 
+                                            GameState.currentPlayer, 
+                                            GameState.currentDeal.type, 
+                                            GameState.currentDeal.symbol, 
+                                            GameState.currentDeal.price, 
+                                            sharesToTrade,
+                                            {
+                                                type: 'purchase',
+                                                shares: sharesToTrade,
+                                                cost: amountToTrade,
+                                                id: GameState.currentDeal.id
+                                            },
+                                            GameState.currentDeal.dividend
+                                        ) 
+                                    } else {
+                                        Calc.buyStock( 
+                                            GameState.currentPlayer, 
+                                            GameState.currentDeal.type, 
+                                            GameState.currentDeal.symbol, 
+                                            GameState.currentDeal.price, 
+                                            sharesToTrade,
+                                            {
+                                                type: 'purchase',
+                                                shares: sharesToTrade,
+                                                cost: amountToTrade,
+                                                id: GameState.currentDeal.id
+                                            }
+                                        ) 
+                                    }
 
                                     GameState.alert = true
 
@@ -284,7 +317,7 @@ const Stock = (props) => {
                                 if (sharesToTrade <= GameState.currentDeal.sharesOwned){
                                     //console.log('selling stock')
                                     GameState.currentDeal.sharesOwned -= sharesToTrade;
-
+                                    
                                     Calc.sellStock(
                                         GameState.currentPlayer, 
                                         GameState.currentDeal.type, 
@@ -470,4 +503,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Stock
+export default Sale

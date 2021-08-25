@@ -15,6 +15,7 @@ import Home from './game/Home'
 import GameSetup from './game/GameSetup'
 import Game from './game/Game'
 import Stock from './game/Stock'
+import Sale from './game/Sale'
 
 import HomeScreen from './game/Home'
 import GameSetupScreen from './game/GameSetup'
@@ -22,6 +23,7 @@ import GameScreen from './game/Game'
 import StockScreen from './game/Stock'
 import ProfileScreen from './main/Profile'
 import DebugScreen from './main/Debug'
+import SaleScreen from './game/Sale'
 
 
 const HomeStack = createStackNavigator();
@@ -50,7 +52,8 @@ function HomeStackScreen(props) {
                     screen.component === HomeScreen ? (()=> <Home {...props} navigation={navigation}/>) :
                     screen.component === GameSetupScreen ? (()=> <GameSetup {...props}/>) :
                     screen.component === GameScreen ? (()=> <Game {...props} navigation={navigation}/>) :  
-                    screen.component === StockScreen ? (()=> <Stock {...props} navigation={navigation}/>) :                                    
+                    screen.component === StockScreen ? (()=> <Stock {...props} navigation={navigation}/>) : 
+                    screen.component === SaleScreen ? (()=> <Sale {...props} navigation={navigation}/>) :                                    
                         <Home {...props}/>
                 }
             />)
@@ -83,6 +86,12 @@ const Screens = [
         iconType:'Material',
         iconName:'user-friends',
         component: StockScreen
+    },
+    {
+        name:'Sale',
+        iconType:'Material',
+        iconName:'user-friends',
+        component: SaleScreen
     },
 ]
 
@@ -127,6 +136,7 @@ const Main = (props) => {
                     backgroundColor: 'gray', 
                 },
               }}
+            lazy={true}
         >
             <Tab.Screen 
                 name="Home"

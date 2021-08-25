@@ -39,11 +39,44 @@ Setup.newPlayer = function(playerScenario) {
     this.boatLoan = 0;
     this.boatPayment = 0;
     this.downsizedTurns = 0;
-    this.stockAssets = [];
+    this.stockAssets = [
+        //test stock
+        {
+            type: 'Stock',
+            symbol: 'MYT4U',
+            shares: 50,
+            transactions: [],
+            id: 82193002164376327831009,
+        },
+        {
+            type: 'Stock',
+            symbol: 'OK4U',
+            shares: 50,
+            transactions: [],
+            id: 90397988239090340139130,
+        },
+    ];
 
-    this.realEstateAssets = [];
+    this.realEstateAssets = [
+        {
+            type: "Real Estate",
+            name: "You Find a Great Deal!",
+            description: "Older 3/2 house, repossessed by government agency. Ready to go with government financing and a tenant.",
+            rule: "Borrow from the Bank if you must, but... BUY THIS! 132% ROI, may sell for $65,000 to $135,000.",
+            roi: 1.32,
+            cost: 35000,
+            downPayment: 2000,
+            mortgage: 33000,
+            cashFlow: 220,
+            tag: "3Br/2Ba",
+            landType: "3Br/2Ba",
+            income: 220,
+            id: 129018781237213125458740,
+        }
+    ];
     this.businessAssets = [];
     this.coinAssets = [];
+    this.cdAssets = [];
     this.personalAssets = [];
     this.fastTrack = false;
 

@@ -160,17 +160,22 @@ const PaymentCalc = (props) => {
                 <Text>${Main.numWithCommas(totalPayCalcCost)}</Text>
             </View>
             <View style={styles.row}>
-                {(GameState.paymentCalc.type === 'none') || !GameState.paymentCalc.type ? <View></View> : <Pressable
-                    onPress={()=>{
-                        if (player.cash >= payCalcAmt ){
-                            payCalcPay(GameState.paymentCalc.type, payCalcAmt);
-                        } else {
-                            console.log('not enough to make ' + GameState.paymentCalc.type + ' payment')
-                        }          
-                    }}>
-                    <Text>PAY</Text>
-                </Pressable>}
+                {GameState.paymentCalc.type === 'none' || !GameState.paymentCalc.type 
+                    ? <View></View> 
+                    : <Pressable
+                        style={styles.payBtn}
+                        onPress={()=>{
+                            if (player.cash >= payCalcAmt ){
+                                payCalcPay(GameState.paymentCalc.type, payCalcAmt);
+                            } else {
+                                console.log('not enough to make ' + GameState.paymentCalc.type + ' payment')
+                            }          
+                        }}>
+                        <Text>PAY</Text>
+                    </Pressable>
+                }
                 <Pressable
+                    style={styles.doneBtn}
                     onPress={()=>{
                         Calc.updateStatement(GameState.currentPlayer);
                         GameState.paymentCalc.open = false;
@@ -203,6 +208,26 @@ const styles = StyleSheet.create({
     btn: {
         paddingVertical: 12,
         paddingHorizontal: 32,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
+    },
+    payBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        height: 40,
+        paddingHorizontal: 12,
+        borderRadius: 22,
+        elevation: 3,
+        backgroundColor: 'white',
+    },
+    doneBtn: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignContent: 'center',
+        height: 40,
+        paddingHorizontal: 12,
         borderRadius: 22,
         elevation: 3,
         backgroundColor: 'white',

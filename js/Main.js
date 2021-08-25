@@ -277,6 +277,16 @@ var Main = {
     numWithCommas: function(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+    makeid: function(length) {
+        var result = "";
+        var characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = 10;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    },
     getOffer: function() {
         var player = GameState.players[GameState.currentPlayer];
 
@@ -297,7 +307,7 @@ var Main = {
         var obj = CardDeck.smallDeal;
         var keys = Object.keys(obj);
         var randDeal = function(object) {
-            return object[keys[37]]//Math.floor(keys.length * Math.random())]];
+            return object[keys[52]]//Math.floor(keys.length * Math.random())]];
         };
 
         const currentDeal = randDeal(obj);
@@ -307,6 +317,7 @@ var Main = {
             dealType = "none";
         } else {
 			GameState.currentDeal = currentDeal;
+            GameState.currentDeal.id = Main.makeid(16)
 			dealType = currentDeal.type;
 		}
 
@@ -328,6 +339,7 @@ var Main = {
             dealType = "none";
         } else {
 			GameState.currentDeal = currentDeal;
+            GameState.currentDeal.id = Main.makeid(16)
 			dealType = currentDeal.type;
 		}
 

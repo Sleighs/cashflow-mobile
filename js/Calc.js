@@ -1,4 +1,6 @@
 import GameState from "./GameState";
+import uuid from 'react-uuid'
+import Main from "./Main";
 
 var Calc = {
     updateStatement: function(currentPlayer) {
@@ -48,6 +50,19 @@ var Calc = {
 
         // get total income <('.'<)
         income += player.startingSalary;
+
+        let playerRealEstateAssets = player.realEstateAssets.find((item) => {
+            if (item) {
+                income += item.income 
+            }
+        })
+
+        let cdAssets = player.cdAssets.find((item) => {
+            if (item) {
+                income += item.dividend * item.amount 
+                console.log(item.dividend * item.amount)
+            }
+        })
 
         player.totalIncome = income;
     
@@ -126,7 +141,7 @@ var Calc = {
             player.expenses.push({
                 type: 'loans',
                 cost: amount,
-                payment: amount * .1
+                payment: amount * .1,
             })
         }
     },
@@ -139,49 +154,91 @@ var Calc = {
         // Update statement
         Calc.updateStatement(currentPlayer)
     },
-    buyStock: function (currentPlayer, type, symbol, price, shares, saleRecord) {
+    buyStock: function (currentPlayer, type, symbol, price, shares, saleRecord, dividend) {
         const player = GameState.players[currentPlayer]
 
         var alreadyOwned = false;
         var record = saleRecord;
 
-        // Check for previous stock in player assets
-        let assetObj = player.stockAssets.find((item, i) => {
-            // If stock exists pay and add shares to current amount
-            if (item && item.symbol === symbol /*&& item.price === price*/){
-                alreadyOwned = true;
+        if (type === 'Certificate of Deposit'){
+            // Check for previous stock in player assets
+            let assetObj = player.cdAssets.find((item, i) => {
+                // If stock exists pay and add shares to current amount
+                if (item && item.symbol === symbol /*&& item.price === price*/){
+                    alreadyOwned = true;
+                    player.cash -= price * shares;
+                    item.amount += shares;
+                    item.transactions.push(saleRecord)
+                }  
+            });
+
+            // If not already owned add new stock to assets
+            if (!alreadyOwned) {
                 player.cash -= price * shares;
-                item.shares += shares;
-                item.transactions.push(saleRecord)
-            }  
-        });
 
-        // If not already owned add new stock to assets
-        if (!alreadyOwned) {
-            player.cash -= price * shares;
+                player.cdAssets.push({
+                    type: type,
+                    symbol: symbol,
+                    amount: shares,
+                    transactions: [],
+                    id: uuid(),
+                    dividend: dividend
+                }) 
+            }
 
-            player.stockAssets.push({
-                type: type,
-                symbol: symbol,
-                shares: shares,
-                transactions: [],
-            }) 
+            // Save transactions details
+            let findStock = player.cdAssets.find((item) => {
+                if (item && item.symbol === symbol){
+                    record.newBalance = player.cash;
+                    record.totalShares = item.amount;
+
+                    item.transactions.push(record)
+                }  
+            })
+
+            // Save event
+            GameState.events.push(shares + ' cd\'s of ' + symbol + ' purchased at ' + price)
+
+        } else {
+            // Check for previous stock in player assets
+            let assetObj = player.stockAssets.find((item, i) => {
+                // If stock exists pay and add shares to current amount
+                if (item && item.symbol === symbol /*&& item.price === price*/){
+                    alreadyOwned = true;
+                    player.cash -= price * shares;
+                    item.shares += shares;
+                    item.transactions.push(saleRecord)
+                }  
+            });
+
+            // If not already owned add new stock to assets
+            if (!alreadyOwned) {
+                player.cash -= price * shares;
+
+                player.stockAssets.push({
+                    type: type,
+                    symbol: symbol,
+                    shares: shares,
+                    transactions: [],
+                    id: uuid(),
+                }) 
+            }
+
+            // Save transactions details
+            let findStock = player.stockAssets.find((item) => {
+                if (item && item.symbol === symbol){
+                    record.newBalance = player.cash;
+                    record.totalShares = item.shares;
+
+                    item.transactions.push(record)
+                }  
+            })
+
+            // Save event
+            GameState.events.push(shares + ' shares of ' + symbol + ' purchased at ' + price)
+
+            console.log('buy stock ', player.stockAssets)
         }
-
-        // Save transactions details
-        let findStock = player.stockAssets.find((item) => {
-            if (item && item.symbol === symbol){
-                record.newBalance = player.cash;
-                record.totalShares = item.shares;
-
-                item.transactions.push(record)
-            }  
-        })
-
-        // Save event
-        GameState.events.push(shares + ' shares of ' + symbol + ' purchased at ' + price)
-
-        console.log('buy stock ', player.stockAssets)
     },
     sellStock: function(currentPlayer, type, symbol, sharesToSell, purchasePrice, saleRecord){
         const player = GameState.players[currentPlayer]
@@ -191,26 +248,94 @@ var Calc = {
 
         var record = saleRecord;
 
-        let assetObj = player.stockAssets.find((item, i) => {
-            // If stock exists add payment and subtract shares from owned shares
-            if (item && item.symbol === symbol){
-                player.cash += purchasePrice * sharesToSell;
-                item.shares -= sharesToSell;
-                record.newBalance = player.cash;
-                record.totalShares = item.shares;
-                item.transactions.push(record)
-                
-            } 
-        });
+        if (type === 'Certificate of Deposit'){
+            let assetObj = player.cdAssets.find((item) => {
+                // If cd exists add payment and subtract shares from owned shares
+                if (item && item.symbol === symbol){
+                    player.cash += purchasePrice * sharesToSell;
+                    item.amount -= sharesToSell;
+                    record.newBalance = player.cash;
+                    record.totalShares = item.amount;
+                    item.transactions.push(record)
+                } 
+            });
+            GameState.events.push(sharesToSell + ' cd\'s of ' + symbol + ' sold at ' + purchasePrice)
 
-        GameState.events.push(sharesToSell + ' shares of ' + symbol + ' sold at ' + purchasePrice)
+            console.log('sold stock ', player.cdAssets)
+        } else {
+            let assetObj = player.stockAssets.find((item) => {
+                // If stock exists add payment and subtract shares from owned shares
+                if (item && item.symbol === symbol){
+                    player.cash += purchasePrice * sharesToSell;
+                    item.shares -= sharesToSell;
+                    record.newBalance = player.cash;
+                    record.totalShares = item.shares;
+                    item.transactions.push(record) 
+                } 
+            });
+            GameState.events.push(sharesToSell + ' shares of ' + symbol + ' sold at ' + purchasePrice)
 
-        console.log('sold stock ', player.stockAssets)
+            console.log('sold stock ', player.stockAssets)
+        }
+
+        
     },
     buyRealEstate: function(property){
-        const player = GameState.players[currentPlayer]
+        const player = GameState.players[GameState.currentPlayer]
+        //var id = uuid();
+        var timestamp = new Date().getTime();
 
-        console.log('buyRealEstate property', property)
+        var newProperty = {
+            id: property.id,
+            timestamp: timestamp,
+            type: property.type,
+            income: property.cashFlow,
+            name: property.name,
+            landType: property.landType,
+            mortgage: property.mortgage,
+            cost: property.cost,
+            downPayment: property.downPayment,
+            description: property.description,
+        }
+
+
+        // add to asset array
+        
+        player.realEstateAssets.push(newProperty)
+
+        player.cash -= property.downPayment;
+
+        console.log('buyRealEstate property', newProperty)
+
+        Calc.updateStatement(GameState.currentPlayer)
+
+    },
+    buyCoin: function(currentPlayer, coin){
+        const player = GameState.players[currentPlayer];
+        var alreadyOwned = false;
+
+        let coinSearch = player.coinAssets.find((item) => {
+            if (item && item.type === coin.type){
+                alreadyOwned = true;
+                item.amount += coin.amount;
+                player.cash -= coin.cost;
+            }
+        })
+
+        var newCoin = {
+            amount: coin.amount,
+            cost: coin.cost,
+            name: coin.name,
+            type: coin.type,
+            id: Main.makeid(),
+        }
+
+        if (!alreadyOwned){
+            player.coinAssets.push(newCoin)
+            player.cash -= coin.cost;
+        }
+
+        console.log('coin purchased')
     },
 };
 

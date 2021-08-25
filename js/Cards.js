@@ -568,7 +568,7 @@ const CardDeck = {
             tag: "10 acres",
             landType: "10 acres"
         },
-        propertyDamage: {
+        propertyDamage1: {
             name: "Tenant Damages Your Property",
             type: "Property Damage",
             description: "Tenant fails to pay rent for 2 months and then skips town leaving damage to your rental property. Insurance covers most damage and costs, but you are still out of pocket $500.",
@@ -576,6 +576,15 @@ const CardDeck = {
             propertyType: "rental",
             landType: "rental",
             cost: 500
+        },
+        propertyDamage2: {
+            name: "Tenant Damages Your Property",
+            type: "Property Damage",
+            description: "Tenant fails to pay rent for 2 months and then skips town leaving damage to your rental property. Insurance covers most damage and costs, but you are still out of pocket $1,500.",
+            rule: "Pay $1,500 if you own any rental property",
+            propertyType: "rental",
+            landType: "rental",
+            cost: 1500
         },
         coin1: {
             type: "Coin",
@@ -588,7 +597,7 @@ const CardDeck = {
             downPayment: 500,
             liability: 0,
             cashFlow: 0,
-            amount: 1
+            amount: 8
         },
         coin2: {
             type: "Coin",
@@ -605,27 +614,27 @@ const CardDeck = {
         },
         cd1: {
           type: "Certificate of Deposit",
-          name: "Certificate of Deposit 1",
+          name: "Certificate of Deposit A",
           description: "A leading bank offers this special Certificate of Deposit to its customer. Guaranteed interest and redeemable after any holding period.",
           rule: "Everyone may buy or sell as many as they wish at this time.",
           symbol: "CD-A",
           dividend: 12,
           price: 500,
           range: "$5,000 to $5,000",
-		  id: "cd1",
-		  shares: 0
+		  id: "cda",
+		  amount: 0
         },
         cd2: {
           type: "Certificate of Deposit",
-          name: "Certificate of Deposit 2",
+          name: "Certificate of Deposit B",
           description: "A leading bank offers this special Certificate of Deposit to its customer. Guaranteed interest and redeemable after any holding period.",
           rule: "Everyone may buy or sell as many as they wish at this time.",
           symbol: "CD-B",
           dividend: 60,
           price: 2000,
           range: "$5,000 to $5,000",
-		  id: "cd2",
-		  shares: 0
+		  id: "cdb",
+		  amount: 0
         },
         companyS1: {
             type: "Company",

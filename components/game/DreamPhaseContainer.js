@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignContent: 'center',
         width: '92%',
-        maxHeight: '85%',
+        maxHeight: '90%',
         paddingHorizontal: 30,
         paddingVertical: 30,
         borderRadius: 15,
@@ -132,13 +132,15 @@ const styles = StyleSheet.create({
         
     },
     dreamSelectionTop:{
-        height: 275,
+        //height: '33%',
         marginBottom: 20,
+        flex: 7,
+        elevation: 3,
     },
     dreamSelTitle: {
         fontSize: 26,
         textAlign: 'center',
-        height: 40,
+        height: '7%',
         color: 'gold',
         fontWeight: "500",
         marginVertical: 15,
@@ -153,12 +155,13 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 20,
         marginTop: 7,
-        height: 150,
+        height: '20%',
     },
     dreamSelBtnsContainer: {
         flexDirection:'row', 
         flexWrap:'wrap',
         justifyContent: 'space-between',
+        flex: 1,
         
     },
     dreamSelBtns: {
@@ -191,6 +194,7 @@ const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: '#835387',
         marginTop: 25,
+        flex: 1,
     },
     dreamSetText: {
         color: 'white',
@@ -199,6 +203,7 @@ const styles = StyleSheet.create({
     startingStats: {
         justifyContent: 'center',
         marginTop: 20,
+        flex: 5,
     },
     startingStatsText: {
         fontSize: 20,

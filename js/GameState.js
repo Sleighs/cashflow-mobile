@@ -25,6 +25,7 @@ var GameState = {
         type: null,
     },
     alert: false,
+    alertType: null,
 };
 
 GameState.checkOccupiedSpaces = (space)=>{

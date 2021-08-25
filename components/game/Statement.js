@@ -113,6 +113,48 @@ const Assets = (props) => {
                 <View style={styles.tableTitleContainer}>
                     <Text style={styles.tableTitle}>Real Estate</Text>
                 </View>
+                {player.realEstateAssets.map((item, i) => {
+                    if (item){
+                        return ( 
+                            <View key={item.id} style={styles.assetsRow}>
+                                <Text style={styles.assetsName}>{item.landType}</Text>
+                                <Text style={styles.assetsAmount}>${Main.numWithCommas(item.income)}/${Main.numWithCommas(item.cost)}</Text>
+                            </View>
+                            )
+                    } else {
+                        return
+                    } 
+                })}
+                <View style={styles.tableTitleContainer}>
+                    <Text style={styles.tableTitle}>Collectibles</Text>
+                </View>
+                {player.coinAssets.map((item, i) => {
+                    if (item){
+                        return ( 
+                            <View key={item.id} style={styles.assetsRow}>
+                                <Text style={styles.assetsName}>{item.name}/{item.type}</Text>
+                                <Text style={styles.assetsAmount}>${Main.numWithCommas(item.cost)}/{item.amount}</Text>
+                            </View>
+                            )
+                    } else {
+                        return
+                    } 
+                })}
+                <View style={styles.tableTitleContainer}>
+                    <Text style={styles.tableTitle}>Deposits</Text>
+                </View>
+                {player.cdAssets.map((item, i) => {
+                    if (item && item.amount > 0){
+                        return ( 
+                            <View key={item.id} style={styles.assetsRow}>
+                                <Text style={styles.assetsName}>{item.type}</Text>
+                                <Text style={styles.assetsAmount}>${Main.numWithCommas(item.dividend)}/{item.amount} - ${Main.numWithCommas(item.dividend * item.amount)}</Text>
+                            </View>
+                            )
+                    } else {
+                        return
+                    } 
+                })}
             </View>
         </ScrollView>
     )
@@ -316,6 +358,10 @@ const Statement = (props) => {
     const [loaded, setLoaded] = useState(false)
     const player = GameState.players[GameState.currentPlayer];
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        Calc.updateStatement(GameState.currentPlayer)
+    })
     
     return(
         <View style={styles.statementContainer}>            
@@ -330,6 +376,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         maxWidth: Dimensions.get('window').width,
         height: 310,
+        zIndex: 3,
     },
     statementHeader: {
         backgroundColor: '#f2f1f7',

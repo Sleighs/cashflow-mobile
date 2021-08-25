@@ -12,7 +12,8 @@ const Alert = (props) => {
         btns,
         refresh,
         setRefresh, 
-        navigation 
+        navigation,
+        marginTop, //Testing
     } = props
 
     useEffect(() => {
@@ -22,7 +23,9 @@ const Alert = (props) => {
     })
 
     return (
-        <View style={styles.page}>
+        <View style={[styles.page, {
+            marginTop: marginTop ? marginTop : '40%',
+        }]}>
             <View style={styles.container}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>{title}</Text>
@@ -37,7 +40,9 @@ const Alert = (props) => {
                             onPress={() => {
                                 console.log('alert done')
                                 GameState.alert = false
+                                GameState.alertType = null
                                 setRefresh(true)
+
                                 navigation.goBack()
                             }}>
                             <Text>{returnBtnText}</Text>
@@ -49,6 +54,7 @@ const Alert = (props) => {
                             onPress={() => {
                                 console.log('alert confirmed')
                                 GameState.alert = false
+                                GameState.alertType = null
                                 setRefresh(true)
                             }}>
                             <Text>{confirmBtnText}</Text>
@@ -73,7 +79,6 @@ const styles = StyleSheet.create({
         //backgroundColor: 'transparent',
     },
     container: {
-        marginVertical: '45%',
         width: '90%',
         height: 275,
         justifyContent: 'center',
@@ -109,7 +114,7 @@ const styles = StyleSheet.create({
     },
     btnContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        //justifyContent: 'space-between',
         paddingHorizontal: 50,
         flex: 2,
     },

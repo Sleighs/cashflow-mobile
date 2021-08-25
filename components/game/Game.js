@@ -17,6 +17,8 @@ import { getGameData, getUser } from '../../redux/reducers/rootReducer'
 import Calc from '../../js/Calc';
 import Main from '../../js/Main';
 import Stock from './Stock'
+import Alert from '../main/Alert'
+
 
 const EventViewer = (props) => {
     const dispatch = useDispatch()
@@ -176,6 +178,8 @@ export default function Game(props) {
           </View>
         );
     }*/
+
+    
     
     if (GameState.gamePhase === "rat race") {
         return (
