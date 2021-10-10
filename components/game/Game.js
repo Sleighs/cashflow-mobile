@@ -299,6 +299,7 @@ const styles = StyleSheet.create({
     ratRacePhaseContainer:{
         justifyContent: 'center',
         alignItems: 'center',
+        width: Dimensions.get('window').width,
     },
 })
 

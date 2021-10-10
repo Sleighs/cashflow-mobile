@@ -238,6 +238,19 @@ const MidPhase = (props) => {
                         </Pressable>
                     </View>
                 ) : <View></View>}
+                {cardType === 'OFFER' 
+                    ? <View>
+                        <Pressable style={styles.continueBtn}
+                            onPress={() =>{
+                                GameState.events.push(cardInfo.type + ' offer')
+
+                                GameState.turnPhase = 'end';
+                                setTurnPhase('end');
+                            }}>
+                            <Text style={{fontSize: 10}}>DONE</Text>
+                        </Pressable>
+                    </View>
+                    : <View></View>}
             </View>
         </View>
     )
@@ -259,7 +272,6 @@ const EndPhase = (props) => {
             <View style={styles.textContainer}>
                 <Text style={styles.cardTitle}>FINISH YOUR TURN</Text>
                 <Text style={styles.cardDescription}>Before you end your turn, review your financial statement. You may also use this time to review your deals.</Text>
-            
                 <Text style={{marginTop: 15,}}>{GameState.turnResult}</Text>
             </View>
             <View style={styles.btnContainer}>

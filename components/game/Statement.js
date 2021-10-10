@@ -118,7 +118,7 @@ const Assets = (props) => {
                         return ( 
                             <View key={item.id} style={styles.assetsRow}>
                                 <Text style={styles.assetsName}>{item.landType}</Text>
-                                <Text style={styles.assetsAmount}>${Main.numWithCommas(item.income)}/${Main.numWithCommas(item.cost)}</Text>
+                                <Text style={styles.assetsAmount}>+${Main.numWithCommas(item.income)} / ${Main.numWithCommas(item.cost)}</Text>
                             </View>
                             )
                     } else {
@@ -132,7 +132,7 @@ const Assets = (props) => {
                     if (item){
                         return ( 
                             <View key={item.id} style={styles.assetsRow}>
-                                <Text style={styles.assetsName}>{item.name}/{item.type}</Text>
+                                <Text style={styles.assetsName}>{item.name} / {item.type}</Text>
                                 <Text style={styles.assetsAmount}>${Main.numWithCommas(item.cost)}/{item.amount}</Text>
                             </View>
                             )
@@ -148,7 +148,7 @@ const Assets = (props) => {
                         return ( 
                             <View key={item.id} style={styles.assetsRow}>
                                 <Text style={styles.assetsName}>{item.type}</Text>
-                                <Text style={styles.assetsAmount}>${Main.numWithCommas(item.dividend)}/{item.amount} - ${Main.numWithCommas(item.dividend * item.amount)}</Text>
+                                <Text style={styles.assetsAmount}>+${Main.numWithCommas(item.dividend * item.amount)} / {item.amount} at ${Main.numWithCommas(item.dividend)}</Text>
                             </View>
                             )
                     } else {
@@ -374,7 +374,8 @@ const styles = StyleSheet.create({
     statementContainer: {
         backgroundColor: "#ffffff",
         justifyContent: 'center',
-        maxWidth: Dimensions.get('window').width,
+        //maxWidth: Dimensions.get('window').width,
+        width: '100%',
         height: 310,
         zIndex: 3,
     },

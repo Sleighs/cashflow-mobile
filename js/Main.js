@@ -8,7 +8,7 @@ import GameState from "./GameState";
 
 var Main = {
     rollDie: function(rollType) {
-        var num = 2//Math.floor(Math.random() * 6) + 1;
+        var num = Math.floor(Math.random() * 6) + 1;
         
         if (rollType === 'double'){
             num = num * 2;
@@ -307,7 +307,7 @@ var Main = {
         var obj = CardDeck.smallDeal;
         var keys = Object.keys(obj);
         var randDeal = function(object) {
-            return object[keys[52]]//Math.floor(keys.length * Math.random())]];
+            return object[keys[Math.floor(keys.length * Math.random())]];
         };
 
         const currentDeal = randDeal(obj);

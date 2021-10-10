@@ -1,18 +1,12 @@
-import { StatusBar } from 'expo-status-bar'
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 
 import firebaseKey from './firebaseKey'
 import firebase from 'firebase'
 
-import { Provider } from 'react-redux'
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as StoreProvider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
-import rootReducer from './redux/reducers'
-import thunk from 'redux-thunk'
-import store from './redux/store'
 
-//const store = createStore(rootReducer, applyMiddleware(thunk));
+import store from './redux/store'
 
 const firebaseConfig = {
   apiKey: firebaseKey.key,
@@ -36,10 +30,6 @@ import LandingScreen from './components/auth/Landing'
 import RegisterScreen from './components/auth/Register'
 import LoginScreen from './components/auth/Login'
 import MainScreen from './components/Main'
-import AddScreen from './components/main/Add'
-import GameSetupScreen from './components/game/GameSetup'
-import GameScreen from './components/game/Game'
-import GameSetup from './components/game/GameSetup'
 
 const Stack = createStackNavigator();
 

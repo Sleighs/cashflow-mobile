@@ -1,5 +1,6 @@
 import store from "../store"
 
+// Constants
 const USER_STATE_CHANGE = 'USER_STATE_CHANGE'
 const GAMEDATA_STATE_CHANGE = 'GAMEDATA_STATE_CHANGE'
 const PAYCALC_STATE_CHANGE = 'PAYCALC_STATE_CHANGE'
@@ -20,6 +21,7 @@ export const getPayCalc = state => ({
   payload: state
 })
 
+// Reducer
 export const rootReducer = (state = initialState, action) => {
   switch (action.type) {
     case GAMEDATA_STATE_CHANGE:
