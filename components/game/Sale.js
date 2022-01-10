@@ -254,7 +254,15 @@ const Sale = (props) => {
                     ? <View style={styles.saleBtnContainer}>
                         <Text>${Main.numWithCommas(player.cash)} available to buy {GameState.currentDeal.symbol}</Text>
                         <Pressable
-                            style={styles.saleBtn}
+                            style={styles.saleBtnBuy, {
+                                backgroundColor: 
+                                    purchaseType === 'buy' 
+                                    && amountToTrade <= player.cash 
+                                    && sharesToTrade > 0
+                                        ? '#3dee02'
+                                        :  'gray'
+                                ,
+                            }}
                             onPress={() => {
                                 if (sharesToTrade > 0 && player.cash >= (GameState.currentDeal.price * sharesToTrade)){
                                     if (saleAsset === 'Certificate of Deposit'){
@@ -301,6 +309,8 @@ const Sale = (props) => {
                                     setRefresh(true)
                                 } else {
                                     console.log('cannot afford stock purchase')
+                                    //button color =
+
                                 }
                             }}>
                             <Text style={styles.saleBtnText}>Buy</Text>
@@ -310,8 +320,16 @@ const Sale = (props) => {
                 }
                 {purchaseType === 'sell'
                     ? <View style={styles.saleBtnContainer}>
-                         <Text>{GameState.currentDeal.sharesOwned} shares available to sell {GameState.currentDeal.symbol}</Text>
-                        <Pressable style={styles.saleBtn}
+                        <Text>{GameState.currentDeal.sharesOwned} shares available to sell {GameState.currentDeal.symbol}</Text>
+                        <Pressable style={styles.saleBtnSell, {
+                            backgroundColor: 
+                            purchaseType === 'sell' 
+                            && player.cash <= GameState.currentDeal.price * sharesToTrade
+                            && sharesToTrade > 0
+                                ? '#3dee02'
+                                :  'gray'
+                        ,
+                        }}
                             onPress={() => {
                                 // if shares less than owned amount allow sale
                                 if (sharesToTrade <= GameState.currentDeal.sharesOwned){
@@ -346,6 +364,7 @@ const Sale = (props) => {
 
                                     console.log(sharesToTrade + ' of ' + GameState.currentDeal.symbol + ' sold')
                                 } else if (sharesToTrade > GameState.currentDeal.sharesOwned) {
+                                    //
                                     console.log('not enough stock owned')
                                 }
                             }}>
@@ -486,10 +505,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
     },
-    saleBtn: {
+    saleBtnBuy: {
         width: 275,
         marginVertical: 7,
-        backgroundColor: '#3dee02',
+        height: 40,
+        borderRadius: 25,
+        justifyContent: 'center',
+
+    },
+    saleBtnSell: {
+        width: 275,
+        marginVertical: 7,
         height: 40,
         borderRadius: 25,
         justifyContent: 'center',
@@ -500,6 +526,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         
     },
+
 
 })
 
