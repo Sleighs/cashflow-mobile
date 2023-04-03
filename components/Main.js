@@ -32,9 +32,9 @@ function HomeStackScreen(props) {
 
   const navigation = useNavigation();
 
-  useEffect(()=>{
+  useEffect(() => {
     //console.log('homestacknav: ', navigation)
-    })
+})
 
   return (
     <HomeStack.Navigator 

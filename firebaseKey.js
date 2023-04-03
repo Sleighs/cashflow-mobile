@@ -4,4 +4,3 @@ const firebaseKey = {
 }
 
 export default firebaseKey;
-
