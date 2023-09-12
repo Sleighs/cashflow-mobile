@@ -16,32 +16,33 @@ import Calc from '../../js/Calc';
 const JobSelector = (props) => {
     const { playerObj, insurance } = props;
     
-        if (playerObj) {
-            return (
-                <View style={{
-                    backgroundColor: "white",
-                    padding: 10,
-                    
-                }}>
-                    <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
-                    <Text>JobTitle: {playerObj.jobTitle}</Text>
-                    <Text>Salary: {playerObj.startingSalary}</Text>
-                    <Text>Savings: {playerObj.startingSavings}</Text>
-                    <Text>Insurance:{!insurance ? ' None' : ' Insured'}</Text>
-                </View>
-            )
-        } else {
-            return (<View></View>)
-        }
+    if (playerObj) {
+        return (
+            <View style={{
+                backgroundColor: "white",
+                padding: 10,
+                
+            }}>
+                <Text style={{textTransform: 'capitalize'}}>Name: {playerObj.name}</Text>
+                <Text>JobTitle: {playerObj.jobTitle}</Text>
+                <Text>Salary: {playerObj.startingSalary}</Text>
+                <Text>Savings: {playerObj.startingSavings}</Text>
+                <Text>Insurance:{!insurance ? ' None' : ' Insured'}</Text>
+            </View>
+        )
+    } else {
+        return (<View></View>)
+    }
 
 }
 
 export default function GameSetup(props) {
     const { navigation } = props;
-    const [setupData, setSetupData] = useState(null);
-    const [playerJob, setPlayerJob] = useState(null);
+
+    // const [setupData, setSetupData] = useState(null);
+    // const [playerJob, setPlayerJob] = useState(null);
+    // const [gameId, setGameId] = useState(null);
     const [playerObj, setPlayerObj] = useState(null);
-    const [gameId, setGameId] = useState(null);
     const [insurance, setInsurance] = useState(false);
 
     const getInsuranceBtnColor = (ins) => {
